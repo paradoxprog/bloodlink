@@ -87,7 +87,7 @@
         }
 
         header img.logo {
-            height: 90px;
+            height: 90px; /* As per user's last provided code */
             margin-right: 12px;
             border-radius: 6px;
         }
@@ -107,7 +107,7 @@
             align-items: center;
         }
 
-        nav a {
+        nav a { /* General nav link styling for app.html */
             margin-left: 25px;
             text-decoration: none;
             color: var(--text-color-light);
@@ -141,7 +141,7 @@
             color: var(--primary-color);
         }
         
-        .app-mode-header { /* Changed from user-info-header */
+        .app-mode-header {
             font-size: 11px;
             color: var(--text-color-light);
             margin-left: 20px;
@@ -208,6 +208,13 @@
         body.dark h3 {
             color: var(--text-color-dark);
         }
+        /* Specific h3 for donor cards */
+        .donor-card h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: var(--primary-color); /* Ensure donor card title is primary color */
+        }
+
 
         p {
             font-size: 15px;
@@ -218,12 +225,25 @@
          body.dark p {
             color: var(--text-color-dark);
         }
+        
+        /* For About section list in app.html */
+        section#aboutSection ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        section#aboutSection ul li {
+            margin-bottom: 8px;
+        }
+
 
         /* --- Forms --- */
-        form {
+        form#donorForm { /* Specific to donor form */
             display: flex;
             flex-direction: column;
             gap: 18px;
+            max-width: 600px; /* Constrain form width */
+            margin: 0 auto; /* Center form */
         }
         
         label {
@@ -267,7 +287,7 @@
             box-shadow: 0 0 0 2px var(--primary-color_alpha, rgba(229, 62, 62, 0.25));
         }
 
-        button[type="submit"], .btn-filter {
+        button[type="submit"], .btn-filter, .btn-contact-donor { /* Added .btn-contact-donor */
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -283,6 +303,16 @@
             padding: 10px 15px;
             font-size: 14px;
         }
+         .btn-contact-donor {
+            padding: 8px 12px;
+            font-size: 14px;
+            margin-top: 10px;
+            background-color: #2563eb; /* Blue for contact button */
+        }
+        .btn-contact-donor:hover {
+            background-color: #1d4ed8;
+        }
+
 
         button[type="submit"]:hover, .btn-filter:hover {
             background-color: var(--primary-hover);
@@ -310,12 +340,7 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px var(--shadow-dark);
         }
-        .donor-card h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-            font-size: 20px;
-        }
+        /* .donor-card h3 defined above */
         .donor-card p {
             font-size: 14px;
             margin-bottom: 6px;
@@ -426,7 +451,7 @@
             border: 1px solid var(--error-text);
         }
 
-        #loadingIndicator { /* Kept for potential future async operations, though not used now */
+        #loadingIndicator {
             border: 3px solid var(--border-color-light);
             border-top: 3px solid var(--primary-color);
             border-radius: 50%;
@@ -446,19 +471,12 @@
             100% { transform: rotate(360deg); }
         }
         
-        .content-grid {
+        .content-grid { /* For register form section */
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
         }
-        @media (min-width: 992px) { 
-            .content-grid {
-                 grid-template-columns: 1fr 2fr; 
-            }
-            #registerDonorSection, #findDonorSection { 
-                 grid-column: span 2 / span 2;
-            }
-        }
+        /* No specific grid for find donor section, list flows naturally */
 
         .filter-area {
             display: grid;
@@ -479,6 +497,86 @@
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
         }
+        
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--card-bg-light);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            text-align: left;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        body.dark .modal-content {
+            background-color: var(--card-bg-dark);
+        }
+        .modal-content h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .modal-content p {
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color-light);
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+        }
+        body.dark .modal-close-btn {
+            color: var(--text-color-dark);
+        }
+        .modal-close-btn:hover {
+            color: var(--primary-color);
+        }
+        .modal-contact-info {
+            margin-bottom: 20px;
+        }
+        .modal-reminder {
+            font-size: 13px;
+            font-style: italic;
+            color: #6b7280; /* Gray */
+        }
+        body.dark .modal-reminder {
+            color: #a0aec0; /* Lighter gray for dark mode */
+        }
+
 
         @media (max-width: 768px) {
             header {
@@ -512,14 +610,11 @@
             h2.section-title {
                 font-size: 24px;
             }
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
             header img.logo {
-                height: 40px;
+                height: 50px; /* Adjusted from 90px for smaller screens */
             }
             header h1.app-title {
                 font-size: 20px;
@@ -527,7 +622,7 @@
             nav a {
                 font-size: 13px;
             }
-            button[type="submit"], .btn-filter, input, select {
+            button[type="submit"], .btn-filter, .btn-contact-donor, input, select {
                 font-size: 14px;
                 padding: 10px 12px;
             }
@@ -535,6 +630,12 @@
                 padding: 15px;
             }
             .donor-card h3 {
+                font-size: 18px;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+            .modal-content h4 {
                 font-size: 18px;
             }
         }
@@ -565,7 +666,9 @@
 
 <main>
     <div id="messageContainer"></div>
-    <div id="loadingIndicator"></div> <section id="registerDonorSection" class="active">
+    <div id="loadingIndicator"></div> 
+    
+    <section id="registerDonorSection" class="active">
         <h2 class="section-title">Become a Lifesaver: Register Your Details</h2>
         <div class="content-grid">
              <div class="form-container">
@@ -650,7 +753,21 @@
         <p>We envision a community where no one suffers due to a shortage of blood. By creating a readily accessible and reliable network of donors, Blood Link aims to bridge the gap between donors and recipients, fostering a culture of voluntary blood donation.</p>
         <p>Join us in this noble cause. Register as a donor today, or help spread the word. Your contribution can make a world of difference.</p>
         <p style="font-style: italic; margin-top: 20px;">Note: This is a client-side demonstration. Registered donor data will only be available during your current browser session and will be lost upon refreshing or closing the page.</p>
+        <p><a href="index.html" style="color: var(--primary-color); text-decoration: underline;">&larr; Back to Welcome Page (if using two-page setup)</a></p>
     </section>
+
+    <div id="contactModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
+            <h4 id="modalDonorName">Contact Donor</h4>
+            <div id="modalContactDetails" class="modal-contact-info">
+                </div>
+            <p class="modal-reminder">
+                Please contact the donor directly using the information above. Blood Link is a directory and does not facilitate direct communication or transactions.
+            </p>
+        </div>
+    </div>
+
 </main>
 
 <footer>
@@ -666,8 +783,13 @@
     const donorsListContainer = document.getElementById('donorsListContainer');
     const filterBloodGroup = document.getElementById('filterBloodGroup');
     const filterCity = document.getElementById('filterCity');
-    // const loadingIndicator = document.getElementById('loadingIndicator'); // Not actively used but kept
     const messageContainer = document.getElementById('messageContainer');
+    
+    // Modal elements
+    const contactModal = document.getElementById('contactModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalDonorName = document.getElementById('modalDonorName');
+    const modalContactDetails = document.getElementById('modalContactDetails');
     
     // --- UI Navigation & Dark Mode ---
     const sections = {
@@ -737,14 +859,43 @@
         }, 6000);
     }
 
+    // --- Modal Functions ---
+    function showContactModal(donor) {
+        if (!contactModal || !modalDonorName || !modalContactDetails) return;
+        modalDonorName.textContent = `Contact: ${donor.name}`;
+        let detailsHtml = `<p><strong>Phone:</strong> ${donor.phone}</p>`;
+        if (donor.email) {
+            detailsHtml += `<p><strong>Email:</strong> ${donor.email}</p>`;
+        } else {
+            detailsHtml += `<p><strong>Email:</strong> Not Provided</p>`;
+        }
+        modalContactDetails.innerHTML = detailsHtml;
+        contactModal.classList.add('active');
+    }
+
+    function hideContactModal() {
+        if (contactModal) contactModal.classList.remove('active');
+    }
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', hideContactModal);
+    }
+    if (contactModal) {
+        // Close modal if overlay is clicked
+        contactModal.addEventListener('click', function(event) {
+            if (event.target === contactModal) {
+                hideContactModal();
+            }
+        });
+    }
+
+
     // --- Donor Operations (Client-Side) ---
     function addDonor(event) {
         event.preventDefault();
-        // showLoading(true); // Not really needed for fast client-side ops
-
         const formData = new FormData(donorForm);
         const donorData = {
-            id: 'donor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9), // Simple unique ID
+            id: 'donor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
             name: formData.get('name').trim(),
             bloodGroup: formData.get('bloodGroup'),
             phone: formData.get('phone').trim(),
@@ -754,7 +905,7 @@
             availability: formData.get('availability') === 'true',
             searchableName: formData.get('name').trim().toLowerCase(),
             searchableCity: formData.get('city').trim().toLowerCase(),
-            createdAt: new Date().toISOString() // Store as ISO string
+            createdAt: new Date().toISOString()
         };
 
         if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) {
@@ -773,13 +924,10 @@
         localDonorsData.push(donorData);
         displayMessage('Donor registered successfully (for this session)!', 'success');
         if (donorForm) donorForm.reset();
-        renderFilteredDonors(); // Update the list
-        // showLoading(false);
+        renderFilteredDonors();
     }
 
     function renderFilteredDonors() {
-        // showLoading(true); // Potentially if filtering is slow, but unlikely for typical data sizes
-        
         const selectedBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
         const cityQuery = filterCity ? filterCity.value.trim().toLowerCase() : '';
 
@@ -788,12 +936,8 @@
             const cityMatch = cityQuery ? (donor.searchableCity || (donor.city || '').toLowerCase()).includes(cityQuery) : true;
             return bloodGroupMatch && cityMatch;
         });
-
-        // Sort by most recent (descending createdAt)
         filteredDonors.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
         renderDonors(filteredDonors);
-        // showLoading(false);
     }
     
     function renderDonors(donors) {
@@ -814,6 +958,12 @@
         donors.forEach(donor => {
             const donorCard = document.createElement('div');
             donorCard.className = 'donor-card';
+            
+            const contactButton = document.createElement('button');
+            contactButton.className = 'btn-contact-donor';
+            contactButton.textContent = 'View Contact Info';
+            contactButton.addEventListener('click', () => showContactModal(donor));
+
             donorCard.innerHTML = `
                 <h3>${donor.name || 'N/A'}</h3>
                 <p><strong>Blood Group:</strong> <span style="color:var(--primary-color); font-weight:bold;">${donor.bloodGroup || 'N/A'}</span></p>
@@ -823,6 +973,7 @@
                 <p><strong>Available:</strong> <span class="${donor.availability ? 'availability-yes' : 'availability-no'}">${donor.availability ? 'Yes' : 'No'}</span></p>
                 <p class="timestamp">Registered: ${donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A'}</p>
             `;
+            donorCard.appendChild(contactButton); // Add the button to the card
             donorsListContainer.appendChild(donorCard);
         });
     }
@@ -839,8 +990,8 @@
             filterCity.addEventListener('input', renderFilteredDonors);
         }
         
-        showSection('register'); // Show register section by default
-        renderFilteredDonors(); // Initial render (will show "no donors" message)
+        showSection('register'); 
+        renderFilteredDonors(); 
     });
 
 </script>
