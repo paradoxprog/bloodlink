@@ -734,6 +734,26 @@
                 <input type="text" id="filterCity" placeholder="Enter city name">
             </div>
         </div>
+	
+	<!-- Emergency Request Section -->
+      <div style="margin-top: 20px; padding: 15px; border: 2px dashed var(--primary-color); border-radius: 8px; background-color: var(--bg-light);">
+        <h3 style="margin-top: 0;">Emergency Blood Request</h3>
+        <form id="emergencyForm">
+          <label for="emergencyBloodGroup">Required Blood Group:</label>
+          <select id="emergencyBloodGroup" required>
+            <option value="">Select</option>
+            <option value="A+">A+</option> <option value="A-">A-</option>
+            <option value="B+">B+</option> <option value="B-">B-</option>
+            <option value="AB+">AB+</option> <option value="AB-">AB-</option>
+            <option value="O+">O+</option> <option value="O-">O-</option>
+          </select>
+          <label for="emergencyCity">City:</label>
+          <input type="text" id="emergencyCity" placeholder="e.g., Mumbai" required />
+          <button type="submit" class="btn-filter" style="margin-top: 10px;">Send Emergency Alert</button>
+        </form>
+        <p id="emergencyStatus" style="margin-top:10px; font-size: 14px;"></p>
+      </div>
+
         <div id="donorsListContainer">
             <p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered yet in this session.</p>
         </div>
@@ -784,6 +804,7 @@
     const filterBloodGroup = document.getElementById('filterBloodGroup');
     const filterCity = document.getElementById('filterCity');
     const messageContainer = document.getElementById('messageContainer');
+    
 
     // Modal elements
     const contactModal = document.getElementById('contactModal');
@@ -888,7 +909,57 @@
             }
         });
     }
+ 
+    const emergencyForm = document.getElementById('emergencyForm');
+    const emergencyStatus = document.getElementById('emergencyStatus');
 
+    function alertMatchingDonors(group, city) {
+      const matchingDonors = localDonorsData.filter(d =>
+        d.bloodGroup === group &&
+        d.availability &&
+        d.city.toLowerCase().includes(city.toLowerCase())
+      );
+
+      if (matchingDonors.length === 0) {
+        emergencyStatus.textContent = "No available donors found for your emergency.";
+        emergencyStatus.style.color = "var(--error-text)";
+        return;
+      }
+
+      const names = matchingDonors.map(d => d.name).join(", ");
+      emergencyStatus.textContent = `Alert sent to ${matchingDonors.length} donor(s): ${names}`;
+      emergencyStatus.style.color = "var(--success-text)";
+
+      const alarm = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+      alarm.loop = true;
+      alarm.play().catch(e => console.warn("Alarm sound play blocked:", e));
+
+      setTimeout(() => {
+        alarm.pause();
+        alarm.currentTime = 0;
+      }, 10000);
+
+      let blinkInterval;
+      let blinkCount = 0;
+      const originalTitle = document.title;
+      blinkInterval = setInterval(() => {
+        document.title = (document.title === "🚨 Emergency Alert!") ? originalTitle : "🚨 Emergency Alert!";
+        if (++blinkCount > 6) {
+          clearInterval(blinkInterval);
+          document.title = originalTitle;
+        }
+      }, 500);
+    }
+
+    if (emergencyForm) {
+      emergencyForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const bloodGroup = document.getElementById('emergencyBloodGroup').value;
+        const city = document.getElementById('emergencyCity').value.trim();
+        if (!bloodGroup || !city) return;
+        alertMatchingDonors(bloodGroup, city);
+      });
+    }
 
     // --- Donor Operations (Client-Side with Local Storage) ---
     // Function to load donors from local storage
