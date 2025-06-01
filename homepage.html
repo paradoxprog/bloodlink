@@ -652,6 +652,8 @@
         <a href="#" id="link-register" class="active-link">Register Donor</a>
         <a href="#" id="link-find">Find Donors</a>
         <a href="#" id="link-about">About</a>
+	<a href="#" id="link-admin">Admin Mode</a>
+
         <div class="toggle-dark-container">
             <label class="toggle-dark" for="darkToggle" aria-label="Toggle dark mode">
                 <input type="checkbox" id="darkToggle" />
@@ -659,7 +661,7 @@
             </label>
         </div>
          <div class="app-mode-header">
-            <span>Mode: Client-Side Demo</span>
+            <span>Mode: Client-Side </span>
         </div>
     </nav>
 </header>
@@ -1022,6 +1024,19 @@
         renderFilteredDonors();
     });
 
+    const adminLink = document.getElementById('link-admin');
+
+    if (adminLink) {
+        adminLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            const password = prompt("Enter admin password:");
+            if (password === "admin123") {  // ✅ Change this to your desired password
+                window.location.href = 'admin.html';
+            } else if (password !== null) {
+                alert("Incorrect password. Access denied.");
+            }
+        });
+    }
 </script>
 </body>
 </html>
