@@ -775,7 +775,7 @@
 </footer>
 
 <script>
-    // --- In-memory data store ---
+    // --- In-memory data store, now backed by Local Storage ---
     let localDonorsData = [];
 
     // --- DOM Elements ---
@@ -784,13 +784,13 @@
     const filterBloodGroup = document.getElementById('filterBloodGroup');
     const filterCity = document.getElementById('filterCity');
     const messageContainer = document.getElementById('messageContainer');
-    
+
     // Modal elements
     const contactModal = document.getElementById('contactModal');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
     const modalDonorName = document.getElementById('modalDonorName');
     const modalContactDetails = document.getElementById('modalContactDetails');
-    
+
     // --- UI Navigation & Dark Mode ---
     const sections = {
         register: document.getElementById('registerDonorSection'),
@@ -850,9 +850,9 @@
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
-        messageContainer.innerHTML = ''; 
+        messageContainer.innerHTML = '';
         messageContainer.appendChild(msgDiv);
-        setTimeout(() => { 
+        setTimeout(() => {
             if (messageContainer.contains(msgDiv)) {
                 messageContainer.removeChild(msgDiv);
             }
@@ -890,7 +890,32 @@
     }
 
 
-    // --- Donor Operations (Client-Side) ---
+    // --- Donor Operations (Client-Side with Local Storage) ---
+    // Function to load donors from local storage
+    function loadDonors() {
+        const storedDonors = localStorage.getItem('donorsData');
+        if (storedDonors) {
+            try {
+                localDonorsData = JSON.parse(storedDonors);
+                // Ensure `createdAt` is a Date object for proper sorting if loaded from string
+                localDonorsData.forEach(donor => {
+                    if (typeof donor.createdAt === 'string') {
+                        donor.createdAt = new Date(donor.createdAt);
+                    }
+                });
+            } catch (e) {
+                console.error("Error parsing stored donors data from localStorage:", e);
+                localDonorsData = []; // Reset if data is corrupt
+            }
+        }
+    }
+
+    // Function to save donors to local storage
+    function saveDonors() {
+        localStorage.setItem('donorsData', JSON.stringify(localDonorsData));
+    }
+
+
     function addDonor(event) {
         event.preventDefault();
         const formData = new FormData(donorForm);
@@ -905,7 +930,7 @@
             availability: formData.get('availability') === 'true',
             searchableName: formData.get('name').trim().toLowerCase(),
             searchableCity: formData.get('city').trim().toLowerCase(),
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString() // Store as ISO string for consistent parsing
         };
 
         if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) {
@@ -917,12 +942,13 @@
             return;
         }
         if (donorData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorData.email)) {
-             displayMessage("Please enter a valid email address.", "error");
-             return;
+            displayMessage("Please enter a valid email address.", "error");
+            return;
         }
 
         localDonorsData.push(donorData);
-        displayMessage('Donor registered successfully (for this session)!', 'success');
+        saveDonors(); // Save to local storage after adding
+        displayMessage('Donor registered successfully!', 'success'); // Changed message
         if (donorForm) donorForm.reset();
         renderFilteredDonors();
     }
@@ -936,20 +962,21 @@
             const cityMatch = cityQuery ? (donor.searchableCity || (donor.city || '').toLowerCase()).includes(cityQuery) : true;
             return bloodGroupMatch && cityMatch;
         });
+        // Ensure createdAt is treated as a Date object for comparison, even if loaded as string
         filteredDonors.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         renderDonors(filteredDonors);
     }
-    
+
     function renderDonors(donors) {
         if (!donorsListContainer) return;
-        donorsListContainer.innerHTML = ''; 
-        
+        donorsListContainer.innerHTML = '';
+
         if (donors.length === 0) {
             const currentFilterBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
             const currentFilterCity = filterCity ? filterCity.value.trim() : '';
-            let messageText = "No donors registered yet in this session.";
+            let messageText = "No donors registered yet."; // Changed message
             if (currentFilterBloodGroup || currentFilterCity) {
-                messageText = "No donors found matching your criteria in this session.";
+                messageText = "No donors found matching your criteria."; // Changed message
             }
             donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
             return;
@@ -958,7 +985,7 @@
         donors.forEach(donor => {
             const donorCard = document.createElement('div');
             donorCard.className = 'donor-card';
-            
+
             const contactButton = document.createElement('button');
             contactButton.className = 'btn-contact-donor';
             contactButton.textContent = 'View Contact Info';
@@ -980,6 +1007,7 @@
 
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
+        loadDonors(); // Load existing donors when the page loads
         if (donorForm) {
             donorForm.addEventListener('submit', addDonor);
         }
@@ -989,9 +1017,9 @@
         if (filterCity) {
             filterCity.addEventListener('input', renderFilteredDonors);
         }
-        
-        showSection('register'); 
-        renderFilteredDonors(); 
+
+        showSection('register');
+        renderFilteredDonors();
     });
 
 </script>
