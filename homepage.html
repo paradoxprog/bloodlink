@@ -14,11 +14,6 @@
             --secondary-hover: #2563eb;
             --tertiary-color: #10b981; /* Green for offers/success */
             --tertiary-hover: #059669;
-            --warning-color: #f59e0b; /* Amber for SOS button */
-            --warning-hover: #d97706; /* Darker Amber */
-            --sos-border-color: #ff0000; /* Bright red for SOS card border */
-            --sos-bg-color-light: #fff0f0; /* Light red bg for SOS card in light mode */
-            --sos-icon-color-light: #ff0000;
             --bg-light: #f8f9fa;
             --bg-dark: #212529;
             --card-bg-light: #ffffff;
@@ -35,23 +30,18 @@
             --success-text: #065f46;
             --error-bg: #fee2e2;
             --error-text: #991b1b;
-            --warning-bg: #fffbeb; 
+            --warning-bg: #fffbeb; /* Lighter Amber for emergency cards */
             --warning-text: #b45309;
             --warning-border: #f59e0b;
         }
 
         body.dark {
-            --primary-color: #f87171; 
+            --primary-color: #f87171; /* Lighter red for dark mode */
             --primary-hover: #ef4444;
-            --secondary-color: #60a5fa; 
+            --secondary-color: #60a5fa;
             --secondary-hover: #3b82f6;
             --tertiary-color: #34d399;
             --tertiary-hover: #10b981;
-            --warning-color: #fbbf24; 
-            --warning-hover: #f59e0b;
-            --sos-border-color: #ff4d4d; /* Lighter bright red for dark mode SOS border */
-            --sos-bg-color-dark: #4d0000; /* Dark red bg for SOS card in dark mode */
-            --sos-icon-color-dark: #ff4d4d;
             --bg-light: #1a1a1a;
             --bg-dark: #121212;
             --card-bg-light: #2c2c2c;
@@ -68,12 +58,12 @@
             --success-text: #d1fae5;
             --error-bg: #991b1b;
             --error-text: #fee2e2;
-            --warning-bg: #422006; 
+            --warning-bg: #422006;
             --warning-text: #fef3c7;
             --warning-border: #d97706;
         }
 
-        /* General Styles */
+        /* General Styles (from previous version, slightly compacted) */
         body{font-family:'Poppins',sans-serif;margin:0;padding:0;background-color:var(--bg-light);color:var(--text-color-light);transition:background-color .3s ease,color .3s ease;min-height:100vh;display:flex;flex-direction:column;align-items:center}
         *,*:before,*:after{box-sizing:border-box}
         header{width:100%;background-color:var(--header-bg-light);display:flex;align-items:center;justify-content:space-between;padding:10px 25px;box-shadow:0 2px 8px var(--shadow-light);position:sticky;top:0;z-index:1000;transition:background-color .3s ease}
@@ -101,14 +91,8 @@
         h3{color:var(--text-color-light);margin-top:20px;margin-bottom:10px;font-weight:600;font-size:20px}
         body.dark h3{color:var(--text-color-dark)}
         .donor-card h3,.emergency-card h3{margin-top:0;font-size:18px;color:var(--primary-color)}
-        .emergency-card h3{color:var(--warning-border)} /* Default emergency card title color */
+        .emergency-card h3{color:var(--warning-border)}
         body.dark .emergency-card h3{color:var(--warning-text)}
-
-        /* SOS Card specific title color */
-        .emergency-card-sos h3 { color: var(--sos-icon-color-light); }
-        body.dark .emergency-card-sos h3 { color: var(--sos-icon-color-dark); }
-
-
         p{font-size:14px;line-height:1.6;margin-bottom:12px;color:var(--text-color-light)}
         body.dark p{color:var(--text-color-dark)}
         section#aboutSection ul{list-style:disc;padding-left:20px;margin-bottom:15px}
@@ -117,29 +101,20 @@
         label{font-weight:500;font-size:13px;color:var(--text-color-light);margin-bottom:-8px}
         body.dark label{color:var(--text-color-dark)}
         input[type="text"],input[type="email"],input[type="tel"],select,textarea{background-color:var(--bg-light);border:1px solid var(--border-color-light);border-radius:6px;padding:10px 12px;font-size:14px;color:var(--text-color-light);transition:border-color .3s ease,box-shadow .3s ease,background-color .3s ease;width:100%}
-        input[type="checkbox"] { width: auto; margin-right: 8px; } /* Style for SOS checkbox */
         textarea{min-height:80px;resize:vertical}
         body.dark input[type="text"],body.dark input[type="email"],body.dark input[type="tel"],body.dark select,body.dark textarea{background-color:var(--bg-dark);border-color:var(--border-color-dark);color:var(--text-color-dark)}
         input[type="text"]:focus,input[type="email"]:focus,input[type="tel"]:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 0 2px var(--primary-color_alpha,rgba(229,62,62,.25))}
-        
-        button, .btn { 
-            color:#fff; border:none; padding:10px 15px; border-radius:6px; font-size:15px; cursor:pointer; font-weight:600;
-            transition:background-color .3s ease,transform .2s ease; text-align:center; margin-right: 5px; margin-bottom: 5px;
-        }
-        button:hover, .btn:hover { transform:translateY(-1px); }
-        button[type="submit"] { background-color:var(--primary-color); }
-        button[type="submit"]:hover { background-color:var(--primary-hover); }
+        button[type="submit"],.btn-filter,.btn-contact-donor,.btn-offer-help,.btn-view-offers{background-color:var(--primary-color);color:#fff;border:none;padding:10px 15px;border-radius:6px;font-size:15px;cursor:pointer;font-weight:600;transition:background-color .3s ease,transform .2s ease;text-align:center; margin-right: 5px; margin-bottom: 5px;}
         form#emergencyRequestForm button[type="submit"]{background-color:var(--secondary-color)}
         form#emergencyRequestForm button[type="submit"]:hover{background-color:var(--secondary-hover)}
-        .btn-filter{background-color:var(--primary-color); padding:9px 14px;font-size:13px}
-        .btn-filter:hover{background-color:var(--primary-hover);}
-        .btn-contact-donor{background-color:var(--secondary-color); padding:7px 10px;font-size:13px;margin-top:8px;}
+        .btn-filter{padding:9px 14px;font-size:13px}
+        .btn-contact-donor{padding:7px 10px;font-size:13px;margin-top:8px;background-color:var(--secondary-color)}
         .btn-contact-donor:hover{background-color:var(--secondary-hover)}
         .btn-offer-help { background-color: var(--tertiary-color); }
         .btn-offer-help:hover { background-color: var(--tertiary-hover); }
         .btn-view-offers { background-color: var(--secondary-color); font-size: 13px; padding: 6px 10px;}
         .btn-view-offers:hover { background-color: var(--secondary-hover); }
-
+        button[type="submit"]:hover,.btn-filter:hover{background-color:var(--primary-hover);transform:translateY(-1px)}
         .donor-card{background-color:var(--card-bg-light);border:1px solid var(--border-color-light);border-left:5px solid var(--primary-color);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light);transition:transform .2s ease,box-shadow .2s ease,background-color .3s ease,border-color .3s ease}
         body.dark .donor-card{background-color:var(--card-bg-dark);border-color:var(--border-color-dark);border-left-color:var(--primary-color)}
         .donor-card:hover{transform:translateY(-3px);box-shadow:0 6px 15px var(--shadow-dark)}
@@ -150,70 +125,23 @@
         .donor-card .availability-no{color:#f59e0b;font-weight:700}
         .donor-card .timestamp{font-size:10px;color:#9ca3af;margin-top:8px}
         body.dark .donor-card .timestamp{color:#6b7280}
-        
-        .emergency-card{
-            background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border);
-            border-left:5px solid var(--warning-border);padding:15px;margin-bottom:20px;border-radius:8px;
-            box-shadow:0 4px 10px var(--shadow-light); transition: all 0.3s ease; /* Added transition */
-        }
-        body.dark .emergency-card{
-            background-color:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border);
-            border-left-color:var(--warning-border);
-        }
-        
-        /* SOS Card Styling */
-        .emergency-card-sos {
-            border-left-width: 7px; 
-            border-left-color: var(--sos-border-color) !important; /* Ensure override */
-            background-color: var(--sos-bg-color-light) !important; /* Ensure override */
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); 
-        }
-        body.dark .emergency-card-sos {
-            border-left-color: var(--sos-border-color) !important;
-            background-color: var(--sos-bg-color-dark) !important;
-            box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
-        }
-        .emergency-card-sos p, .emergency-card-sos .timestamp { /* Ensure text is readable on SOS background */
-            color: var(--text-color-light); 
-        }
-        body.dark .emergency-card-sos p, body.dark .emergency-card-sos .timestamp {
-            color: var(--text-color-dark);
-        }
-        .sos-indicator-icon {
-            display: inline-block;
-            color: var(--sos-icon-color-light);
-            font-weight: bold;
-            margin-right: 8px;
-            animation: pulseSOS 1.5s infinite;
-        }
-        body.dark .sos-indicator-icon {
-            color: var(--sos-icon-color-dark);
-        }
-
-        @keyframes pulseSOS {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.15); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
+        .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border);border-left:5px solid var(--warning-border);padding:15px;margin-bottom:20px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light)}
+        body.dark .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border);border-left-color:var(--warning-border)}
         .emergency-card p{font-size:13px;margin-bottom:5px;color:var(--warning-text)}
-        /* Ensure default emergency card text is readable */
-        body.dark .emergency-card p { color: var(--warning-text); }
-
-
         .emergency-card p strong{font-weight:600}
         .emergency-card .timestamp{font-size:10px;color:var(--warning-text);opacity:.8;margin-top:8px}
         .emergency-card .status-active{font-weight:700;color:#16a34a}
         body.dark .emergency-card .status-active{color:#4ade80}
         .emergency-card-actions { margin-top: 15px; }
         .offers-summary { font-size: 13px; margin-top:10px; color: var(--tertiary-color); font-weight: 500;}
-        body.dark .offers-summary { color: var(--tertiary-color); } 
+        body.dark .offers-summary { color: var(--tertiary-color); } /* Keep consistent green or adjust for dark */
         .matching-donors-section { margin-top: 20px; padding-top:15px; border-top: 1px dashed var(--border-color-light); }
         body.dark .matching-donors-section { border-top-color: var(--border-color-dark); }
         .matching-donors-section h4 { font-size: 16px; color: var(--text-color-light); margin-bottom: 10px;}
         body.dark .matching-donors-section h4 { color: var(--text-color-dark); }
         .matching-donor-item { background-color: var(--bg-light); border: 1px solid var(--border-color-light); padding: 10px; border-radius: 6px; margin-bottom:10px; }
         body.dark .matching-donor-item { background-color: var(--bg-dark); border-color: var(--border-color-dark); }
+        .matching-donor-item p { font-size: 12px; margin-bottom: 3px; }
 
         .toggle-dark-container{margin-left:15px}
         .toggle-dark{position:relative;display:inline-block;width:46px;height:24px;border-radius:24px;background-color:var(--border-color-light);cursor:pointer;transition:background-color .3s ease;vertical-align:middle;border:1px solid var(--border-color-light)}
@@ -228,7 +156,6 @@
         .message{padding:10px 15px;border-radius:6px;font-size:14px;margin-bottom:12px;text-align:center}
         .message.success{background-color:var(--success-bg);color:var(--success-text);border:1px solid var(--success-text)}
         .message.error{background-color:var(--error-bg);color:var(--error-text);border:1px solid var(--error-text)}
-        .message.warning{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border)}
         #loadingIndicator{border:3px solid var(--border-color-light);border-top:3px solid var(--primary-color);border-radius:50%;width:22px;height:22px;animation:spin .8s linear infinite;margin:15px auto;display:none}
         body.dark #loadingIndicator{border-color:var(--border-color-dark);border-top-color:var(--primary-color)}
         @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
@@ -253,8 +180,19 @@
         body.dark .offer-item { border-bottom-color: var(--border-color-dark); }
         .offer-item:last-child { border-bottom: none; margin-bottom: 0; }
 
+        /* SOS related CSS */
+        .emergency-card.new-urgent {
+            animation: pulse-border 1.5s infinite alternate;
+            border-left: 8px solid var(--primary-color); /* Make border thicker for urgency */
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: var(--warning-border); }
+            100% { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(229, 62, 62, 0.6); }
+        }
+
         @media (max-width:768px){header{flex-direction:column;padding:10px 15px}header .logo-container{margin-bottom:8px}nav{justify-content:center;margin-top:5px}nav a{margin:5px 10px;font-size:13px}.app-mode-header{margin-left:0;margin-top:8px;width:100%;text-align:center}header h1.app-title{font-size:20px}main{margin:15px 10px;padding:15px}h2.section-title{font-size:22px}}
-        @media (max-width:480px){header img.logo{height:45px}header h1.app-title{font-size:18px}nav a{font-size:12px;margin-left:8px}button,.btn,input,select,textarea{font-size:13px;padding:9px 10px}.donor-card,.emergency-card{padding:12px}.donor-card h3,.emergency-card h3{font-size:16px}.modal-content{padding:20px}.modal-content h4{font-size:17px}.app-mode-header{font-size:9px;padding:3px 5px}.toggle-dark-container{margin-left:10px}}
+        @media (max-width:480px){header img.logo{height:45px}header h1.app-title{font-size:18px}nav a{font-size:12px;margin-left:8px}button[type="submit"],.btn-filter,.btn-contact-donor,.btn-offer-help,.btn-view-offers,input,select,textarea{font-size:13px;padding:9px 10px}.donor-card,.emergency-card{padding:12px}.donor-card h3,.emergency-card h3{font-size:16px}.modal-content{padding:20px}.modal-content h4{font-size:17px}.app-mode-header{font-size:9px;padding:3px 5px}.toggle-dark-container{margin-left:10px}}
 
     </style>
 </head>
@@ -262,7 +200,7 @@
 
 <header>
     <div class="logo-container">
-        <img src="logo.jpg" alt="Blood Link Logo" class="logo" onerror="this.onerror=null; this.src='https://placehold.co/70x70/e53e3e/ffffff?text=BL'; this.alt='Blood Link Placeholder Logo';" />
+        <img src="logo.jpg" alt="Blood Link Logo" class="logo" />
         <h1 class="app-title">Blood Link</h1>
     </div>
     <nav>
@@ -287,8 +225,8 @@
 
 <main>
     <div id="messageContainer"></div>
-    <div id="loadingIndicator" style="display: block;"></div> 
-    
+    <div id="loadingIndicator" style="display: block;"></div>
+
     <section id="registerDonorSection" class="active">
         <h2 class="section-title">Become a Lifesaver: Register Your Details</h2>
         <div class="content-grid">
@@ -399,12 +337,6 @@
                 <label for="requestMessage">Brief Message / Urgency</label>
                 <textarea id="requestMessage" name="requestMessage" placeholder="e.g., Urgent need for surgery, required by tomorrow morning."></textarea>
             </div>
-            <div style="margin-top: 5px; margin-bottom: 10px;">
-                <label for="isSOSCheckbox" style="display: flex; align-items: center; gap: 0px; font-size: 13px; margin-bottom:0;">
-                    <input type="checkbox" id="isSOSCheckbox" name="isSOSCheckbox">
-                    Send as High-Priority SOS (Alerts Donors with Sound & Visual)
-                </label>
-            </div>
             <button type="submit">Submit Emergency Request</button>
         </form>
     </section>
@@ -452,17 +384,20 @@
         </div>
     </div>
 
-</footer>
-    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. 
+</main>
+
+<footer>
+    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers.
 </footer>
 
+<audio id="sosAudio" src="https://www.soundjay.com/buttons/beep-01a.mp3" preload="auto"></audio>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
     // --- Firebase Configuration ---
     const firebaseConfig = {
-        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE", 
+        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE",
         authDomain: "bloodlink-8cb77.firebaseapp.com",
         databaseURL: "https://bloodlink-8cb77-default-rtdb.firebaseio.com",
         projectId: "bloodlink-8cb77",
@@ -477,9 +412,9 @@
     const database = firebase.database();
 
     // --- Global variables ---
-    let allDonorsData = []; 
+    let allDonorsData = [];
     let allEmergencyRequestsData = [];
-    let audioContext; 
+    let lastRequestCount = 0; // To track new emergency requests for audio alert
 
     // --- DOM Elements ---
     const donorForm = document.getElementById('donorForm');
@@ -491,7 +426,6 @@
 
     const emergencyRequestForm = document.getElementById('emergencyRequestForm');
     const emergencyRequestsListContainer = document.getElementById('emergencyRequestsListContainer');
-    const isSOSCheckbox = document.getElementById('isSOSCheckbox'); // SOS Checkbox
 
     const contactModal = document.getElementById('contactModal');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -502,6 +436,8 @@
     const viewOffersModalCloseBtn = document.getElementById('viewOffersModalCloseBtn');
     const viewOffersModalTitle = document.getElementById('viewOffersModalTitle');
     const viewOffersModalBody = document.getElementById('viewOffersModalBody');
+
+    const sosAudio = document.getElementById('sosAudio');
 
 
     // --- UI Navigation & Dark Mode ---
@@ -552,58 +488,16 @@
     if(darkToggle) {
         darkToggle.addEventListener('change', () => { applyDarkMode(darkToggle.checked); });
     }
-    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); 
+    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled');
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     function displayMessage(message, type = 'success') {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
-        messageContainer.innerHTML = ''; 
+        messageContainer.innerHTML = '';
         messageContainer.appendChild(msgDiv);
-        msgDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, type === 'warning' || type === 'error' ? 7000 : 6000);
-    }
-
-    // --- SOS Bell Sound Simulation (for Requester) ---
-    function playSOSBell() { // Only plays sound
-        try {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (!audioContext) { 
-                console.warn("Web Audio API not supported. SOS sound cannot be played for requester.");
-                return; // Silently fail if not supported, message handled by caller
-            }
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            oscillator.type = 'sine'; 
-            oscillator.frequency.setValueAtTime(880, audioContext.currentTime); 
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); 
-            oscillator.start(audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5); 
-            oscillator.stop(audioContext.currentTime + 0.5); 
-
-            setTimeout(() => {
-                if (!audioContext) return; // Check again in case context was closed
-                const oscillator2 = audioContext.createOscillator();
-                const gainNode2 = audioContext.createGain();
-                oscillator2.connect(gainNode2);
-                gainNode2.connect(audioContext.destination);
-                oscillator2.type = 'triangle';
-                oscillator2.frequency.setValueAtTime(987, audioContext.currentTime); 
-                gainNode2.gain.setValueAtTime(0.4, audioContext.currentTime);
-                oscillator2.start(audioContext.currentTime);
-                gainNode2.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.4);
-                oscillator2.stop(audioContext.currentTime + 0.4);
-            }, 150); 
-
-        } catch (e) {
-            console.error("Error playing SOS sound for requester:", e);
-        }
+        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, 6000);
     }
 
     // --- Donor Contact Modal Functions ---
@@ -611,7 +505,7 @@
         if (!contactModal || !modalDonorName || !modalContactDetails) return;
         modalDonorName.textContent = `Contact: ${donor.name}`;
         let detailsHtml = `<p><strong>Phone:</strong> ${donor.phone}</p>`;
-        if (donor.email) { detailsHtml += `<p><strong>Email:</strong> ${donor.email}</p>`; } 
+        if (donor.email) { detailsHtml += `<p><strong>Email:</strong> ${donor.email}</p>`; }
         else { detailsHtml += `<p><strong>Email:</strong> Not Provided</p>`; }
         modalContactDetails.innerHTML = detailsHtml;
         contactModal.classList.add('active');
@@ -624,11 +518,11 @@
     function showViewOffersModal(request) {
         if (!viewOffersModal || !viewOffersModalTitle || !viewOffersModalBody) return;
         viewOffersModalTitle.textContent = `Offers for: ${request.requiredBloodGroup} in ${request.city}`;
-        
+
         const offersRef = database.ref(`emergencyRequests/${request.id}/offers`);
         offersRef.once('value', snapshot => {
             if (snapshot.exists()) {
-                viewOffersModalBody.innerHTML = ''; 
+                viewOffersModalBody.innerHTML = ''; // Clear previous
                 snapshot.forEach(offerSnapshot => {
                     const offer = offerSnapshot.val();
                     const offerDiv = document.createElement('div');
@@ -659,37 +553,36 @@
     function addDonorToFirebase(event) {
         event.preventDefault();
         const formData = new FormData(donorForm);
-        const donorData = { 
-            name: formData.get('name').trim(), bloodGroup: formData.get('bloodGroup'), phone: formData.get('phone').trim(), email: formData.get('email').trim().toLowerCase(), city: formData.get('city').trim(), state: formData.get('state').trim(), availability: formData.get('availability') === 'true', searchableName: formData.get('name').trim().toLowerCase(), searchableCity: formData.get('city').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP 
+        const donorData = { /* ... (same as before) ... */
+            name: formData.get('name').trim(), bloodGroup: formData.get('bloodGroup'), phone: formData.get('phone').trim(), email: formData.get('email').trim().toLowerCase(), city: formData.get('city').trim(), state: formData.get('state').trim(), availability: formData.get('availability') === 'true', searchableName: formData.get('name').trim().toLowerCase(), searchableCity: formData.get('city').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP
         };
         if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) { displayMessage("Required fields: Name, Blood Group, Phone, City, State.", "error"); return; }
         if (!/^\+?[0-9\s-]{7,15}$/.test(donorData.phone)) { displayMessage("Please enter a valid phone number.", "error"); return; }
         if (donorData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorData.email)) { displayMessage("Please enter a valid email address.", "error"); return; }
-        
-        loadingIndicator.style.display = 'block';
         database.ref('donors').push().set(donorData)
-            .then(() => { displayMessage('Donor registered successfully!', 'success'); if (donorForm) donorForm.reset(); loadingIndicator.style.display = 'none';})
-            .catch(error => { console.error("Error adding donor:", error); displayMessage('Failed to register donor. ' + error.message, 'error'); loadingIndicator.style.display = 'none'; });
+            .then(() => { displayMessage('Donor registered successfully!', 'success'); if (donorForm) donorForm.reset(); })
+            .catch(error => { console.error("Error adding donor:", error); displayMessage('Failed to register donor. ' + error.message, 'error'); });
     }
 
     function loadDonorsFromFirebase() {
+        /* ... (same as before, ensures allDonorsData is populated) ... */
         if (loadingIndicator) loadingIndicator.style.display = 'block';
         database.ref('donors').on('value', (snapshot) => {
-            allDonorsData = []; 
+            allDonorsData = [];
             if (snapshot.exists()) {
                 snapshot.forEach(child => { const d = child.val(); d.id = child.key; allDonorsData.push(d); });
             }
-            renderFilteredDonors(); 
-            if (loadingIndicator && (sections.find.classList.contains('active') || sections.register.classList.contains('active') || sections.viewRequests.classList.contains('active'))) { 
+            renderFilteredDonors();
+            if (loadingIndicator && (sections.find.classList.contains('active') || sections.register.classList.contains('active') || sections.viewRequests.classList.contains('active'))) { // also hide if viewRequests is active after its own loading
                  loadingIndicator.style.display = 'none';
             }
-        }, (error) => { 
+        }, (error) => { /* ... error handling ... */
             console.error("Error loading donors:", error); displayMessage("Error fetching donor data: " + error.message, "error");
             if (loadingIndicator) loadingIndicator.style.display = 'none'; renderFilteredDonors();
         });
     }
-    
-    function renderFilteredDonors() { 
+
+    function renderFilteredDonors() { /* ... (same as before) ... */
         const bloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
         const city = filterCity ? filterCity.value.trim().toLowerCase() : '';
         const filtered = allDonorsData.filter(d => (bloodGroup ? d.bloodGroup === bloodGroup : true) && (city ? (d.searchableCity || (d.city||'').toLowerCase()).includes(city) : true));
@@ -697,18 +590,18 @@
         renderDonors(filtered);
     }
 
-    function renderDonors(donors) { 
+    function renderDonors(donors) { /* ... (same as before) ... */
         if (!donorsListContainer) return; donorsListContainer.innerHTML = '';
-        if (donors.length === 0) { 
+        if (donors.length === 0) { /* ... no donors message ... */
             let msg = "No donors registered yet.";
             if ((filterBloodGroup && filterBloodGroup.value) || (filterCity && filterCity.value)) msg = "No donors found matching criteria.";
             if (loadingIndicator && loadingIndicator.style.display === 'none') donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center;">${msg}</p>`;
-            else if (!loadingIndicator || loadingIndicator.style.display === 'none') donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center;">${msg}</p>`;
+            else if (!loadingIndicator) donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center;">${msg}</p>`;
             return;
         }
         donors.forEach(donor => {
             const card = document.createElement('div'); card.className = 'donor-card';
-            const contactBtn = document.createElement('button'); contactBtn.className = 'btn btn-contact-donor'; contactBtn.textContent = 'View Contact Info';
+            const contactBtn = document.createElement('button'); contactBtn.className = 'btn-contact-donor'; contactBtn.textContent = 'View Contact Info';
             contactBtn.addEventListener('click', () => showContactModal(donor));
             let regDate = donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A';
             card.innerHTML = `<h3>${donor.name||'N/A'}</h3><p><strong>Blood Group:</strong> <span style="color:var(--primary-color);font-weight:bold;">${donor.bloodGroup||'N/A'}</span></p><p><strong>Location:</strong> ${donor.city||'N/A'}, ${donor.state||'N/A'}</p><p><strong>Phone:</strong> ${donor.phone||'N/A'}</p>${donor.email?`<p><strong>Email:</strong> ${donor.email}</p>`:''}<p><strong>Available:</strong> <span class="${donor.availability?'availability-yes':'availability-no'}">${donor.availability?'Yes':'No'}</span></p><p class="timestamp">Registered: ${regDate}</p>`;
@@ -720,63 +613,26 @@
     function addEmergencyRequestToFirebase(event) {
         event.preventDefault();
         const formData = new FormData(emergencyRequestForm);
-        const reqData = { 
-            requesterName: formData.get('requesterName').trim(), 
-            requesterContact: formData.get('requesterContact').trim(), 
-            requesterEmail: formData.get('requesterEmail').trim().toLowerCase(), 
-            requiredBloodGroup: formData.get('requiredBloodGroup'), 
-            city: formData.get('requestCity').trim(), 
-            hospitalName: formData.get('hospitalName').trim(), 
-            message: formData.get('requestMessage').trim(), 
-            status: 'active', 
-            searchableCity: formData.get('requestCity').trim().toLowerCase(), 
-            createdAt: firebase.database.ServerValue.TIMESTAMP 
+        const reqData = { /* ... (same as before) ... */
+            requesterName: formData.get('requesterName').trim(), requesterContact: formData.get('requesterContact').trim(), requesterEmail: formData.get('requesterEmail').trim().toLowerCase(), requiredBloodGroup: formData.get('requiredBloodGroup'), city: formData.get('requestCity').trim(), hospitalName: formData.get('hospitalName').trim(), message: formData.get('requestMessage').trim(), status: 'active', searchableCity: formData.get('requestCity').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP
         };
-
-        // Check for SOS flag
-        const isSOS = isSOSCheckbox ? isSOSCheckbox.checked : false;
-        if (isSOS) {
-            reqData.isSOS = true;
-            reqData.sosCreatedAt = firebase.database.ServerValue.TIMESTAMP; // Optional: for specific SOS sorting/filtering
-        }
-
-        if (!reqData.requesterName || !reqData.requesterContact || !reqData.requiredBloodGroup || !reqData.city || !reqData.hospitalName) { 
-            displayMessage("Required fields for emergency: Name, Contact Phone, Blood Group, City, Hospital.", "error"); 
-            return; 
-        }
+        if (!reqData.requesterName || !reqData.requesterContact || !reqData.requiredBloodGroup || !reqData.city || !reqData.hospitalName) { displayMessage("Required fields for emergency: Name, Contact Phone, Blood Group, City, Hospital.", "error"); return; }
         if (!/^\+?[0-9\s-]{7,15}$/.test(reqData.requesterContact)) { displayMessage("Please enter a valid contact phone.", "error"); return; }
         if (reqData.requesterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reqData.requesterEmail)) { displayMessage("Please enter a valid contact email.", "error"); return; }
-        
-        loadingIndicator.style.display = 'block';
         database.ref('emergencyRequests').push().set(reqData)
-            .then(() => { 
-                let successMessage = 'Emergency request submitted successfully!';
-                if (isSOS) {
-                    playSOSBell(); // Play sound for requester
-                    successMessage = 'High-Priority SOS request sent to donors!';
-                }
-                displayMessage(successMessage, isSOS ? 'warning' : 'success'); // Use warning style for SOS message for more impact
-                if (emergencyRequestForm) emergencyRequestForm.reset(); 
-                if (isSOSCheckbox) isSOSCheckbox.checked = false; // Reset checkbox
-                showSection('viewRequests'); 
-                loadingIndicator.style.display = 'none'; 
-            })
-            .catch(error => { 
-                console.error("Error submitting emergency request:", error); 
-                displayMessage('Failed to submit request. ' + error.message, 'error'); 
-                loadingIndicator.style.display = 'none'; 
-            });
+            .then(() => { displayMessage('Emergency request submitted!', 'success'); if (emergencyRequestForm) emergencyRequestForm.reset(); showSection('viewRequests'); })
+            .catch(error => { console.error("Error submitting emergency request:", error); displayMessage('Failed to submit request. ' + error.message, 'error'); });
     }
 
     function handleOfferToHelp(requestId, requestCity, requestBloodGroup) {
         const offererName = prompt("Thank you for offering to help!\nPlease enter your Name:");
         if (!offererName || offererName.trim() === "") {
-            displayMessage("Name is required to make an offer.", "error");
+            alert("Name is required to make an offer.");
             return;
         }
         const offererContact = prompt("Please enter your Contact Phone Number:");
         if (!offererContact || !/^\+?[0-9\s-]{7,15}$/.test(offererContact.trim())) {
-            displayMessage("A valid phone number is required.", "error");
+            alert("A valid phone number is required.");
             return;
         }
 
@@ -785,16 +641,16 @@
             offererContact: offererContact.trim(),
             createdAt: firebase.database.ServerValue.TIMESTAMP
         };
-        loadingIndicator.style.display = 'block';
+
         database.ref(`emergencyRequests/${requestId}/offers`).push(offerData)
             .then(() => {
                 displayMessage("Your offer to help has been submitted successfully!", "success");
-                loadingIndicator.style.display = 'none';
+                // Optionally, update the request to indicate an offer has been made or increment a counter
+                // For simplicity, the real-time listener will re-render the card with new offer count.
             })
             .catch(error => {
                 console.error("Error submitting offer:", error);
                 displayMessage("Failed to submit your offer. " + error.message, "error");
-                loadingIndicator.style.display = 'none';
             });
     }
 
@@ -806,15 +662,27 @@
         const requestsRef = database.ref('emergencyRequests').orderByChild('status').equalTo('active');
 
         requestsRef.on('value', (snapshot) => {
-            allEmergencyRequestsData = [];
+            const currentRequests = [];
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const request = childSnapshot.val();
                     request.id = childSnapshot.key;
-                    allEmergencyRequestsData.push(request);
+                    currentRequests.push(request);
                 });
             }
-            renderEmergencyRequests(); 
+
+            // Check for new requests and play sound if applicable
+            if (sections.viewRequests.classList.contains('active') && currentRequests.length > lastRequestCount) {
+                // Only play sound if the audio element is ready and user has interacted before
+                if (sosAudio && sosAudio.readyState >= 2) { // READY_STATE_HAVE_CURRENT_DATA
+                    sosAudio.play().catch(e => console.log("Audio play prevented:", e.message));
+                    displayMessage("New emergency request posted! Check the list.", "warning");
+                }
+            }
+            lastRequestCount = currentRequests.length;
+            allEmergencyRequestsData = currentRequests;
+            renderEmergencyRequests();
+
              if (loadingIndicator && sections.viewRequests.classList.contains('active')) {
                  loadingIndicator.style.display = 'none';
             }
@@ -828,25 +696,28 @@
 
     function findMatchingDonors(requestBloodGroup, requestCity) {
         if (!allDonorsData || allDonorsData.length === 0) {
-            return []; 
+            return []; // No donors loaded yet or none exist
         }
+        // Normalize requestCity for matching
         const normalizedRequestCity = requestCity.trim().toLowerCase();
 
         return allDonorsData.filter(donor => {
-            if (!donor.availability) return false; 
+            if (!donor.availability) return false; // Only available donors
 
             const donorCity = (donor.searchableCity || (donor.city || '').toLowerCase());
-            if (donorCity !== normalizedRequestCity) return false; 
+            if (donorCity !== normalizedRequestCity) return false; // Must match city
 
-            if (requestBloodGroup === "Any") return true; 
+            // Blood group compatibility logic
+            if (requestBloodGroup === "Any") return true; // If "Any" is requested, all are compatible
             if (donor.bloodGroup === requestBloodGroup) return true;
 
+            // Standard compatibility (recipient receiving from donor)
             const compatibility = {
                 'A+': ['A+', 'A-', 'O+', 'O-'], 'A-': ['A-', 'O-'],
                 'B+': ['B+', 'B-', 'O+', 'O-'], 'B-': ['B-', 'O-'],
-                'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], 
+                'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], // Universal recipient
                 'AB-': ['A-', 'B-', 'AB-', 'O-'],
-                'O+': ['O+', 'O-'], 'O-': ['O-'] 
+                'O+': ['O+', 'O-'], 'O-': ['O-'] // Universal donor (O-)
             };
             return compatibility[requestBloodGroup] && compatibility[requestBloodGroup].includes(donor.bloodGroup);
         });
@@ -857,48 +728,37 @@
         emergencyRequestsListContainer.innerHTML = '';
 
         if (allEmergencyRequestsData.length === 0) {
+            // ... (no requests message) ...
              if (loadingIndicator && loadingIndicator.style.display === 'none') {
                  emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center;">No active emergency requests at the moment.</p>`;
-            } else if (!loadingIndicator || loadingIndicator.style.display === 'none') {
+            } else if (!loadingIndicator) {
                  emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center;">No active emergency requests at the moment.</p>`;
             }
             return;
         }
-        // Sort by SOS first, then by creation date
-        const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => {
-            if (a.isSOS && !b.isSOS) return -1; // a is SOS, b is not -> a comes first
-            if (!a.isSOS && b.isSOS) return 1;  // b is SOS, a is not -> b comes first
-            return (b.createdAt || 0) - (a.createdAt || 0); // Otherwise, sort by newest
-        });
 
+        const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         sortedRequests.forEach(request => {
             const requestCard = document.createElement('div');
-            requestCard.className = 'emergency-card'; // Base class
-            
-            let cardTitleHTML;
-            if (request.isSOS) {
-                requestCard.classList.add('emergency-card-sos');
-                const sosIconHTML = `<span class="sos-indicator-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16" style="vertical-align: middle; margin-bottom: 2px;">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg> SOS
-                </span>`;
-                cardTitleHTML = `<h3>${sosIconHTML}URGENT: ${request.requiredBloodGroup} Blood Needed</h3>`;
-            } else {
-                cardTitleHTML = `<h3>URGENT: ${request.requiredBloodGroup} Blood Needed</h3>`;
+            requestCard.className = 'emergency-card';
+
+            // Add 'new-urgent' class for recent requests (e.g., within the last 5 minutes)
+            const FIVE_MINUTES_MS = 5 * 60 * 1000;
+            if (request.createdAt && (Date.now() - request.createdAt < FIVE_MINUTES_MS)) {
+                requestCard.classList.add('new-urgent');
             }
-            
+
             let requestedDate = request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A';
             const offersCount = request.offers ? Object.keys(request.offers).length : 0;
 
             let offersSummaryHtml = `<p class="offers-summary">Offers Received: ${offersCount}</p>`;
             if (offersCount > 0) {
-                offersSummaryHtml += `<button class="btn btn-view-offers" data-request-id="${request.id}">View Offers</button>`;
+                offersSummaryHtml += `<button class="btn-view-offers" data-request-id="${request.id}">View Offers</button>`;
             }
 
             requestCard.innerHTML = `
-                ${cardTitleHTML}
+                <h3>URGENT: ${request.requiredBloodGroup} Blood Needed</h3>
                 <p><strong>Requester:</strong> ${request.requesterName || 'N/A'}</p>
                 <p><strong>Contact Phone:</strong> ${request.requesterContact || 'N/A'}</p>
                 ${request.requesterEmail ? `<p><strong>Contact Email:</strong> ${request.requesterEmail}</p>` : ''}
@@ -907,27 +767,29 @@
                 ${request.message ? `<p><strong>Message:</strong> ${request.message}</p>` : ''}
                 <p><strong>Status:</strong> <span class="status-active">${request.status.toUpperCase()}</span></p>
                 <div class="emergency-card-actions">
-                    <button class="btn btn-offer-help" data-request-id="${request.id}" data-city="${request.city}" data-bloodgroup="${request.requiredBloodGroup}">Offer to Help</button>
+                    <button class="btn-offer-help" data-request-id="${request.id}" data-city="${request.city}" data-bloodgroup="${request.requiredBloodGroup}">Offer to Help</button>
                 </div>
                 ${offersSummaryHtml}
                 <p class="timestamp">Posted: ${requestedDate}</p>
                 <div class="matching-donors-section" id="matching-donors-${request.id}">
                     <h4>Potential Matching Donors:</h4>
                     <div class="loading-donors-spinner" style="display:none; text-align:center;">Loading matching donors...</div>
-                </div>
+                    </div>
             `;
             emergencyRequestsListContainer.appendChild(requestCard);
 
+            // --- Display Matching Donors ---
             const matchingDonorsContainer = requestCard.querySelector(`#matching-donors-${request.id}`);
             const spinner = matchingDonorsContainer.querySelector('.loading-donors-spinner');
             if(spinner) spinner.style.display = 'block';
 
-            setTimeout(() => { 
+            // Simulate a slight delay or use a promise if findMatchingDonors becomes async
+            setTimeout(() => { // Using timeout to ensure UI updates before potential blocking JS
                 const matchingDonors = findMatchingDonors(request.requiredBloodGroup, request.city);
                 if(spinner) spinner.style.display = 'none';
 
                 if (matchingDonors.length > 0) {
-                    matchingDonors.slice(0, 5).forEach(donor => { 
+                    matchingDonors.slice(0, 5).forEach(donor => { // Show top 5 matches
                         const donorDiv = document.createElement('div');
                         donorDiv.className = 'matching-donor-item';
                         donorDiv.innerHTML = `
@@ -935,9 +797,9 @@
                             <p><strong>Blood Group:</strong> ${donor.bloodGroup} | <strong>City:</strong> ${donor.city}</p>
                         `;
                         const contactBtn = document.createElement('button');
-                        contactBtn.className = 'btn btn-contact-donor';
+                        contactBtn.className = 'btn-contact-donor';
                         contactBtn.textContent = 'View Donor Contact';
-                        contactBtn.style.fontSize = '12px'; 
+                        contactBtn.style.fontSize = '12px';
                         contactBtn.style.padding = '5px 8px';
                         contactBtn.addEventListener('click', () => showContactModal(donor));
                         donorDiv.appendChild(contactBtn);
@@ -946,9 +808,10 @@
                 } else {
                     matchingDonorsContainer.innerHTML += '<p style="font-size:12px; opacity:0.8;">No registered donors currently match this request\'s criteria and are marked available.</p>';
                 }
-            }, 100); 
+            }, 100); // Small delay to allow main rendering
         });
 
+        // Add event listeners for the new buttons
         emergencyRequestsListContainer.querySelectorAll('.btn-offer-help').forEach(button => {
             button.addEventListener('click', (event) => {
                 const requestId = event.target.dataset.requestId;
@@ -976,9 +839,23 @@
         if (filterBloodGroup) filterBloodGroup.addEventListener('change', renderFilteredDonors);
         if (filterCity) filterCity.addEventListener('input', renderFilteredDonors);
 
-        showSection('register'); 
-        loadDonorsFromFirebase(); 
-        loadEmergencyRequestsFromFirebase(); 
+        showSection('register');
+        loadDonorsFromFirebase(); // Load all donors once for matching
+        loadEmergencyRequestsFromFirebase();
+
+        // Attempt to play a silent sound on user interaction to enable subsequent audio playback
+        // This is a common workaround for browser autoplay policies
+        document.body.addEventListener('click', function enableAudio() {
+            if (sosAudio) {
+                sosAudio.muted = true; // Start muted
+                sosAudio.play().then(() => {
+                    sosAudio.pause();
+                    sosAudio.currentTime = 0;
+                    sosAudio.muted = false; // Unmute after successful (silent) play
+                    document.body.removeEventListener('click', enableAudio); // Remove listener once enabled
+                }).catch(e => console.warn("Failed to autoplay audio, user interaction required:", e));
+            }
+        });
     });
 
     const adminLink = document.getElementById('link-admin');
@@ -986,12 +863,8 @@
         adminLink.addEventListener('click', function(e) {
             e.preventDefault();
             const password = prompt("Enter admin password:");
-            if (password === "admin123") { 
-                displayMessage("Admin access granted (simulation).", "success");
-            } 
-            else if (password !== null && password !== "") { 
-                displayMessage("Incorrect password. Access denied.", "error");
-            }
+            if (password === "admin123") { window.location.href = 'admin.html'; }
+            else if (password !== null) { alert("Incorrect password. Access denied."); }
         });
     }
 </script>
