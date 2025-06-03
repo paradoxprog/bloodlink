@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blood Link | Donate, Find & Emergency Requests (Firebase)</title>
+    <title>Blood Link | Donate, Find, Emergency & Offers (Firebase)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- CSS Variables (Blood Link Themed) --- */
         :root {
             --primary-color: #e53e3e; /* Red for Blood Link */
             --primary-hover: #c53030; /* Darker Red */
-            --secondary-color: #3b82f6; /* Blue for emergency/actions */
+            --secondary-color: #3b82f6; /* Blue for actions/emergency */
             --secondary-hover: #2563eb;
+            --tertiary-color: #10b981; /* Green for offers/success */
+            --tertiary-hover: #059669;
             --bg-light: #f8f9fa;
             --bg-dark: #212529;
             --card-bg-light: #ffffff;
@@ -28,26 +30,18 @@
             --success-text: #065f46;
             --error-bg: #fee2e2;
             --error-text: #991b1b;
-            --warning-bg: #fef3c7; /* Amber for emergency cards */
-            --warning-text: #92400e;
+            --warning-bg: #fffbeb; /* Lighter Amber for emergency cards */
+            --warning-text: #b45309;
             --warning-border: #f59e0b;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-light);
-            color: var(--text-color-light);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* --- Dark Mode Styles --- */
         body.dark {
+            --primary-color: #f87171; /* Lighter red for dark mode */
+            --primary-hover: #ef4444;
+            --secondary-color: #60a5fa; 
+            --secondary-hover: #3b82f6;
+            --tertiary-color: #34d399;
+            --tertiary-hover: #10b981;
             --bg-light: #1a1a1a;
             --bg-dark: #121212;
             --card-bg-light: #2c2c2c;
@@ -64,628 +58,131 @@
             --success-text: #d1fae5;
             --error-bg: #991b1b;
             --error-text: #fee2e2;
-            --warning-bg: #78350f; 
+            --warning-bg: #422006; 
             --warning-text: #fef3c7;
             --warning-border: #d97706;
         }
 
-        /* --- Global Styles --- */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        /* General Styles (from previous version, slightly compacted) */
+        body{font-family:'Poppins',sans-serif;margin:0;padding:0;background-color:var(--bg-light);color:var(--text-color-light);transition:background-color .3s ease,color .3s ease;min-height:100vh;display:flex;flex-direction:column;align-items:center}
+        *,*:before,*:after{box-sizing:border-box}
+        header{width:100%;background-color:var(--header-bg-light);display:flex;align-items:center;justify-content:space-between;padding:10px 25px;box-shadow:0 2px 8px var(--shadow-light);position:sticky;top:0;z-index:1000;transition:background-color .3s ease}
+        header .logo-container{display:flex;align-items:center}
+        header img.logo{height:70px;margin-right:10px;border-radius:6px}
+        header h1.app-title{font-size:22px;color:var(--text-color-light);margin:0;font-weight:700}
+        body.dark header h1.app-title{color:var(--text-color-dark)}
+        nav{display:flex;align-items:center;flex-wrap:wrap}
+        nav a{margin-left:18px;text-decoration:none;color:var(--text-color-light);font-weight:500;font-size:14px;transition:color .3s ease;position:relative;padding-bottom:4px;margin-top:5px;margin-bottom:5px}
+        body.dark nav a{color:var(--text-color-dark)}
+        nav a:after{content:'';position:absolute;width:0;height:2px;display:block;margin-top:2px;right:0;background:var(--primary-color);transition:width .3s ease-in-out}
+        nav a:hover:after,nav a.active-link:after{width:100%;left:0}
+        nav a:hover,nav a.active-link{color:var(--primary-color)}
+        nav a.emergency-link{color:var(--secondary-color);font-weight:600}
+        nav a.emergency-link:hover,nav a.emergency-link.active-link{color:var(--primary-color)}
+        body.dark nav a.emergency-link{color:var(--secondary-color)}
+        body.dark nav a.emergency-link:hover,body.dark nav a.emergency-link.active-link{color:var(--primary-color)}
+        .app-mode-header{font-size:10px;color:var(--text-color-light);margin-left:15px;padding:4px 7px;background-color:var(--bg-light);border:1px solid var(--border-color-light);border-radius:4px}
+        body.dark .app-mode-header{color:var(--text-color-dark);background-color:var(--bg-dark);border-color:var(--border-color-dark)}
+        main{width:100%;max-width:1100px;padding:25px 20px;margin:25px auto;background-color:var(--card-bg-light);border-radius:10px;box-shadow:0 6px 20px var(--shadow-light);overflow:hidden;position:relative;transition:background-color .3s ease,box-shadow .3s ease}
+        section{opacity:0;transform:translateY(15px);transition:opacity .5s ease,transform .5s ease;padding:15px;display:none}
+        section.active{opacity:1;transform:translateY(0);display:block}
+        h2.section-title{text-align:center;margin-bottom:25px;font-weight:600;color:var(--primary-color);font-size:26px;border-bottom:2px solid var(--border-color-light);padding-bottom:10px}
+        body.dark h2.section-title{border-bottom-color:var(--border-color-dark)}
+        h3{color:var(--text-color-light);margin-top:20px;margin-bottom:10px;font-weight:600;font-size:20px}
+        body.dark h3{color:var(--text-color-dark)}
+        .donor-card h3,.emergency-card h3{margin-top:0;font-size:18px;color:var(--primary-color)}
+        .emergency-card h3{color:var(--warning-border)}
+        body.dark .emergency-card h3{color:var(--warning-text)}
+        p{font-size:14px;line-height:1.6;margin-bottom:12px;color:var(--text-color-light)}
+        body.dark p{color:var(--text-color-dark)}
+        section#aboutSection ul{list-style:disc;padding-left:20px;margin-bottom:15px}
+        section#aboutSection ul li{margin-bottom:7px}
+        form#donorForm,form#emergencyRequestForm{display:flex;flex-direction:column;gap:15px;max-width:600px;margin:0 auto}
+        label{font-weight:500;font-size:13px;color:var(--text-color-light);margin-bottom:-8px}
+        body.dark label{color:var(--text-color-dark)}
+        input[type="text"],input[type="email"],input[type="tel"],select,textarea{background-color:var(--bg-light);border:1px solid var(--border-color-light);border-radius:6px;padding:10px 12px;font-size:14px;color:var(--text-color-light);transition:border-color .3s ease,box-shadow .3s ease,background-color .3s ease;width:100%}
+        textarea{min-height:80px;resize:vertical}
+        body.dark input[type="text"],body.dark input[type="email"],body.dark input[type="tel"],body.dark select,body.dark textarea{background-color:var(--bg-dark);border-color:var(--border-color-dark);color:var(--text-color-dark)}
+        input[type="text"]:focus,input[type="email"]:focus,input[type="tel"]:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 0 2px var(--primary-color_alpha,rgba(229,62,62,.25))}
+        button[type="submit"],.btn-filter,.btn-contact-donor,.btn-offer-help,.btn-view-offers{background-color:var(--primary-color);color:#fff;border:none;padding:10px 15px;border-radius:6px;font-size:15px;cursor:pointer;font-weight:600;transition:background-color .3s ease,transform .2s ease;text-align:center; margin-right: 5px; margin-bottom: 5px;}
+        form#emergencyRequestForm button[type="submit"]{background-color:var(--secondary-color)}
+        form#emergencyRequestForm button[type="submit"]:hover{background-color:var(--secondary-hover)}
+        .btn-filter{padding:9px 14px;font-size:13px}
+        .btn-contact-donor{padding:7px 10px;font-size:13px;margin-top:8px;background-color:var(--secondary-color)}
+        .btn-contact-donor:hover{background-color:var(--secondary-hover)}
+        .btn-offer-help { background-color: var(--tertiary-color); }
+        .btn-offer-help:hover { background-color: var(--tertiary-hover); }
+        .btn-view-offers { background-color: var(--secondary-color); font-size: 13px; padding: 6px 10px;}
+        .btn-view-offers:hover { background-color: var(--secondary-hover); }
+        button[type="submit"]:hover,.btn-filter:hover{background-color:var(--primary-hover);transform:translateY(-1px)}
+        .donor-card{background-color:var(--card-bg-light);border:1px solid var(--border-color-light);border-left:5px solid var(--primary-color);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light);transition:transform .2s ease,box-shadow .2s ease,background-color .3s ease,border-color .3s ease}
+        body.dark .donor-card{background-color:var(--card-bg-dark);border-color:var(--border-color-dark);border-left-color:var(--primary-color)}
+        .donor-card:hover{transform:translateY(-3px);box-shadow:0 6px 15px var(--shadow-dark)}
+        .donor-card p{font-size:13px;margin-bottom:5px;color:var(--text-color-light)}
+        body.dark .donor-card p{color:var(--text-color-dark)}
+        .donor-card p strong{font-weight:500}
+        .donor-card .availability-yes{color:#10b981;font-weight:700}
+        .donor-card .availability-no{color:#f59e0b;font-weight:700}
+        .donor-card .timestamp{font-size:10px;color:#9ca3af;margin-top:8px}
+        body.dark .donor-card .timestamp{color:#6b7280}
+        .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border);border-left:5px solid var(--warning-border);padding:15px;margin-bottom:20px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light)}
+        body.dark .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border);border-left-color:var(--warning-border)}
+        .emergency-card p{font-size:13px;margin-bottom:5px;color:var(--warning-text)}
+        .emergency-card p strong{font-weight:600}
+        .emergency-card .timestamp{font-size:10px;color:var(--warning-text);opacity:.8;margin-top:8px}
+        .emergency-card .status-active{font-weight:700;color:#16a34a}
+        body.dark .emergency-card .status-active{color:#4ade80}
+        .emergency-card-actions { margin-top: 15px; }
+        .offers-summary { font-size: 13px; margin-top:10px; color: var(--tertiary-color); font-weight: 500;}
+        body.dark .offers-summary { color: var(--tertiary-color); } /* Keep consistent green or adjust for dark */
+        .matching-donors-section { margin-top: 20px; padding-top:15px; border-top: 1px dashed var(--border-color-light); }
+        body.dark .matching-donors-section { border-top-color: var(--border-color-dark); }
+        .matching-donors-section h4 { font-size: 16px; color: var(--text-color-light); margin-bottom: 10px;}
+        body.dark .matching-donors-section h4 { color: var(--text-color-dark); }
+        .matching-donor-item { background-color: var(--bg-light); border: 1px solid var(--border-color-light); padding: 10px; border-radius: 6px; margin-bottom:10px; }
+        body.dark .matching-donor-item { background-color: var(--bg-dark); border-color: var(--border-color-dark); }
+        .matching-donor-item p { font-size: 12px; margin-bottom: 3px; }
 
-        /* --- Header --- */
-        header {
-            width: 100%;
-            background-color: var(--header-bg-light);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 25px; /* Adjusted padding */
-            box-shadow: 0 2px 8px var(--shadow-light);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-        }
+        .toggle-dark-container{margin-left:15px}
+        .toggle-dark{position:relative;display:inline-block;width:46px;height:24px;border-radius:24px;background-color:var(--border-color-light);cursor:pointer;transition:background-color .3s ease;vertical-align:middle;border:1px solid var(--border-color-light)}
+        body.dark .toggle-dark{background-color:var(--border-color-dark);border-color:var(--border-color-dark)}
+        .toggle-dark input{opacity:0;width:0;height:0}
+        .toggle-thumb{position:absolute;top:1px;left:1px;width:20px;height:20px;background-color:#fff;border-radius:50%;transition:transform .3s ease-in-out,background-color .3s ease;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+        body.dark .toggle-thumb{background-color:var(--primary-color)}
+        .toggle-dark input:checked + .toggle-thumb{transform:translateX(22px)}
+        footer{width:100%;padding:20px;text-align:center;background-color:var(--header-bg-light);color:var(--text-color-light);font-size:13px;margin-top:auto;box-shadow:0 -2px 8px var(--shadow-light);border-top:1px solid var(--border-color-light);transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+        body.dark footer{background-color:var(--header-bg-dark);color:var(--text-color-dark);border-top-color:var(--border-color-dark)}
+        #messageContainer{margin-bottom:15px;padding:0 15px}
+        .message{padding:10px 15px;border-radius:6px;font-size:14px;margin-bottom:12px;text-align:center}
+        .message.success{background-color:var(--success-bg);color:var(--success-text);border:1px solid var(--success-text)}
+        .message.error{background-color:var(--error-bg);color:var(--error-text);border:1px solid var(--error-text)}
+        #loadingIndicator{border:3px solid var(--border-color-light);border-top:3px solid var(--primary-color);border-radius:50%;width:22px;height:22px;animation:spin .8s linear infinite;margin:15px auto;display:none}
+        body.dark #loadingIndicator{border-color:var(--border-color-dark);border-top-color:var(--primary-color)}
+        @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+        .content-grid{display:grid;grid-template-columns:1fr;gap:20px}
+        .filter-area{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:20px;padding:15px;background-color:var(--bg-light);border-radius:8px;border:1px solid var(--border-color-light)}
+        body.dark .filter-area{background-color:var(--bg-dark);border-color:var(--border-color-dark)}
+        @media (min-width:640px){.filter-area{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}}
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.6);display:flex;justify-content:center;align-items:center;z-index:2000;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal-content{background-color:var(--card-bg-light);padding:25px;border-radius:10px;box-shadow:0 5px 20px rgba(0,0,0,.2);width:90%;max-width:480px;text-align:left;position:relative;transform:scale(.95);transition:transform .3s ease;max-height: 80vh; overflow-y: auto;}
+        .modal-overlay.active .modal-content{transform:scale(1)}
+        body.dark .modal-content{background-color:var(--card-bg-dark)}
+        .modal-content h4{margin-top:0;color:var(--primary-color);font-size:18px;margin-bottom:12px}
+        .modal-content p{font-size:14px;margin-bottom:8px}
+        .modal-close-btn{position:absolute;top:12px;right:12px;background:0 0;border:none;font-size:22px;font-weight:700;color:var(--text-color-light);cursor:pointer;padding:5px;line-height:1}
+        body.dark .modal-close-btn{color:var(--text-color-dark)}
+        .modal-close-btn:hover{color:var(--primary-color)}
+        .modal-contact-info{margin-bottom:15px}
+        .modal-reminder{font-size:12px;font-style:italic;color:#6b7280}
+        body.dark .modal-reminder{color:#a0aec0}
+        .offer-item { border-bottom: 1px solid var(--border-color-light); padding-bottom: 8px; margin-bottom: 8px; }
+        body.dark .offer-item { border-bottom-color: var(--border-color-dark); }
+        .offer-item:last-child { border-bottom: none; margin-bottom: 0; }
 
-        header .logo-container {
-            display: flex;
-            align-items: center;
-        }
+        @media (max-width:768px){header{flex-direction:column;padding:10px 15px}header .logo-container{margin-bottom:8px}nav{justify-content:center;margin-top:5px}nav a{margin:5px 10px;font-size:13px}.app-mode-header{margin-left:0;margin-top:8px;width:100%;text-align:center}header h1.app-title{font-size:20px}main{margin:15px 10px;padding:15px}h2.section-title{font-size:22px}}
+        @media (max-width:480px){header img.logo{height:45px}header h1.app-title{font-size:18px}nav a{font-size:12px;margin-left:8px}button[type="submit"],.btn-filter,.btn-contact-donor,.btn-offer-help,.btn-view-offers,input,select,textarea{font-size:13px;padding:9px 10px}.donor-card,.emergency-card{padding:12px}.donor-card h3,.emergency-card h3{font-size:16px}.modal-content{padding:20px}.modal-content h4{font-size:17px}.app-mode-header{font-size:9px;padding:3px 5px}.toggle-dark-container{margin-left:10px}}
 
-        header img.logo {
-            height: 70px; /* Slightly smaller logo */
-            margin-right: 10px;
-            border-radius: 6px;
-        }
-
-        header h1.app-title {
-            font-size: 22px; /* Slightly smaller title */
-            color: var(--text-color-light);
-            margin: 0;
-            font-weight: 700;
-        }
-        body.dark header h1.app-title {
-             color: var(--text-color-dark);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap; /* Allow nav items to wrap */
-        }
-
-        nav a {
-            margin-left: 18px; /* Adjusted margin */
-            text-decoration: none;
-            color: var(--text-color-light);
-            font-weight: 500;
-            font-size: 14px; /* Slightly smaller font */
-            transition: color 0.3s ease;
-            position: relative;
-            padding-bottom: 4px;
-            margin-top: 5px; /* For wrapping */
-            margin-bottom: 5px; /* For wrapping */
-        }
-        body.dark nav a {
-            color: var(--text-color-dark);
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            display: block;
-            margin-top: 2px;
-            right: 0;
-            background: var(--primary-color);
-            transition: width 0.3s ease-in-out;
-        }
-
-        nav a:hover::after, nav a.active-link::after {
-            width: 100%;
-            left: 0;
-        }
-        nav a:hover, nav a.active-link {
-            color: var(--primary-color);
-        }
-        nav a.emergency-link { /* Special style for emergency links */
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
-        nav a.emergency-link:hover, nav a.emergency-link.active-link {
-            color: var(--primary-color);
-        }
-         body.dark nav a.emergency-link {
-            color: #60a5fa; /* Lighter blue for dark mode */
-        }
-        body.dark nav a.emergency-link:hover, body.dark nav a.emergency-link.active-link {
-            color: var(--primary-color);
-        }
-        
-        .app-mode-header {
-            font-size: 10px; /* Smaller */
-            color: var(--text-color-light);
-            margin-left: 15px;
-            padding: 4px 7px;
-            background-color: var(--bg-light);
-            border: 1px solid var(--border-color-light);
-            border-radius: 4px;
-        }
-        body.dark .app-mode-header {
-            color: var(--text-color-dark);
-            background-color: var(--bg-dark);
-            border-color: var(--border-color-dark);
-        }
-
-        /* --- Main Content Area --- */
-        main {
-            width: 100%;
-            max-width: 1100px;
-            padding: 25px 20px;
-            margin: 25px auto;
-            background-color: var(--card-bg-light);
-            border-radius: 10px;
-            box-shadow: 0 6px 20px var(--shadow-light);
-            overflow: hidden;
-            position: relative;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* --- Section Transitions --- */
-        section {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            padding: 15px;
-            display: none; 
-        }
-
-        section.active {
-            opacity: 1;
-            transform: translateY(0);
-            display: block; 
-        }
-
-        h2.section-title {
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 600;
-            color: var(--primary-color);
-            font-size: 26px;
-            border-bottom: 2px solid var(--border-color-light);
-            padding-bottom: 10px;
-        }
-        body.dark h2.section-title {
-            border-bottom-color: var(--border-color-dark);
-        }
-
-        h3 {
-            color: var(--text-color-light);
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 20px;
-        }
-        body.dark h3 {
-            color: var(--text-color-dark);
-        }
-        .donor-card h3, .emergency-card h3 { /* Combined */
-            margin-top: 0;
-            font-size: 18px;
-            color: var(--primary-color);
-        }
-        .emergency-card h3 {
-            color: var(--warning-border); /* Distinct color for emergency titles */
-        }
-         body.dark .emergency-card h3 {
-             color: var(--warning-text);
-         }
-
-
-        p {
-            font-size: 14px; /* Smaller base paragraph */
-            line-height: 1.6;
-            margin-bottom: 12px;
-            color: var(--text-color-light);
-        }
-         body.dark p {
-            color: var(--text-color-dark);
-        }
-        
-        section#aboutSection ul {
-            list-style: disc;
-            padding-left: 20px;
-            margin-bottom: 15px;
-        }
-        section#aboutSection ul li {
-            margin-bottom: 7px;
-        }
-
-
-        /* --- Forms --- */
-        form#donorForm, form#emergencyRequestForm { /* Combined */
-            display: flex;
-            flex-direction: column;
-            gap: 15px; /* Reduced gap */
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        label {
-            font-weight: 500;
-            font-size: 13px; /* Smaller label */
-            color: var(--text-color-light);
-            margin-bottom: -8px; /* Adjusted */
-        }
-        body.dark label {
-             color: var(--text-color-dark);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        select,
-        textarea { /* Added textarea */
-            background-color: var(--bg-light);
-            border: 1px solid var(--border-color-light);
-            border-radius: 6px;
-            padding: 10px 12px; /* Adjusted padding */
-            font-size: 14px; /* Smaller font */
-            color: var(--text-color-light);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-            width: 100%;
-        }
-        textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        body.dark input[type="text"],
-        body.dark input[type="email"],
-        body.dark input[type="tel"],
-        body.dark select,
-        body.dark textarea {
-            background-color: var(--bg-dark);
-            border-color: var(--border-color-dark);
-            color: var(--text-color-dark);
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px var(--primary-color_alpha, rgba(229, 62, 62, 0.25));
-        }
-
-        button[type="submit"], .btn-filter, .btn-contact-donor {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px; /* Adjusted padding */
-            border-radius: 6px;
-            font-size: 15px; /* Adjusted font */
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            text-align: center;
-        }
-        form#emergencyRequestForm button[type="submit"] { /* Specific style for emergency form submit */
-            background-color: var(--secondary-color);
-        }
-        form#emergencyRequestForm button[type="submit"]:hover {
-            background-color: var(--secondary-hover);
-        }
-
-        .btn-filter {
-            padding: 9px 14px;
-            font-size: 13px;
-        }
-         .btn-contact-donor {
-            padding: 7px 10px;
-            font-size: 13px;
-            margin-top: 8px;
-            background-color: var(--secondary-color); 
-        }
-        .btn-contact-donor:hover {
-            background-color: var(--secondary-hover);
-        }
-
-
-        button[type="submit"]:hover, .btn-filter:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-        
-        /* --- Donor Card Styling --- */
-        .donor-card {
-            background-color: var(--card-bg-light);
-            border: 1px solid var(--border-color-light);
-            border-left: 5px solid var(--primary-color);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px var(--shadow-light);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
-        }
-        body.dark .donor-card {
-             background-color: var(--card-bg-dark);
-             border-color: var(--border-color-dark);
-             border-left-color: var(--primary-color);
-        }
-
-        .donor-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px var(--shadow-dark);
-        }
-        .donor-card p {
-            font-size: 13px;
-            margin-bottom: 5px;
-            color: var(--text-color-light);
-        }
-        body.dark .donor-card p {
-            color: var(--text-color-dark);
-        }
-        .donor-card p strong {
-            font-weight: 500;
-        }
-        .donor-card .availability-yes { color: #10b981; font-weight: bold; }
-        .donor-card .availability-no { color: #f59e0b; font-weight: bold; }
-        .donor-card .timestamp {
-            font-size: 10px; /* Smaller timestamp */
-            color: #9ca3af;
-            margin-top: 8px;
-        }
-        body.dark .donor-card .timestamp {
-            color: #6b7280;
-        }
-
-        /* --- Emergency Request Card Styling --- */
-        .emergency-card {
-            background-color: var(--warning-bg);
-            color: var(--warning-text);
-            border: 1px solid var(--warning-border);
-            border-left: 5px solid var(--warning-border);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px var(--shadow-light);
-        }
-        body.dark .emergency-card {
-            background-color: var(--warning-bg); /* Dark mode warning bg from variables */
-            color: var(--warning-text); /* Dark mode warning text from variables */
-            border-color: var(--warning-border);
-            border-left-color: var(--warning-border);
-        }
-        .emergency-card p {
-            font-size: 13px;
-            margin-bottom: 5px;
-            color: var(--warning-text); /* Ensure p tags inherit card text color */
-        }
-        .emergency-card p strong {
-            font-weight: 600; /* Bolder for emphasis */
-        }
-        .emergency-card .timestamp {
-            font-size: 10px;
-            color: var(--warning-text);
-            opacity: 0.8;
-            margin-top: 8px;
-        }
-         .emergency-card .status-active {
-            font-weight: bold;
-            color: #16a34a; /* Green for active status */
-        }
-        body.dark .emergency-card .status-active {
-            color: #4ade80; 
-        }
-
-
-        /* --- Dark Mode Toggle --- */
-        .toggle-dark-container {
-             margin-left: 15px;
-        }
-        .toggle-dark {
-            position: relative;
-            display: inline-block;
-            width: 46px; /* Smaller toggle */
-            height: 24px; 
-            border-radius: 24px;
-            background-color: var(--border-color-light);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            vertical-align: middle;
-            border: 1px solid var(--border-color-light);
-        }
-        body.dark .toggle-dark {
-             background-color: var(--border-color-dark);
-             border-color: var(--border-color-dark);
-        }
-
-        .toggle-dark input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-thumb {
-            position: absolute;
-            top: 1px; /* Adjusted for smaller toggle */
-            left: 1px; /* Adjusted for smaller toggle */
-            width: 20px; 
-            height: 20px; 
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease-in-out, background-color 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        body.dark .toggle-thumb {
-            background-color: var(--primary-color);
-        }
-
-        .toggle-dark input:checked + .toggle-thumb {
-            transform: translateX(22px); /* Adjusted for smaller toggle */
-        }
-        
-        /* --- Footer --- */
-        footer {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            background-color: var(--header-bg-light);
-            color: var(--text-color-light);
-            font-size: 13px;
-            margin-top: auto;
-            box-shadow: 0 -2px 8px var(--shadow-light);
-            border-top: 1px solid var(--border-color-light);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-         body.dark footer {
-            background-color: var(--header-bg-dark);
-            color: var(--text-color-dark);
-            border-top-color: var(--border-color-dark);
-        }
-
-        /* --- Message Container & Loading --- */
-        #messageContainer {
-            margin-bottom: 15px;
-            padding: 0 15px;
-        }
-        .message {
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .message.success {
-            background-color: var(--success-bg);
-            color: var(--success-text);
-            border: 1px solid var(--success-text);
-        }
-        .message.error {
-            background-color: var(--error-bg);
-            color: var(--error-text);
-            border: 1px solid var(--error-text);
-        }
-
-        #loadingIndicator {
-            border: 3px solid var(--border-color-light);
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            width: 22px; /* Smaller */
-            height: 22px; /* Smaller */
-            animation: spin 0.8s linear infinite;
-            margin: 15px auto;
-            display: none; 
-        }
-        body.dark #loadingIndicator {
-            border-color: var(--border-color-dark);
-            border-top-color: var(--primary-color);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        .filter-area {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: var(--bg-light);
-            border-radius: 8px;
-            border: 1px solid var(--border-color-light);
-        }
-        body.dark .filter-area {
-            background-color: var(--bg-dark);
-            border-color: var(--border-color-dark);
-        }
-        @media (min-width: 640px) { 
-            .filter-area {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
-        }
-        
-        /* --- Modal Styles --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background-color: var(--card-bg-light);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 480px; /* Slightly smaller max-width */
-            text-align: left;
-            position: relative;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-        }
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-        body.dark .modal-content {
-            background-color: var(--card-bg-dark);
-        }
-        .modal-content h4 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-        .modal-content p {
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        .modal-close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: transparent;
-            border: none;
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--text-color-light);
-            cursor: pointer;
-            padding: 5px;
-            line-height: 1;
-        }
-        body.dark .modal-close-btn {
-            color: var(--text-color-dark);
-        }
-        .modal-close-btn:hover {
-            color: var(--primary-color);
-        }
-        .modal-contact-info {
-            margin-bottom: 15px;
-        }
-        .modal-reminder {
-            font-size: 12px;
-            font-style: italic;
-            color: #6b7280;
-        }
-        body.dark .modal-reminder {
-            color: #a0aec0;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding: 10px 15px;
-            }
-            header .logo-container { margin-bottom: 8px; }
-            nav { justify-content: center; margin-top: 5px; }
-            nav a { margin: 5px 10px; font-size: 13px; }
-            .app-mode-header { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; }
-            header h1.app-title { font-size: 20px; }
-            main { margin: 15px 10px; padding: 15px; }
-            h2.section-title { font-size: 22px; }
-        }
-
-        @media (max-width: 480px) {
-            header img.logo { height: 45px; }
-            header h1.app-title { font-size: 18px; }
-            nav a { font-size: 12px; margin-left: 8px; }
-            button[type="submit"], .btn-filter, .btn-contact-donor, input, select, textarea {
-                font-size: 13px;
-                padding: 9px 10px;
-            }
-            .donor-card, .emergency-card { padding: 12px; }
-            .donor-card h3, .emergency-card h3 { font-size: 16px; }
-            .modal-content { padding: 20px; }
-            .modal-content h4 { font-size: 17px; }
-            .app-mode-header { font-size: 9px; padding: 3px 5px;}
-            .toggle-dark-container { margin-left: 10px;}
-        }
     </style>
 </head>
 <body>
@@ -859,18 +356,27 @@
         <div class="modal-content">
             <button id="modalCloseBtn" class="modal-close-btn">&times;</button>
             <h4 id="modalDonorName">Contact Donor</h4>
-            <div id="modalContactDetails" class="modal-contact-info">
-                </div>
+            <div id="modalContactDetails" class="modal-contact-info"></div>
             <p class="modal-reminder">
                 Please contact the donor directly using the information above. Blood Link is a directory and does not facilitate direct communication or transactions.
             </p>
         </div>
     </div>
 
+    <div id="viewOffersModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="viewOffersModalCloseBtn" class="modal-close-btn">&times;</button>
+            <h4 id="viewOffersModalTitle">Offers Received for Request</h4>
+            <div id="viewOffersModalBody">
+                <p>No offers yet, or unable to load offers.</p>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <footer>
-    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. (Firebase Demo with Emergency Feature)
+    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. (Firebase Demo with Offers & Matching)
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -905,15 +411,19 @@
     const messageContainer = document.getElementById('messageContainer');
     const loadingIndicator = document.getElementById('loadingIndicator');
 
-    // Emergency Request Elements
     const emergencyRequestForm = document.getElementById('emergencyRequestForm');
     const emergencyRequestsListContainer = document.getElementById('emergencyRequestsListContainer');
 
-    // Modal elements
     const contactModal = document.getElementById('contactModal');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
     const modalDonorName = document.getElementById('modalDonorName');
     const modalContactDetails = document.getElementById('modalContactDetails');
+
+    const viewOffersModal = document.getElementById('viewOffersModal');
+    const viewOffersModalCloseBtn = document.getElementById('viewOffersModalCloseBtn');
+    const viewOffersModalTitle = document.getElementById('viewOffersModalTitle');
+    const viewOffersModalBody = document.getElementById('viewOffersModalBody');
+
 
     // --- UI Navigation & Dark Mode ---
     const sections = {
@@ -932,13 +442,8 @@
     };
 
     function showSection(sectionId) {
-        Object.values(sections).forEach(s => {
-            if(s) s.classList.remove('active');
-        });
-        Object.values(navLinks).forEach(l => {
-            if(l) l.classList.remove('active-link');
-        });
-
+        Object.values(sections).forEach(s => { if(s) s.classList.remove('active'); });
+        Object.values(navLinks).forEach(l => { if(l) l.classList.remove('active-link'); });
         if (sections[sectionId]) sections[sectionId].classList.add('active');
         if (navLinks[sectionId]) navLinks[sectionId].classList.add('active-link');
         window.scrollTo(0,0);
@@ -966,186 +471,126 @@
         }
     }
     if(darkToggle) {
-        darkToggle.addEventListener('change', () => {
-            applyDarkMode(darkToggle.checked);
-        });
+        darkToggle.addEventListener('change', () => { applyDarkMode(darkToggle.checked); });
     }
     applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    // --- Helper Functions ---
     function displayMessage(message, type = 'success') {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
         messageContainer.innerHTML = ''; 
         messageContainer.appendChild(msgDiv);
-        setTimeout(() => {
-            if (messageContainer.contains(msgDiv)) {
-                messageContainer.removeChild(msgDiv);
-            }
-        }, 6000);
+        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, 6000);
     }
 
-    // --- Modal Functions ---
+    // --- Donor Contact Modal Functions ---
     function showContactModal(donor) {
         if (!contactModal || !modalDonorName || !modalContactDetails) return;
         modalDonorName.textContent = `Contact: ${donor.name}`;
         let detailsHtml = `<p><strong>Phone:</strong> ${donor.phone}</p>`;
-        if (donor.email) {
-            detailsHtml += `<p><strong>Email:</strong> ${donor.email}</p>`;
-        } else {
-            detailsHtml += `<p><strong>Email:</strong> Not Provided</p>`;
-        }
+        if (donor.email) { detailsHtml += `<p><strong>Email:</strong> ${donor.email}</p>`; } 
+        else { detailsHtml += `<p><strong>Email:</strong> Not Provided</p>`; }
         modalContactDetails.innerHTML = detailsHtml;
         contactModal.classList.add('active');
     }
+    function hideContactModal() { if (contactModal) contactModal.classList.remove('active'); }
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', hideContactModal);
+    if (contactModal) contactModal.addEventListener('click', (e) => { if (e.target === contactModal) hideContactModal(); });
 
-    function hideContactModal() {
-        if (contactModal) contactModal.classList.remove('active');
-    }
-
-    if (modalCloseBtn) {
-        modalCloseBtn.addEventListener('click', hideContactModal);
-    }
-    if (contactModal) {
-        contactModal.addEventListener('click', function(event) {
-            if (event.target === contactModal) {
-                hideContactModal();
+    // --- View Offers Modal Functions ---
+    function showViewOffersModal(request) {
+        if (!viewOffersModal || !viewOffersModalTitle || !viewOffersModalBody) return;
+        viewOffersModalTitle.textContent = `Offers for: ${request.requiredBloodGroup} in ${request.city}`;
+        
+        const offersRef = database.ref(`emergencyRequests/${request.id}/offers`);
+        offersRef.once('value', snapshot => {
+            if (snapshot.exists()) {
+                viewOffersModalBody.innerHTML = ''; // Clear previous
+                snapshot.forEach(offerSnapshot => {
+                    const offer = offerSnapshot.val();
+                    const offerDiv = document.createElement('div');
+                    offerDiv.className = 'offer-item';
+                    offerDiv.innerHTML = `
+                        <p><strong>Offerer:</strong> ${offer.offererName || 'Anonymous'}</p>
+                        <p><strong>Contact:</strong> ${offer.offererContact || 'N/A'}</p>
+                        <p style="font-size:10px; opacity:0.7;">Offered on: ${new Date(offer.createdAt).toLocaleDateString()}</p>
+                    `;
+                    viewOffersModalBody.appendChild(offerDiv);
+                });
+            } else {
+                viewOffersModalBody.innerHTML = '<p>No offers have been made for this request yet.</p>';
             }
+        }).catch(error => {
+            console.error("Error fetching offers:", error);
+            viewOffersModalBody.innerHTML = '<p>Could not load offers due to an error.</p>';
         });
+
+        viewOffersModal.classList.add('active');
     }
+    function hideViewOffersModal() { if (viewOffersModal) viewOffersModal.classList.remove('active'); }
+    if (viewOffersModalCloseBtn) viewOffersModalCloseBtn.addEventListener('click', hideViewOffersModal);
+    if (viewOffersModal) viewOffersModal.addEventListener('click', (e) => { if (e.target === viewOffersModal) hideViewOffersModal(); });
+
 
     // --- Donor Operations (Firebase) ---
     function addDonorToFirebase(event) {
         event.preventDefault();
         const formData = new FormData(donorForm);
-        const donorData = {
-            name: formData.get('name').trim(),
-            bloodGroup: formData.get('bloodGroup'),
-            phone: formData.get('phone').trim(),
-            email: formData.get('email').trim().toLowerCase(),
-            city: formData.get('city').trim(),
-            state: formData.get('state').trim(),
-            availability: formData.get('availability') === 'true',
-            searchableName: formData.get('name').trim().toLowerCase(),
-            searchableCity: formData.get('city').trim().toLowerCase(),
-            createdAt: firebase.database.ServerValue.TIMESTAMP 
+        const donorData = { /* ... (same as before) ... */ 
+            name: formData.get('name').trim(), bloodGroup: formData.get('bloodGroup'), phone: formData.get('phone').trim(), email: formData.get('email').trim().toLowerCase(), city: formData.get('city').trim(), state: formData.get('state').trim(), availability: formData.get('availability') === 'true', searchableName: formData.get('name').trim().toLowerCase(), searchableCity: formData.get('city').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP 
         };
-
-        if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) {
-            displayMessage("Required fields: Name, Blood Group, Phone, City, State.", "error");
-            return;
-        }
-        if (!/^\+?[0-9\s-]{7,15}$/.test(donorData.phone)) {
-            displayMessage("Please enter a valid phone number.", "error");
-            return;
-        }
-        if (donorData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorData.email)) {
-            displayMessage("Please enter a valid email address.", "error");
-            return;
-        }
-
-        const newDonorRef = database.ref('donors').push();
-        newDonorRef.set(donorData)
-            .then(() => {
-                displayMessage('Donor registered successfully to Firebase!', 'success');
-                if (donorForm) donorForm.reset();
-            })
-            .catch(error => {
-                console.error("Error adding donor to Firebase:", error);
-                displayMessage('Failed to register donor. Please try again. ' + error.message, 'error');
-            });
+        if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) { displayMessage("Required fields: Name, Blood Group, Phone, City, State.", "error"); return; }
+        if (!/^\+?[0-9\s-]{7,15}$/.test(donorData.phone)) { displayMessage("Please enter a valid phone number.", "error"); return; }
+        if (donorData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donorData.email)) { displayMessage("Please enter a valid email address.", "error"); return; }
+        database.ref('donors').push().set(donorData)
+            .then(() => { displayMessage('Donor registered successfully!', 'success'); if (donorForm) donorForm.reset(); })
+            .catch(error => { console.error("Error adding donor:", error); displayMessage('Failed to register donor. ' + error.message, 'error'); });
     }
 
     function loadDonorsFromFirebase() {
+        /* ... (same as before, ensures allDonorsData is populated) ... */
         if (loadingIndicator) loadingIndicator.style.display = 'block';
-        const donorsRef = database.ref('donors');
-
-        donorsRef.on('value', (snapshot) => {
+        database.ref('donors').on('value', (snapshot) => {
             allDonorsData = []; 
             if (snapshot.exists()) {
-                snapshot.forEach(childSnapshot => {
-                    const donor = childSnapshot.val();
-                    donor.id = childSnapshot.key; 
-                    allDonorsData.push(donor);
-                });
+                snapshot.forEach(child => { const d = child.val(); d.id = child.key; allDonorsData.push(d); });
             }
             renderFilteredDonors(); 
-            if (loadingIndicator && (sections.find.classList.contains('active') || sections.register.classList.contains('active'))) {
+            if (loadingIndicator && (sections.find.classList.contains('active') || sections.register.classList.contains('active') || sections.viewRequests.classList.contains('active'))) { // also hide if viewRequests is active after its own loading
                  loadingIndicator.style.display = 'none';
             }
-        }, (error) => {
-            console.error("Error loading donors from Firebase:", error);
-            displayMessage("Error fetching donor data: " + error.message, "error");
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-            renderFilteredDonors(); 
+        }, (error) => { /* ... error handling ... */ 
+            console.error("Error loading donors:", error); displayMessage("Error fetching donor data: " + error.message, "error");
+            if (loadingIndicator) loadingIndicator.style.display = 'none'; renderFilteredDonors();
         });
     }
     
-    function renderFilteredDonors() {
-        const selectedBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
-        const cityQuery = filterCity ? filterCity.value.trim().toLowerCase() : '';
-
-        const filteredDonors = allDonorsData.filter(donor => {
-            const bloodGroupMatch = selectedBloodGroup ? donor.bloodGroup === selectedBloodGroup : true;
-            const donorCityForSearch = donor.searchableCity || (donor.city ? donor.city.toLowerCase() : '');
-            const cityMatch = cityQuery ? donorCityForSearch.includes(cityQuery) : true;
-            return bloodGroupMatch && cityMatch;
-        });
-
-        filteredDonors.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); 
-        renderDonors(filteredDonors);
+    function renderFilteredDonors() { /* ... (same as before) ... */
+        const bloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
+        const city = filterCity ? filterCity.value.trim().toLowerCase() : '';
+        const filtered = allDonorsData.filter(d => (bloodGroup ? d.bloodGroup === bloodGroup : true) && (city ? (d.searchableCity || (d.city||'').toLowerCase()).includes(city) : true));
+        filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+        renderDonors(filtered);
     }
 
-    function renderDonors(donors) {
-        if (!donorsListContainer) return;
-        donorsListContainer.innerHTML = ''; 
-
-        if (donors.length === 0) {
-            const currentFilterBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
-            const currentFilterCity = filterCity ? filterCity.value.trim() : '';
-            let messageText = "No donors registered in the system yet.";
-            if (currentFilterBloodGroup || currentFilterCity) {
-                messageText = "No donors found matching your criteria.";
-            }
-            if (loadingIndicator && loadingIndicator.style.display === 'none') {
-                donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
-            } else if (!loadingIndicator) { 
-                donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
-            }
+    function renderDonors(donors) { /* ... (same as before) ... */
+        if (!donorsListContainer) return; donorsListContainer.innerHTML = '';
+        if (donors.length === 0) { /* ... no donors message ... */ 
+            let msg = "No donors registered yet.";
+            if ((filterBloodGroup && filterBloodGroup.value) || (filterCity && filterCity.value)) msg = "No donors found matching criteria.";
+            if (loadingIndicator && loadingIndicator.style.display === 'none') donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center;">${msg}</p>`;
+            else if (!loadingIndicator) donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center;">${msg}</p>`;
             return;
         }
-
         donors.forEach(donor => {
-            const donorCard = document.createElement('div');
-            donorCard.className = 'donor-card';
-
-            const contactButton = document.createElement('button');
-            contactButton.className = 'btn-contact-donor';
-            contactButton.textContent = 'View Contact Info';
-            contactButton.addEventListener('click', () => showContactModal(donor));
-            
-            let registeredDate = 'N/A';
-            if (donor.createdAt) {
-                try {
-                    registeredDate = new Date(donor.createdAt).toLocaleDateString();
-                } catch (e) {
-                    console.warn("Could not parse date for donor:", donor.id, donor.createdAt);
-                }
-            }
-
-            donorCard.innerHTML = `
-                <h3>${donor.name || 'N/A'}</h3>
-                <p><strong>Blood Group:</strong> <span style="color:var(--primary-color); font-weight:bold;">${donor.bloodGroup || 'N/A'}</span></p>
-                <p><strong>Location:</strong> ${donor.city || 'N/A'}, ${donor.state || 'N/A'}</p>
-                <p><strong>Phone:</strong> ${donor.phone || 'N/A'}</p>
-                ${donor.email ? `<p><strong>Email:</strong> ${donor.email}</p>` : ''}
-                <p><strong>Available:</strong> <span class="${donor.availability ? 'availability-yes' : 'availability-no'}">${donor.availability ? 'Yes' : 'No'}</span></p>
-                <p class="timestamp">Registered: ${registeredDate}</p>
-            `;
-            donorCard.appendChild(contactButton);
-            donorsListContainer.appendChild(donorCard);
+            const card = document.createElement('div'); card.className = 'donor-card';
+            const contactBtn = document.createElement('button'); contactBtn.className = 'btn-contact-donor'; contactBtn.textContent = 'View Contact Info';
+            contactBtn.addEventListener('click', () => showContactModal(donor));
+            let regDate = donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A';
+            card.innerHTML = `<h3>${donor.name||'N/A'}</h3><p><strong>Blood Group:</strong> <span style="color:var(--primary-color);font-weight:bold;">${donor.bloodGroup||'N/A'}</span></p><p><strong>Location:</strong> ${donor.city||'N/A'}, ${donor.state||'N/A'}</p><p><strong>Phone:</strong> ${donor.phone||'N/A'}</p>${donor.email?`<p><strong>Email:</strong> ${donor.email}</p>`:''}<p><strong>Available:</strong> <span class="${donor.availability?'availability-yes':'availability-no'}">${donor.availability?'Yes':'No'}</span></p><p class="timestamp">Registered: ${regDate}</p>`;
+            card.appendChild(contactBtn); donorsListContainer.appendChild(card);
         });
     }
 
@@ -1153,50 +598,54 @@
     function addEmergencyRequestToFirebase(event) {
         event.preventDefault();
         const formData = new FormData(emergencyRequestForm);
-        const requestData = {
-            requesterName: formData.get('requesterName').trim(),
-            requesterContact: formData.get('requesterContact').trim(),
-            requesterEmail: formData.get('requesterEmail').trim().toLowerCase(),
-            requiredBloodGroup: formData.get('requiredBloodGroup'),
-            city: formData.get('requestCity').trim(),
-            hospitalName: formData.get('hospitalName').trim(),
-            message: formData.get('requestMessage').trim(),
-            status: 'active', // 'active', 'fulfilled', 'closed'
-            searchableCity: formData.get('requestCity').trim().toLowerCase(),
+        const reqData = { /* ... (same as before) ... */ 
+            requesterName: formData.get('requesterName').trim(), requesterContact: formData.get('requesterContact').trim(), requesterEmail: formData.get('requesterEmail').trim().toLowerCase(), requiredBloodGroup: formData.get('requiredBloodGroup'), city: formData.get('requestCity').trim(), hospitalName: formData.get('hospitalName').trim(), message: formData.get('requestMessage').trim(), status: 'active', searchableCity: formData.get('requestCity').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP 
+        };
+        if (!reqData.requesterName || !reqData.requesterContact || !reqData.requiredBloodGroup || !reqData.city || !reqData.hospitalName) { displayMessage("Required fields for emergency: Name, Contact Phone, Blood Group, City, Hospital.", "error"); return; }
+        if (!/^\+?[0-9\s-]{7,15}$/.test(reqData.requesterContact)) { displayMessage("Please enter a valid contact phone.", "error"); return; }
+        if (reqData.requesterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reqData.requesterEmail)) { displayMessage("Please enter a valid contact email.", "error"); return; }
+        database.ref('emergencyRequests').push().set(reqData)
+            .then(() => { displayMessage('Emergency request submitted!', 'success'); if (emergencyRequestForm) emergencyRequestForm.reset(); showSection('viewRequests'); })
+            .catch(error => { console.error("Error submitting emergency request:", error); displayMessage('Failed to submit request. ' + error.message, 'error'); });
+    }
+
+    function handleOfferToHelp(requestId, requestCity, requestBloodGroup) {
+        const offererName = prompt("Thank you for offering to help!\nPlease enter your Name:");
+        if (!offererName || offererName.trim() === "") {
+            alert("Name is required to make an offer.");
+            return;
+        }
+        const offererContact = prompt("Please enter your Contact Phone Number:");
+        if (!offererContact || !/^\+?[0-9\s-]{7,15}$/.test(offererContact.trim())) {
+            alert("A valid phone number is required.");
+            return;
+        }
+
+        const offerData = {
+            offererName: offererName.trim(),
+            offererContact: offererContact.trim(),
             createdAt: firebase.database.ServerValue.TIMESTAMP
         };
 
-        if (!requestData.requesterName || !requestData.requesterContact || !requestData.requiredBloodGroup || !requestData.city || !requestData.hospitalName) {
-            displayMessage("Required fields for emergency request: Your Name, Contact Phone, Blood Group, City, Hospital.", "error");
-            return;
-        }
-        if (!/^\+?[0-9\s-]{7,15}$/.test(requestData.requesterContact)) {
-            displayMessage("Please enter a valid contact phone number.", "error");
-            return;
-        }
-         if (requestData.requesterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestData.requesterEmail)) {
-            displayMessage("Please enter a valid contact email address.", "error");
-            return;
-        }
-
-        const newRequestRef = database.ref('emergencyRequests').push();
-        newRequestRef.set(requestData)
+        database.ref(`emergencyRequests/${requestId}/offers`).push(offerData)
             .then(() => {
-                displayMessage('Emergency request submitted successfully!', 'success');
-                if (emergencyRequestForm) emergencyRequestForm.reset();
-                showSection('viewRequests'); // Switch to view requests page
+                displayMessage("Your offer to help has been submitted successfully!", "success");
+                // Optionally, update the request to indicate an offer has been made or increment a counter
+                // For simplicity, the real-time listener will re-render the card with new offer count.
             })
             .catch(error => {
-                console.error("Error submitting emergency request:", error);
-                displayMessage('Failed to submit emergency request. ' + error.message, 'error');
+                console.error("Error submitting offer:", error);
+                displayMessage("Failed to submit your offer. " + error.message, "error");
             });
     }
+
 
     function loadEmergencyRequestsFromFirebase() {
         if (loadingIndicator && sections.viewRequests.classList.contains('active')) {
              loadingIndicator.style.display = 'block';
         }
-        const requestsRef = database.ref('emergencyRequests').orderByChild('status').equalTo('active'); // Only load active requests
+        // Listen to all active requests
+        const requestsRef = database.ref('emergencyRequests').orderByChild('status').equalTo('active');
 
         requestsRef.on('value', (snapshot) => {
             allEmergencyRequestsData = [];
@@ -1207,7 +656,7 @@
                     allEmergencyRequestsData.push(request);
                 });
             }
-            renderEmergencyRequests();
+            renderEmergencyRequests(); // This will now also trigger finding matching donors for each request
              if (loadingIndicator && sections.viewRequests.classList.contains('active')) {
                  loadingIndicator.style.display = 'none';
             }
@@ -1215,7 +664,36 @@
             console.error("Error loading emergency requests:", error);
             displayMessage("Error fetching emergency requests: " + error.message, "error");
             if (loadingIndicator) loadingIndicator.style.display = 'none';
-            renderEmergencyRequests(); // Attempt to render even if error
+            renderEmergencyRequests();
+        });
+    }
+
+    function findMatchingDonors(requestBloodGroup, requestCity) {
+        if (!allDonorsData || allDonorsData.length === 0) {
+            return []; // No donors loaded yet or none exist
+        }
+        // Normalize requestCity for matching
+        const normalizedRequestCity = requestCity.trim().toLowerCase();
+
+        return allDonorsData.filter(donor => {
+            if (!donor.availability) return false; // Only available donors
+
+            const donorCity = (donor.searchableCity || (donor.city || '').toLowerCase());
+            if (donorCity !== normalizedRequestCity) return false; // Must match city
+
+            // Blood group compatibility logic
+            if (requestBloodGroup === "Any") return true; // If "Any" is requested, all are compatible
+            if (donor.bloodGroup === requestBloodGroup) return true;
+
+            // Standard compatibility (recipient receiving from donor)
+            const compatibility = {
+                'A+': ['A+', 'A-', 'O+', 'O-'], 'A-': ['A-', 'O-'],
+                'B+': ['B+', 'B-', 'O+', 'O-'], 'B-': ['B-', 'O-'],
+                'AB+': ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'], // Universal recipient
+                'AB-': ['A-', 'B-', 'AB-', 'O-'],
+                'O+': ['O+', 'O-'], 'O-': ['O-'] // Universal donor (O-)
+            };
+            return compatibility[requestBloodGroup] && compatibility[requestBloodGroup].includes(donor.bloodGroup);
         });
     }
 
@@ -1224,26 +702,27 @@
         emergencyRequestsListContainer.innerHTML = '';
 
         if (allEmergencyRequestsData.length === 0) {
-            if (loadingIndicator && loadingIndicator.style.display === 'none') {
-                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center; color: var(--text-color-light);">No active emergency requests at the moment.</p>`;
+            // ... (no requests message) ...
+             if (loadingIndicator && loadingIndicator.style.display === 'none') {
+                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center;">No active emergency requests at the moment.</p>`;
             } else if (!loadingIndicator) {
-                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center; color: var(--text-color-light);">No active emergency requests at the moment.</p>`;
+                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center;">No active emergency requests at the moment.</p>`;
             }
             return;
         }
 
-        // Sort by newest first
         const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         sortedRequests.forEach(request => {
             const requestCard = document.createElement('div');
             requestCard.className = 'emergency-card';
             
-            let requestedDate = 'N/A';
-            if (request.createdAt) {
-                try {
-                    requestedDate = new Date(request.createdAt).toLocaleString();
-                } catch (e) { console.warn("Could not parse date for request:", request.id, request.createdAt); }
+            let requestedDate = request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A';
+            const offersCount = request.offers ? Object.keys(request.offers).length : 0;
+
+            let offersSummaryHtml = `<p class="offers-summary">Offers Received: ${offersCount}</p>`;
+            if (offersCount > 0) {
+                offersSummaryHtml += `<button class="btn-view-offers" data-request-id="${request.id}">View Offers</button>`;
             }
 
             requestCard.innerHTML = `
@@ -1255,33 +734,82 @@
                 <p><strong>Hospital:</strong> ${request.hospitalName || 'N/A'}</p>
                 ${request.message ? `<p><strong>Message:</strong> ${request.message}</p>` : ''}
                 <p><strong>Status:</strong> <span class="status-active">${request.status.toUpperCase()}</span></p>
+                <div class="emergency-card-actions">
+                    <button class="btn-offer-help" data-request-id="${request.id}" data-city="${request.city}" data-bloodgroup="${request.requiredBloodGroup}">Offer to Help</button>
+                </div>
+                ${offersSummaryHtml}
                 <p class="timestamp">Posted: ${requestedDate}</p>
+                <div class="matching-donors-section" id="matching-donors-${request.id}">
+                    <h4>Potential Matching Donors:</h4>
+                    <div class="loading-donors-spinner" style="display:none; text-align:center;">Loading matching donors...</div>
+                    </div>
             `;
-            // Later, add buttons here to "Mark as Fulfilled" if user auth is implemented
             emergencyRequestsListContainer.appendChild(requestCard);
+
+            // --- Display Matching Donors ---
+            const matchingDonorsContainer = requestCard.querySelector(`#matching-donors-${request.id}`);
+            const spinner = matchingDonorsContainer.querySelector('.loading-donors-spinner');
+            if(spinner) spinner.style.display = 'block';
+
+            // Simulate a slight delay or use a promise if findMatchingDonors becomes async
+            setTimeout(() => { // Using timeout to ensure UI updates before potential blocking JS
+                const matchingDonors = findMatchingDonors(request.requiredBloodGroup, request.city);
+                if(spinner) spinner.style.display = 'none';
+
+                if (matchingDonors.length > 0) {
+                    matchingDonors.slice(0, 5).forEach(donor => { // Show top 5 matches
+                        const donorDiv = document.createElement('div');
+                        donorDiv.className = 'matching-donor-item';
+                        donorDiv.innerHTML = `
+                            <p><strong>Name:</strong> ${donor.name}</p>
+                            <p><strong>Blood Group:</strong> ${donor.bloodGroup} | <strong>City:</strong> ${donor.city}</p>
+                        `;
+                        const contactBtn = document.createElement('button');
+                        contactBtn.className = 'btn-contact-donor';
+                        contactBtn.textContent = 'View Donor Contact';
+                        contactBtn.style.fontSize = '12px'; 
+                        contactBtn.style.padding = '5px 8px';
+                        contactBtn.addEventListener('click', () => showContactModal(donor));
+                        donorDiv.appendChild(contactBtn);
+                        matchingDonorsContainer.appendChild(donorDiv);
+                    });
+                } else {
+                    matchingDonorsContainer.innerHTML += '<p style="font-size:12px; opacity:0.8;">No registered donors currently match this request\'s criteria and are marked available.</p>';
+                }
+            }, 100); // Small delay to allow main rendering
+        });
+
+        // Add event listeners for the new buttons
+        emergencyRequestsListContainer.querySelectorAll('.btn-offer-help').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const requestId = event.target.dataset.requestId;
+                const city = event.target.dataset.city;
+                const bloodGroup = event.target.dataset.bloodgroup;
+                handleOfferToHelp(requestId, city, bloodGroup);
+            });
+        });
+        emergencyRequestsListContainer.querySelectorAll('.btn-view-offers').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const requestId = event.target.dataset.requestId;
+                const requestData = allEmergencyRequestsData.find(r => r.id === requestId);
+                if (requestData) {
+                    showViewOffersModal(requestData);
+                }
+            });
         });
     }
 
 
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
-        if (donorForm) {
-            donorForm.addEventListener('submit', addDonorToFirebase);
-        }
-        if (emergencyRequestForm) {
-            emergencyRequestForm.addEventListener('submit', addEmergencyRequestToFirebase);
-        }
+        if (donorForm) donorForm.addEventListener('submit', addDonorToFirebase);
+        if (emergencyRequestForm) emergencyRequestForm.addEventListener('submit', addEmergencyRequestToFirebase);
+        if (filterBloodGroup) filterBloodGroup.addEventListener('change', renderFilteredDonors);
+        if (filterCity) filterCity.addEventListener('input', renderFilteredDonors);
 
-        if (filterBloodGroup) {
-            filterBloodGroup.addEventListener('change', renderFilteredDonors);
-        }
-        if (filterCity) {
-            filterCity.addEventListener('input', renderFilteredDonors);
-        }
-
-        showSection('register'); // Default section
-        loadDonorsFromFirebase(); 
-        loadEmergencyRequestsFromFirebase(); // Load requests, will only render if section is active later or data changes
+        showSection('register'); 
+        loadDonorsFromFirebase(); // Load all donors once for matching
+        loadEmergencyRequestsFromFirebase(); 
     });
 
     const adminLink = document.getElementById('link-admin');
@@ -1289,11 +817,8 @@
         adminLink.addEventListener('click', function(e) {
             e.preventDefault();
             const password = prompt("Enter admin password:");
-            if (password === "admin123") {
-                window.location.href = 'admin.html'; 
-            } else if (password !== null) { 
-                alert("Incorrect password. Access denied.");
-            }
+            if (password === "admin123") { window.location.href = 'admin.html'; } 
+            else if (password !== null) { alert("Incorrect password. Access denied."); }
         });
     }
 </script>
