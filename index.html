@@ -272,6 +272,66 @@
             transform: translateY(-2px);
         }
 
+        /* Google Sign-in Button Styles */
+        .google-signin-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #4285F4; /* Google Blue */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .google-signin-button:hover {
+            background-color: #357ae8; /* Darker Google Blue */
+            transform: translateY(-2px);
+        }
+
+        .google-signin-button img {
+            height: 24px;
+            width: 24px;
+            background-color: white;
+            border-radius: 2px;
+            padding: 2px;
+        }
+
+        .or-divider {
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-color-light);
+            position: relative;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: var(--border-color-light);
+        }
+        .or-divider::before { left: 0; }
+        .or-divider::after { right: 0; }
+
+        body.dark .or-divider {
+            color: var(--text-color-dark);
+        }
+        body.dark .or-divider::before,
+        body.dark .or-divider::after {
+            background-color: var(--border-color-dark);
+        }
+
+
         /* Dark Mode Toggle */
         .toggle-dark {
             position: relative;
@@ -318,70 +378,6 @@
         .toggle-dark input:checked + .toggle-thumb {
             left: 28px;
             transform: rotate(360deg);
-        }
-
-        /* Google Sign-In Button */
-        .google-signin-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #4285F4; /* Google Blue */
-            color: white;
-            border: none;
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            width: 100%;
-            margin-top: 15px;
-            text-decoration: none; /* For a tags */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .google-signin-button:hover {
-            background-color: #357ae8;
-            transform: translateY(-2px);
-        }
-
-        .google-signin-button img {
-            margin-right: 10px;
-            height: 20px;
-            width: 20px;
-        }
-
-        .or-divider {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 14px;
-            color: var(--text-color-light);
-            position: relative;
-        }
-
-        .or-divider::before,
-        .or-divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background-color: var(--border-color-light);
-        }
-
-        .or-divider::before {
-            left: 0;
-        }
-
-        .or-divider::after {
-            right: 0;
-        }
-        body.dark .or-divider {
-            color: var(--text-color-dark);
-        }
-        body.dark .or-divider::before,
-        body.dark .or-divider::after {
-            background-color: var(--border-color-dark);
         }
 
 
@@ -462,6 +458,14 @@
                 padding: 12px;
                 font-size: 16px;
             }
+            .google-signin-button {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+            .google-signin-button img {
+                height: 20px;
+                width: 20px;
+            }
         }
     </style>
 </head>
@@ -508,12 +512,12 @@
             <input type="email" id="loginEmail" placeholder="Email" required />
             <input type="password" id="loginPassword" placeholder="Password" required />
             <input type="submit" value="Log In" class="form-submit-button" />
+            <div class="or-divider">OR</div>
+            <button type="button" class="google-signin-button" id="googleLoginButton">
+                <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google logo"/>
+                Sign in with Google
+            </button>
         </form>
-        <div class="or-divider">OR</div>
-        <button id="googleSignInBtn" class="google-signin-button">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
-            Sign in with Google
-        </button>
     </section>
 
     <section id="signup" style="display:none;">
@@ -523,12 +527,12 @@
             <input type="email" id="signupEmail" placeholder="Email" required />
             <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" required />
             <input type="submit" value="Sign Up" class="form-submit-button" />
+            <div class="or-divider">OR</div>
+            <button type="button" class="google-signin-button" id="googleSignupButton">
+                <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="Google logo"/>
+                Sign up with Google
+            </button>
         </form>
-        <div class="or-divider">OR</div>
-        <button id="googleSignUpBtn" class="google-signin-button">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" />
-            Sign up with Google
-        </button>
     </section>
 </main>
 
@@ -544,7 +548,7 @@
     const firebaseConfig = {
         apiKey: "AIzaSyCWjeZwrqCwe5NWN-Pdm5GPkp1_qJrCuSU",
         authDomain: "bloodlink-278a4.firebaseapp.com",
-        databaseURL: "https://bloodlink-278a4-default-rtdb.firebaseio.com",
+        databaseURL: "https://bloodlink-278a4-default-rtdb.firebaseio.com", // Updated databaseURL
         projectId: "bloodlink-278a4",
         storageBucket: "bloodlink-278a4.firebasestorage.app",
         messagingSenderId: "88657445618",
@@ -556,7 +560,6 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const auth = firebase.auth(); // Initialize Firebase Auth
-    const googleProvider = new firebase.auth.GoogleAuthProvider(); // Google Auth Provider
 
     // Section navigation
     const aboutSection = document.getElementById('about');
@@ -634,14 +637,7 @@
         });
     }
 
-    // Helper function for redirection after successful login/signup
-    function handleAuthSuccess(user) {
-        alert(`Welcome, ${user.displayName || user.email}! Redirecting to the Blood Link app...`);
-        sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({ name: user.displayName || user.email, email: user.email }));
-        window.location.href = 'homepage.html'; // Redirect to the main application
-    }
-
-    // Signup form logic (email/password)
+    // Signup form logic (using Realtime Database - insecure for passwords)
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
         signupForm.addEventListener('submit', function(e) {
@@ -665,33 +661,38 @@
                 return;
             }
 
-            // Using Firebase Authentication for email/password signup
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Save additional user info (like name) to Realtime Database
-                    database.ref('users/' + user.uid).set({
-                        name: name,
-                        email: email,
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    })
-                    .then(() => {
-                        handleAuthSuccess({ displayName: name, email: email });
-                        signupForm.reset();
-                    })
-                    .catch(error => {
-                        console.error("Error saving user data to DB:", error);
-                        alert('Account created, but failed to save additional info: ' + error.message);
-                    });
+            // Check if user already exists in Firebase Realtime Database
+            database.ref('users').orderByChild('email').equalTo(email).once('value')
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        alert('User with this email already exists.');
+                    } else {
+                        // Save user to Firebase Realtime Database
+                        database.ref('users').push({
+                            name: name,
+                            email: email,
+                            password: password, // IMPORTANT: In a real application, hash passwords!
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        })
+                        .then(() => {
+                            alert('Account created successfully! Please log in.');
+                            this.reset();
+                            showSection(loginSection, navLinkLogin);
+                        })
+                        .catch(error => {
+                            console.error("Error creating user:", error);
+                            alert('Failed to create account: ' + error.message);
+                        });
+                    }
                 })
                 .catch(error => {
-                    console.error("Error creating user with email/password:", error);
-                    alert('Failed to create account: ' + error.message);
+                    console.error("Error checking existing user:", error);
+                    alert('An error occurred during signup. Please try again.');
                 });
         });
     }
 
-    // Login form logic (email/password)
+    // Login form logic (using Realtime Database - insecure for passwords)
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -709,81 +710,78 @@
                 return;
             }
 
-            // Using Firebase Authentication for email/password login
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Fetch name from Realtime Database if available, otherwise use email
-                    database.ref('users/' + user.uid).once('value')
-                        .then(snapshot => {
-                            const userData = snapshot.val();
-                            const userName = userData && userData.name ? userData.name : user.email;
-                            handleAuthSuccess({ displayName: userName, email: user.email });
-                        })
-                        .catch(error => {
-                            console.error("Error fetching user data from DB:", error);
-                            // Proceed with login even if name fetch fails
-                            handleAuthSuccess({ displayName: user.email, email: user.email });
-                        });
+            // Authenticate user against Firebase Realtime Database
+            database.ref('users').orderByChild('email').equalTo(email).once('value')
+                .then(snapshot => {
+                    if (!snapshot.exists()) {
+                        alert('Invalid email or password.');
+                        return;
+                    }
+
+                    let userFound = false;
+                    snapshot.forEach(childSnapshot => {
+                        const user = childSnapshot.val();
+                        // IMPORTANT: In a real application, compare hashed passwords
+                        if (user.password === password) {
+                            alert(`Welcome back, ${user.name}! Redirecting to the Blood Link app...`);
+                            sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.name, email: user.email}));
+                            window.location.href = 'homepage.html'; // Redirect to the main application
+                            userFound = true;
+                        }
+                    });
+
+                    if (!userFound) {
+                        alert('Invalid email or password.');
+                    }
                 })
                 .catch(error => {
-                    console.error("Error during login with email/password:", error);
-                    alert('Login failed: ' + error.message);
+                    console.error("Error during login:", error);
+                    alert('An error occurred during login. Please try again.');
                 });
         });
     }
 
-    // Google Sign-In for Login
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-    if (googleSignInBtn) {
-        googleSignInBtn.addEventListener('click', () => {
+    // --- Google Sign-In Logic ---
+    const googleLoginButton = document.getElementById('googleLoginButton');
+    const googleSignupButton = document.getElementById('googleSignupButton');
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    // Common function to handle Google Sign-In success/failure
+    function handleGoogleSignInResult(result) {
+        const user = result.user;
+        const displayName = user.displayName;
+        const email = user.email;
+
+        // Store user info in session storage (or a more persistent method if needed)
+        sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({ name: displayName, email: email }));
+
+        alert(`Welcome, ${displayName}! Redirecting to the Blood Link app...`);
+        window.location.href = 'homepage.html'; // Redirect to your main application
+    }
+
+    function handleGoogleSignInError(error) {
+        console.error("Google Sign-In Error:", error);
+        // Handle specific error codes
+        if (error.code === 'auth/popup-closed-by-user') {
+            alert('Google Sign-In was cancelled. Please try again.');
+        } else {
+            alert('Failed to sign in with Google: ' + error.message);
+        }
+    }
+
+    if (googleLoginButton) {
+        googleLoginButton.addEventListener('click', () => {
             auth.signInWithPopup(googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    // Check if user already exists in Realtime Database, if not, add them
-                    database.ref('users/' + user.uid).once('value')
-                        .then(snapshot => {
-                            if (!snapshot.exists()) {
-                                database.ref('users/' + user.uid).set({
-                                    name: user.displayName,
-                                    email: user.email,
-                                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                                });
-                            }
-                            handleAuthSuccess(user);
-                        });
-                })
-                .catch((error) => {
-                    console.error("Google Sign-In Error:", error);
-                    alert('Google Sign-In failed: ' + error.message);
-                });
+                .then(handleGoogleSignInResult)
+                .catch(handleGoogleSignInError);
         });
     }
 
-    // Google Sign-Up (same as login, as Firebase handles creation if user doesn't exist)
-    const googleSignUpBtn = document.getElementById('googleSignUpBtn');
-    if (googleSignUpBtn) {
-        googleSignUpBtn.addEventListener('click', () => {
+    if (googleSignupButton) {
+        googleSignupButton.addEventListener('click', () => {
             auth.signInWithPopup(googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    // Check if user already exists in Realtime Database, if not, add them
-                    database.ref('users/' + user.uid).once('value')
-                        .then(snapshot => {
-                            if (!snapshot.exists()) {
-                                database.ref('users/' + user.uid).set({
-                                    name: user.displayName,
-                                    email: user.email,
-                                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                                });
-                            }
-                            handleAuthSuccess(user);
-                        });
-                })
-                .catch((error) => {
-                    console.error("Google Sign-Up Error:", error);
-                    alert('Google Sign-Up failed: ' + error.message);
-                });
+                .then(handleGoogleSignInResult)
+                .catch(handleGoogleSignInError);
         });
     }
 
