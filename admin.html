@@ -106,18 +106,13 @@
         body.dark .admin-emergency-card {
             background-color: var(--warning-bg-light); /* Darker warning background */
             color: var(--warning-text-light);
-            border-left-color: var(--warning-border);
+             border-left-color: var(--warning-border);
         }
         .admin-user-card { /* New style for user cards */
             border-left: 5px solid var(--secondary-color);
         }
-        .admin-google-user-card { /* Specific style for Google users */
+        .admin-google-user-card { /* New style for Google user cards */
             border-left: 5px solid #4285F4; /* Google Blue */
-            background-color: #e8f0fe; /* Light Google Blue background */
-        }
-        body.dark .admin-google-user-card {
-            background-color: #1a2b53; /* Darker Google Blue background */
-            border-left-color: #4285F4;
         }
 
 
@@ -140,7 +135,7 @@
             color: var(--secondary-color);
         }
         .admin-google-user-card h4 {
-            color: #4285F4; /* Google Blue for title */
+            color: #4285F4; /* Google Blue */
         }
 
 
@@ -150,8 +145,8 @@
         body.dark .admin-emergency-card p { color: var(--warning-text-light); }
         .admin-user-card p { color: var(--text-color-light); } /* Ensure user text color */
         body.dark .admin-user-card p { color: var(--text-color-dark); }
-        .admin-google-user-card p { color: #343a40; } /* Text color for Google cards */
-        body.dark .admin-google-user-card p { color: #e0e0e0; }
+        .admin-google-user-card p { color: var(--text-color-light); }
+        body.dark .admin-google-user-card p { color: var(--text-color-dark); }
 
 
         .admin-card p strong{font-weight:500}
@@ -161,8 +156,7 @@
         body.dark .admin-card .timestamp{color:#6b7280}
         .admin-emergency-card .timestamp { color: var(--warning-text-light); opacity: 0.8;}
         .admin-user-card .timestamp { color: #9ca3af; opacity: 0.8;}
-        .admin-google-user-card .timestamp { color: #6b7280; opacity: 0.8;}
-        body.dark .admin-google-user-card .timestamp { color: #9ca3af; opacity: 0.8;}
+        .admin-google-user-card .timestamp { color: #9ca3af; opacity: 0.8;}
 
 
         .admin-actions{display:flex;gap:10px;margin-top:15px;justify-content:flex-end}
@@ -238,20 +232,19 @@
 
         <div class="section-divider"></div>
 
-        <h3>Manage All User Credentials</h3>
+        <h3>Manage User Credentials (Email/Password)</h3>
         <div id="adminUsersListContainer">
-            <p class="no-users-message" style="text-align:center;">Loading user credentials or none registered yet...</p>
+            <p class="no-users-message" style="text-align:center;">Loading email/password user credentials or none registered yet...</p>
         </div>
-        <button id="clearAllUsersBtn" class="btn-danger">Clear All Users</button>
+        <button id="clearAllUsersBtn" class="btn-danger">Clear All Email/Password Users</button>
 
         <div class="section-divider"></div>
 
-        <h3>Users Logged in with Google</h3>
+        <h3>Manage Google Logins</h3>
         <div id="adminGoogleUsersListContainer">
-            <p class="no-google-users-message" style="text-align:center;">Loading Google users or none found yet...</p>
+            <p class="no-google-users-message" style="text-align:center;">Loading Google login users or none found...</p>
         </div>
         <button id="clearAllGoogleUsersBtn" class="btn-danger">Clear All Google Users</button>
-
 
     </section>
 
@@ -263,7 +256,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script> <script>
     // --- Firebase Configuration ---
     const firebaseConfig = {
         apiKey: "AIzaSyCWjeZwrqCwe5NWN-Pdm5GPkp1_qJrCuSU",
@@ -279,27 +272,32 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const auth = firebase.auth(); // Initialize Firebase Auth
 
     // --- Global variables ---
     let allAdminDonorsData = [];
     let allAdminEmergencyRequestsData = [];
-    let allAdminUsersData = [];
+    let allAdminEmailPasswordUsersData = []; // Renamed for clarity
     let allAdminGoogleUsersData = []; // New global variable for Google user data
+
     let donorsLoaded = false;
     let requestsLoaded = false;
-    let usersLoaded = false;
+    let emailPasswordUsersLoaded = false; // New flag for email/password user data loading
     let googleUsersLoaded = false; // New flag for Google user data loading
+
 
     // --- DOM Elements ---
     const adminDonorsListContainer = document.getElementById('adminDonorsListContainer');
     const adminEmergencyRequestsListContainer = document.getElementById('adminEmergencyRequestsListContainer');
     const adminUsersListContainer = document.getElementById('adminUsersListContainer');
-    const adminGoogleUsersListContainer = document.getElementById('adminGoogleUsersListContainer'); // New DOM element
+    const adminGoogleUsersListContainer = document.getElementById('adminGoogleUsersListContainer'); // New DOM element for Google users
+
     const messageContainer = document.getElementById('messageContainer');
     const clearAllDonorsBtn = document.getElementById('clearAllDonorsBtn');
     const clearAllEmergencyRequestsBtn = document.getElementById('clearAllEmergencyRequestsBtn');
     const clearAllUsersBtn = document.getElementById('clearAllUsersBtn');
-    const clearAllGoogleUsersBtn = document.getElementById('clearAllGoogleUsersBtn'); // New clear button for Google users
+    const clearAllGoogleUsersBtn = document.getElementById('clearAllGoogleUsersBtn'); // New clear button
+
     const loadingIndicator = document.getElementById('loadingIndicator');
 
     // --- UI & Dark Mode ---
@@ -314,8 +312,8 @@
     }
 
     function updateLoadingIndicator() {
-        // Only hide loading indicator when all data types are loaded
-        if (donorsLoaded && requestsLoaded && usersLoaded && googleUsersLoaded) {
+        // Only hide loading indicator when all four data types are loaded
+        if (donorsLoaded && requestsLoaded && emailPasswordUsersLoaded && googleUsersLoaded) {
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         } else {
             if (loadingIndicator) loadingIndicator.style.display = 'block';
@@ -368,7 +366,7 @@
         }
     }
     function clearAllEmergencyRequestsFromFirebase() {
-           if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL EMERGENCY REQUESTS? This is irreversible!')) {
+            if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL EMERGENCY REQUESTS? This is irreversible!')) {
                 database.ref('emergencyRequests').remove()
                     .then(() => displayMessage('All emergency requests have been cleared!', 'success'))
                     .catch(error => { console.error("Error clearing requests:", error); displayMessage('Failed to clear requests. ' + error.message, 'error'); });
@@ -430,72 +428,68 @@
         });
     }
 
-    // --- Firebase Admin User Management ---
-    function deleteUserFromFirebase(userId) {
-        if (confirm('Delete this user? This will permanently remove their account.')) {
+    // --- Firebase Admin User Management (Email/Password from Realtime DB) ---
+    function deleteEmailPasswordUserFromFirebase(userId) {
+        if (confirm('Delete this user? This will permanently remove their account from the Realtime Database.')) {
             database.ref('users/' + userId).remove()
-                .then(() => displayMessage('User deleted successfully!', 'success'))
-                .catch(error => { console.error("Error deleting user:", error); displayMessage('Failed to delete user. ' + error.message, 'error'); });
+                .then(() => displayMessage('Email/Password user deleted from Realtime Database!', 'success'))
+                .catch(error => { console.error("Error deleting user:", error); displayMessage('Failed to delete email/password user. ' + error.message, 'error'); });
         }
     }
 
-    function clearAllUsersFromFirebase() {
-        if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL USER CREDENTIALS? This is irreversible!')) {
+    function clearAllEmailPasswordUsersFromFirebase() {
+        if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL EMAIL/PASSWORD USER CREDENTIALS from the Realtime Database? This is irreversible!')) {
             database.ref('users').remove()
-                .then(() => displayMessage('All user credentials have been cleared!', 'success'))
-                .catch(error => { console.error("Error clearing users:", error); displayMessage('Failed to clear users. ' + error.message, 'error'); });
+                .then(() => displayMessage('All email/password user credentials cleared from Realtime Database!', 'success'))
+                .catch(error => { console.error("Error clearing users:", error); displayMessage('Failed to clear email/password users. ' + error.message, 'error'); });
         }
     }
 
-    function loadAdminUsersFromFirebase() {
-        usersLoaded = false; updateLoadingIndicator();
+    function loadAdminEmailPasswordUsersFromFirebase() {
+        emailPasswordUsersLoaded = false; updateLoadingIndicator();
         database.ref('users').on('value', (snapshot) => {
-            allAdminUsersData = [];
-            allAdminGoogleUsersData = []; // Reset Google users data
+            allAdminEmailPasswordUsersData = [];
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const user = childSnapshot.val();
                     user.id = childSnapshot.key;
-                    allAdminUsersData.push(user);
-                    if (user.loginMethod === 'google') { // Check for Google login method
-                        allAdminGoogleUsersData.push(user);
+                    // Filter out users who might have signed in with Google if they also have a record here
+                    // (though Firebase Auth is the primary source for login methods)
+                    if (!user.providerId || user.providerId === 'password') { // Assuming 'password' for email/password
+                        allAdminEmailPasswordUsersData.push(user);
                     }
                 });
             }
-            renderAdminUsers();
-            renderAdminGoogleUsers(); // Render Google users specifically
-            usersLoaded = true; updateLoadingIndicator();
-            googleUsersLoaded = true; updateLoadingIndicator(); // Mark Google users as loaded too
+            renderAdminEmailPasswordUsers();
+            emailPasswordUsersLoaded = true; updateLoadingIndicator();
         }, (error) => {
-            console.error("Error loading users:", error);
-            displayMessage("Error fetching user credentials: " + error.message, "error");
-            usersLoaded = true; updateLoadingIndicator(); renderAdminUsers();
-            googleUsersLoaded = true; updateLoadingIndicator(); renderAdminGoogleUsers();
+            console.error("Error loading email/password users:", error);
+            displayMessage("Error fetching email/password user credentials: " + error.message, "error");
+            emailPasswordUsersLoaded = true; updateLoadingIndicator(); renderAdminEmailPasswordUsers();
         });
     }
 
-    function renderAdminUsers() {
+    function renderAdminEmailPasswordUsers() {
         if (!adminUsersListContainer) return;
         adminUsersListContainer.innerHTML = '';
 
-        if (allAdminUsersData.length === 0) {
-            adminUsersListContainer.innerHTML = `<p style="text-align:center;">No user credentials found.</p>`;
+        if (allAdminEmailPasswordUsersData.length === 0) {
+            adminUsersListContainer.innerHTML = `<p style="text-align:center;">No email/password user credentials found.</p>`;
             return;
         }
-        allAdminUsersData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); // Newest first
+        allAdminEmailPasswordUsersData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); // Newest first
 
-        allAdminUsersData.forEach(user => {
+        allAdminEmailPasswordUsersData.forEach(user => {
             const card = document.createElement('div');
-            // Check if user is a Google user for specific styling
-            card.className = `admin-card admin-user-card ${user.loginMethod === 'google' ? 'admin-google-user-card' : ''}`;
+            card.className = 'admin-card admin-user-card';
             let regDate = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'N/A';
 
             card.innerHTML = `
                 <h4>User: ${user.name || 'N/A'}</h4>
                 <p><strong>ID:</strong> ${user.id}</p>
                 <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
-                <p><strong>Login Method:</strong> ${user.loginMethod || 'Email/Password'}</p>
-                <p class="timestamp">Registered/Last Login: ${regDate}</p>
+                <p><strong>Password (for demo):</strong> ${user.password || 'N/A'}</p>
+                <p class="timestamp">Registered: ${regDate}</p>
                 <div class="admin-actions">
                     <button class="btn-danger" data-user-id="${user.id}">Delete User</button>
                 </div>`;
@@ -504,52 +498,144 @@
 
         adminUsersListContainer.querySelectorAll('.btn-danger').forEach(button => {
             button.addEventListener('click', (event) => {
-                deleteUserFromFirebase(event.target.dataset.userId);
+                deleteEmailPasswordUserFromFirebase(event.target.dataset.userId);
             });
         });
     }
 
-    // --- Firebase Admin Google User Management (NEW) ---
+    // --- Firebase Admin Google User Management (NEW SECTION using Firebase Auth) ---
+
+    // Note: Deleting users via the client-side Firebase Auth SDK is generally not allowed
+    // for security reasons unless the user is currently signed in and deleting *their own* account.
+    // To truly delete a user (especially a Google-signed-in user) from the admin panel,
+    // you would typically need a backend (e.g., Firebase Cloud Function) that uses the Firebase Admin SDK.
+    // For demonstration purposes, we will simply remove it from the displayed list here.
     function deleteGoogleUserFromFirebase(userId) {
-        if (confirm('Delete this Google user? This will permanently remove their account.')) {
-            database.ref('users/' + userId).remove()
-                .then(() => displayMessage('Google user deleted successfully!', 'success'))
-                .catch(error => { console.error("Error deleting Google user:", error); displayMessage('Failed to delete Google user. ' + error.message, 'error'); });
+        if (confirm('Deleting Google users directly from the client-side Admin SDK is generally not allowed due to security. To permanently delete this user from Firebase Authentication, you would need a backend function (e.g., Firebase Cloud Function) using the Firebase Admin SDK. Do you want to proceed with removing it from this display only?')) {
+             displayMessage('Google user (ID: ' + userId + ') removed from display. To delete permanently, use Firebase Admin SDK via backend.', 'warning');
+             // Find and remove the user from the current display data
+             allAdminGoogleUsersData = allAdminGoogleUsersData.filter(user => user.uid !== userId);
+             renderAdminGoogleUsers();
         }
     }
 
     function clearAllGoogleUsersFromFirebase() {
-        if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL GOOGLE USER CREDENTIALS? This is irreversible!')) {
-            // Iterate through Google users and delete them individually
-            const deletePromises = allAdminGoogleUsersData.map(user => database.ref('users/' + user.id).remove());
-            Promise.all(deletePromises)
-                .then(() => displayMessage('All Google user credentials have been cleared!', 'success'))
-                .catch(error => { console.error("Error clearing Google users:", error); displayMessage('Failed to clear Google users. ' + error.message, 'error'); });
+        if (confirm('WARNING: Clearing ALL Google users directly from the client-side Admin SDK is not possible for security reasons. This action would require a backend function using the Firebase Admin SDK. Do you want to clear the displayed list only?')) {
+            allAdminGoogleUsersData = [];
+            renderAdminGoogleUsers();
+            displayMessage('Displayed Google users cleared. To delete permanently from Firebase Auth, use Firebase Admin SDK via backend.', 'warning');
         }
     }
+
+    function loadAdminGoogleUsersFromFirebase() {
+        googleUsersLoaded = false;
+        updateLoadingIndicator();
+
+        // This is a simplified approach. For a real admin panel with many users,
+        // you'd use Firebase Admin SDK on a backend to list users.
+        // The client-side Auth SDK doesn't provide a direct way to list all users.
+        // We'll simulate by checking the currently authenticated user if applicable
+        // or by trying to infer from your Realtime Database `users` node, if it stores provider info.
+
+        // A more robust solution would involve a Firebase Cloud Function to list users:
+        // firebase.auth().listUsers(1000, nextPageToken) // example in Node.js Admin SDK
+
+        // For this client-side demo, we'll try to find users from your 'users' database path
+        // that *also* have a 'providerId' of 'google.com' (if you store it there).
+        // A direct way to list ALL users with provider info is not available on client side.
+
+        // Simulating fetching Google users. If your 'users' node in Realtime DB doesn't store
+        // provider information, this will only show what's in your 'users' node with 'google.com'
+        // as a provider. The best source for auth provider info is Firebase Auth directly (Admin SDK).
+        database.ref('users').on('value', (snapshot) => {
+            allAdminGoogleUsersData = [];
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const user = childSnapshot.val();
+                    user.id = childSnapshot.key;
+                    // Check if providerData exists and includes Google
+                    // (This assumes you're storing providerData in your /users node, which is not typical Firebase Auth behavior directly)
+                    if (user.providerData && Array.isArray(user.providerData)) {
+                        const isGoogleUser = user.providerData.some(provider => provider.providerId === 'google.com');
+                        if (isGoogleUser) {
+                            allAdminGoogleUsersData.push(user);
+                        }
+                    } else if (user.providerId === 'google.com') { // A simpler check if you just store providerId string
+                         allAdminGoogleUsersData.push(user);
+                    }
+                });
+            }
+            renderAdminGoogleUsers();
+            googleUsersLoaded = true;
+            updateLoadingIndicator();
+        }, (error) => {
+            console.error("Error loading Google users from RTDB:", error);
+            displayMessage("Error fetching Google login users: " + error.message, "error");
+            googleUsersLoaded = true; updateLoadingIndicator(); renderAdminGoogleUsers();
+        });
+
+        // *Alternative (more accurate but requires Admin SDK/Cloud Functions):*
+        // If you were using Firebase Admin SDK in a Cloud Function, you'd fetch users like this:
+        /*
+        auth.listUsers()
+            .then((listUsersResult) => {
+                listUsersResult.users.forEach((userRecord) => {
+                    const isGoogleUser = userRecord.providerData.some(
+                        (provider) => provider.providerId === 'google.com'
+                    );
+                    if (isGoogleUser) {
+                        allAdminGoogleUsersData.push({
+                            uid: userRecord.uid,
+                            displayName: userRecord.displayName,
+                            email: userRecord.email,
+                            creationTime: userRecord.metadata.creationTime,
+                            lastSignInTime: userRecord.metadata.lastSignInTime,
+                            providerId: 'google.com'
+                        });
+                    }
+                });
+                renderAdminGoogleUsers();
+                googleUsersLoaded = true;
+                updateLoadingIndicator();
+            })
+            .catch((error) => {
+                console.error("Error listing users from Firebase Auth:", error);
+                displayMessage("Error fetching Google login users from Auth: " + error.message, "error");
+                googleUsersLoaded = true; updateLoadingIndicator(); renderAdminGoogleUsers();
+            });
+        */
+    }
+
 
     function renderAdminGoogleUsers() {
         if (!adminGoogleUsersListContainer) return;
         adminGoogleUsersListContainer.innerHTML = '';
 
         if (allAdminGoogleUsersData.length === 0) {
-            adminGoogleUsersListContainer.innerHTML = `<p style="text-align:center;">No Google users found.</p>`;
+            adminGoogleUsersListContainer.innerHTML = `<p style="text-align:center;">No Google login users found.</p>`;
             return;
         }
-        allAdminGoogleUsersData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); // Newest first
+        // Sort by last sign-in time if available, otherwise creation time
+        allAdminGoogleUsersData.sort((a, b) => {
+            const timeA = (a.lastSignInTime || a.creationTime) || 0;
+            const timeB = (b.lastSignInTime || b.creationTime) || 0;
+            return timeB - timeA;
+        });
 
         allAdminGoogleUsersData.forEach(user => {
             const card = document.createElement('div');
-            card.className = 'admin-card admin-google-user-card'; // Specific class for Google users
-            let loginTimestamp = user.createdAt ? new Date(user.createdAt).toLocaleString() : 'N/A'; // Assuming createdAt is the login timestamp
+            card.className = 'admin-card admin-google-user-card';
+            const creationTime = user.creationTime ? new Date(user.creationTime).toLocaleString() : 'N/A';
+            const lastSignInTime = user.lastSignInTime ? new Date(user.lastSignInTime).toLocaleString() : 'N/A';
 
             card.innerHTML = `
-                <h4>Google User: ${user.name || 'N/A'}</h4>
-                <p><strong>ID:</strong> ${user.id}</p>
+                <h4>User: ${user.displayName || user.name || 'N/A'} (Google)</h4>
+                <p><strong>UID:</strong> ${user.uid || user.id}</p>
                 <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
-                <p class="timestamp">Last Login: ${loginTimestamp}</p>
+                <p class="timestamp">Account Created: ${creationTime}</p>
+                <p class="timestamp">Last Signed In: ${lastSignInTime}</p>
                 <div class="admin-actions">
-                    <button class="btn-danger" data-user-id="${user.id}">Delete Google User</button>
+                    <button class="btn-danger" data-user-id="${user.uid || user.id}">Delete Google User</button>
                 </div>`;
             adminGoogleUsersListContainer.appendChild(card);
         });
@@ -566,13 +652,13 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadAdminDonorsFromFirebase();
         loadAdminEmergencyRequestsFromFirebase();
-        loadAdminUsersFromFirebase(); // This now also loads Google users
-        // No need to call loadAdminGoogleUsersFromFirebase separately as loadAdminUsersFromFirebase populates allAdminGoogleUsersData
+        loadAdminEmailPasswordUsersFromFirebase(); // Load email/password user data
+        loadAdminGoogleUsersFromFirebase(); // Load Google user data
 
         if (clearAllDonorsBtn) clearAllDonorsBtn.addEventListener('click', clearAllDonorsFromFirebase);
         if (clearAllEmergencyRequestsBtn) clearAllEmergencyRequestsBtn.addEventListener('click', clearAllEmergencyRequestsFromFirebase);
-        if (clearAllUsersBtn) clearAllUsersBtn.addEventListener('click', clearAllUsersFromFirebase);
-        if (clearAllGoogleUsersBtn) clearAllGoogleUsersBtn.addEventListener('click', clearAllGoogleUsersFromFirebase); // Add event listener for new button
+        if (clearAllUsersBtn) clearAllUsersBtn.addEventListener('click', clearAllEmailPasswordUsersFromFirebase);
+        if (clearAllGoogleUsersBtn) clearAllGoogleUsersBtn.addEventListener('click', clearAllGoogleUsersFromFirebase);
     });
 </script>
 </body>
