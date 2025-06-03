@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blood Link | Donate & Find Blood (Firebase)</title>
+    <title>Blood Link | Donate, Find & Emergency Requests (Firebase)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- CSS Variables (Blood Link Themed) --- */
         :root {
             --primary-color: #e53e3e; /* Red for Blood Link */
             --primary-hover: #c53030; /* Darker Red */
+            --secondary-color: #3b82f6; /* Blue for emergency/actions */
+            --secondary-hover: #2563eb;
             --bg-light: #f8f9fa;
             --bg-dark: #212529;
             --card-bg-light: #ffffff;
@@ -26,6 +28,9 @@
             --success-text: #065f46;
             --error-bg: #fee2e2;
             --error-text: #991b1b;
+            --warning-bg: #fef3c7; /* Amber for emergency cards */
+            --warning-text: #92400e;
+            --warning-border: #f59e0b;
         }
 
         body {
@@ -59,6 +64,9 @@
             --success-text: #d1fae5;
             --error-bg: #991b1b;
             --error-text: #fee2e2;
+            --warning-bg: #78350f; 
+            --warning-text: #fef3c7;
+            --warning-border: #d97706;
         }
 
         /* --- Global Styles --- */
@@ -73,7 +81,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 30px;
+            padding: 10px 25px; /* Adjusted padding */
             box-shadow: 0 2px 8px var(--shadow-light);
             position: sticky;
             top: 0;
@@ -87,13 +95,13 @@
         }
 
         header img.logo {
-            height: 90px;
-            margin-right: 12px;
+            height: 70px; /* Slightly smaller logo */
+            margin-right: 10px;
             border-radius: 6px;
         }
 
         header h1.app-title {
-            font-size: 24px;
+            font-size: 22px; /* Slightly smaller title */
             color: var(--text-color-light);
             margin: 0;
             font-weight: 700;
@@ -105,17 +113,20 @@
         nav {
             display: flex;
             align-items: center;
+            flex-wrap: wrap; /* Allow nav items to wrap */
         }
 
         nav a {
-            margin-left: 25px;
+            margin-left: 18px; /* Adjusted margin */
             text-decoration: none;
             color: var(--text-color-light);
             font-weight: 500;
-            font-size: 15px;
+            font-size: 14px; /* Slightly smaller font */
             transition: color 0.3s ease;
             position: relative;
             padding-bottom: 4px;
+            margin-top: 5px; /* For wrapping */
+            margin-bottom: 5px; /* For wrapping */
         }
         body.dark nav a {
             color: var(--text-color-dark);
@@ -140,12 +151,25 @@
         nav a:hover, nav a.active-link {
             color: var(--primary-color);
         }
+        nav a.emergency-link { /* Special style for emergency links */
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        nav a.emergency-link:hover, nav a.emergency-link.active-link {
+            color: var(--primary-color);
+        }
+         body.dark nav a.emergency-link {
+            color: #60a5fa; /* Lighter blue for dark mode */
+        }
+        body.dark nav a.emergency-link:hover, body.dark nav a.emergency-link.active-link {
+            color: var(--primary-color);
+        }
         
         .app-mode-header {
-            font-size: 11px;
+            font-size: 10px; /* Smaller */
             color: var(--text-color-light);
-            margin-left: 20px;
-            padding: 5px 8px;
+            margin-left: 15px;
+            padding: 4px 7px;
             background-color: var(--bg-light);
             border: 1px solid var(--border-color-light);
             border-radius: 4px;
@@ -160,8 +184,8 @@
         main {
             width: 100%;
             max-width: 1100px;
-            padding: 30px 20px;
-            margin: 30px auto;
+            padding: 25px 20px;
+            margin: 25px auto;
             background-color: var(--card-bg-light);
             border-radius: 10px;
             box-shadow: 0 6px 20px var(--shadow-light);
@@ -187,10 +211,10 @@
 
         h2.section-title {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-weight: 600;
             color: var(--primary-color);
-            font-size: 28px;
+            font-size: 26px;
             border-bottom: 2px solid var(--border-color-light);
             padding-bottom: 10px;
         }
@@ -200,25 +224,31 @@
 
         h3 {
             color: var(--text-color-light);
-            margin-top: 25px;
-            margin-bottom: 12px;
+            margin-top: 20px;
+            margin-bottom: 10px;
             font-weight: 600;
-            font-size: 22px;
+            font-size: 20px;
         }
         body.dark h3 {
             color: var(--text-color-dark);
         }
-        .donor-card h3 {
+        .donor-card h3, .emergency-card h3 { /* Combined */
             margin-top: 0;
-            font-size: 20px;
+            font-size: 18px;
             color: var(--primary-color);
         }
+        .emergency-card h3 {
+            color: var(--warning-border); /* Distinct color for emergency titles */
+        }
+         body.dark .emergency-card h3 {
+             color: var(--warning-text);
+         }
 
 
         p {
-            font-size: 15px;
+            font-size: 14px; /* Smaller base paragraph */
             line-height: 1.6;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--text-color-light);
         }
          body.dark p {
@@ -228,27 +258,27 @@
         section#aboutSection ul {
             list-style: disc;
             padding-left: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         section#aboutSection ul li {
-            margin-bottom: 8px;
+            margin-bottom: 7px;
         }
 
 
         /* --- Forms --- */
-        form#donorForm {
+        form#donorForm, form#emergencyRequestForm { /* Combined */
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 15px; /* Reduced gap */
             max-width: 600px;
             margin: 0 auto;
         }
         
         label {
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px; /* Smaller label */
             color: var(--text-color-light);
-            margin-bottom: -10px;
+            margin-bottom: -8px; /* Adjusted */
         }
         body.dark label {
              color: var(--text-color-dark);
@@ -257,20 +287,26 @@
         input[type="text"],
         input[type="email"],
         input[type="tel"],
-        select {
+        select,
+        textarea { /* Added textarea */
             background-color: var(--bg-light);
             border: 1px solid var(--border-color-light);
             border-radius: 6px;
-            padding: 12px 15px;
-            font-size: 15px;
+            padding: 10px 12px; /* Adjusted padding */
+            font-size: 14px; /* Smaller font */
             color: var(--text-color-light);
             transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             width: 100%;
         }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
         body.dark input[type="text"],
         body.dark input[type="email"],
         body.dark input[type="tel"],
-        body.dark select {
+        body.dark select,
+        body.dark textarea {
             background-color: var(--bg-dark);
             border-color: var(--border-color-dark);
             color: var(--text-color-dark);
@@ -279,7 +315,8 @@
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="tel"]:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 2px var(--primary-color_alpha, rgba(229, 62, 62, 0.25));
@@ -289,26 +326,33 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 18px;
+            padding: 10px 15px; /* Adjusted padding */
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px; /* Adjusted font */
             cursor: pointer;
             font-weight: 600;
             transition: background-color 0.3s ease, transform 0.2s ease;
             text-align: center;
         }
+        form#emergencyRequestForm button[type="submit"] { /* Specific style for emergency form submit */
+            background-color: var(--secondary-color);
+        }
+        form#emergencyRequestForm button[type="submit"]:hover {
+            background-color: var(--secondary-hover);
+        }
+
         .btn-filter {
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 9px 14px;
+            font-size: 13px;
         }
          .btn-contact-donor {
-            padding: 8px 12px;
-            font-size: 14px;
-            margin-top: 10px;
-            background-color: #2563eb; 
+            padding: 7px 10px;
+            font-size: 13px;
+            margin-top: 8px;
+            background-color: var(--secondary-color); 
         }
         .btn-contact-donor:hover {
-            background-color: #1d4ed8;
+            background-color: var(--secondary-hover);
         }
 
 
@@ -322,8 +366,8 @@
             background-color: var(--card-bg-light);
             border: 1px solid var(--border-color-light);
             border-left: 5px solid var(--primary-color);
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 10px var(--shadow-light);
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
@@ -339,8 +383,8 @@
             box-shadow: 0 6px 15px var(--shadow-dark);
         }
         .donor-card p {
-            font-size: 14px;
-            margin-bottom: 6px;
+            font-size: 13px;
+            margin-bottom: 5px;
             color: var(--text-color-light);
         }
         body.dark .donor-card p {
@@ -352,24 +396,64 @@
         .donor-card .availability-yes { color: #10b981; font-weight: bold; }
         .donor-card .availability-no { color: #f59e0b; font-weight: bold; }
         .donor-card .timestamp {
-            font-size: 11px;
+            font-size: 10px; /* Smaller timestamp */
             color: #9ca3af;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         body.dark .donor-card .timestamp {
             color: #6b7280;
         }
 
+        /* --- Emergency Request Card Styling --- */
+        .emergency-card {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid var(--warning-border);
+            border-left: 5px solid var(--warning-border);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--shadow-light);
+        }
+        body.dark .emergency-card {
+            background-color: var(--warning-bg); /* Dark mode warning bg from variables */
+            color: var(--warning-text); /* Dark mode warning text from variables */
+            border-color: var(--warning-border);
+            border-left-color: var(--warning-border);
+        }
+        .emergency-card p {
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: var(--warning-text); /* Ensure p tags inherit card text color */
+        }
+        .emergency-card p strong {
+            font-weight: 600; /* Bolder for emphasis */
+        }
+        .emergency-card .timestamp {
+            font-size: 10px;
+            color: var(--warning-text);
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+         .emergency-card .status-active {
+            font-weight: bold;
+            color: #16a34a; /* Green for active status */
+        }
+        body.dark .emergency-card .status-active {
+            color: #4ade80; 
+        }
+
+
         /* --- Dark Mode Toggle --- */
         .toggle-dark-container {
-             margin-left: 20px;
+             margin-left: 15px;
         }
         .toggle-dark {
             position: relative;
             display: inline-block;
-            width: 50px; 
-            height: 26px; 
-            border-radius: 26px;
+            width: 46px; /* Smaller toggle */
+            height: 24px; 
+            border-radius: 24px;
             background-color: var(--border-color-light);
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -389,10 +473,10 @@
 
         .toggle-thumb {
             position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 22px; 
-            height: 22px; 
+            top: 1px; /* Adjusted for smaller toggle */
+            left: 1px; /* Adjusted for smaller toggle */
+            width: 20px; 
+            height: 20px; 
             background-color: white;
             border-radius: 50%;
             transition: transform 0.3s ease-in-out, background-color 0.3s ease;
@@ -403,17 +487,17 @@
         }
 
         .toggle-dark input:checked + .toggle-thumb {
-            transform: translateX(24px);
+            transform: translateX(22px); /* Adjusted for smaller toggle */
         }
         
         /* --- Footer --- */
         footer {
             width: 100%;
-            padding: 25px 20px;
+            padding: 20px;
             text-align: center;
             background-color: var(--header-bg-light);
             color: var(--text-color-light);
-            font-size: 14px;
+            font-size: 13px;
             margin-top: auto;
             box-shadow: 0 -2px 8px var(--shadow-light);
             border-top: 1px solid var(--border-color-light);
@@ -427,14 +511,14 @@
 
         /* --- Message Container & Loading --- */
         #messageContainer {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding: 0 15px;
         }
         .message {
-            padding: 12px 18px;
+            padding: 10px 15px;
             border-radius: 6px;
-            font-size: 15px;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 12px;
             text-align: center;
         }
         .message.success {
@@ -452,10 +536,10 @@
             border: 3px solid var(--border-color-light);
             border-top: 3px solid var(--primary-color);
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 22px; /* Smaller */
+            height: 22px; /* Smaller */
             animation: spin 0.8s linear infinite;
-            margin: 20px auto;
+            margin: 15px auto;
             display: none; 
         }
         body.dark #loadingIndicator {
@@ -471,15 +555,15 @@
         .content-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 30px;
+            gap: 20px;
         }
 
         .filter-area {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 20px;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 15px;
             background-color: var(--bg-light);
             border-radius: 8px;
             border: 1px solid var(--border-color-light);
@@ -490,7 +574,7 @@
         }
         @media (min-width: 640px) { 
             .filter-area {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
         }
         
@@ -516,11 +600,11 @@
         }
         .modal-content {
             background-color: var(--card-bg-light);
-            padding: 30px;
+            padding: 25px;
             border-radius: 10px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             width: 90%;
-            max-width: 500px;
+            max-width: 480px; /* Slightly smaller max-width */
             text-align: left;
             position: relative;
             transform: scale(0.95);
@@ -535,20 +619,20 @@
         .modal-content h4 {
             margin-top: 0;
             color: var(--primary-color);
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 18px;
+            margin-bottom: 12px;
         }
         .modal-content p {
-            font-size: 15px;
-            margin-bottom: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
         }
         .modal-close-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 12px;
+            right: 12px;
             background: transparent;
             border: none;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             color: var(--text-color-light);
             cursor: pointer;
@@ -562,10 +646,10 @@
             color: var(--primary-color);
         }
         .modal-contact-info {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .modal-reminder {
-            font-size: 13px;
+            font-size: 12px;
             font-style: italic;
             color: #6b7280;
         }
@@ -573,67 +657,34 @@
             color: #a0aec0;
         }
 
-
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
-                padding: 15px 20px;
-                text-align: center;
+                padding: 10px 15px;
             }
-            header .logo-container {
-                margin-bottom: 10px;
-            }
-            nav {
-                flex-wrap: wrap;
-                justify-content: center;
-                margin-top: 10px;
-            }
-            nav a {
-                margin: 5px 10px;
-                font-size: 14px;
-            }
-            .app-mode-header {
-                margin-left: 0; margin-top: 10px;
-                width: 100%; text-align: center;
-            }
-            header h1.app-title {
-                font-size: 22px;
-            }
-            main {
-                margin: 20px 10px;
-                padding: 20px 15px;
-            }
-            h2.section-title {
-                font-size: 24px;
-            }
+            header .logo-container { margin-bottom: 8px; }
+            nav { justify-content: center; margin-top: 5px; }
+            nav a { margin: 5px 10px; font-size: 13px; }
+            .app-mode-header { margin-left: 0; margin-top: 8px; width: 100%; text-align: center; }
+            header h1.app-title { font-size: 20px; }
+            main { margin: 15px 10px; padding: 15px; }
+            h2.section-title { font-size: 22px; }
         }
 
         @media (max-width: 480px) {
-            header img.logo {
-                height: 50px;
-            }
-            header h1.app-title {
-                font-size: 20px;
-            }
-            nav a {
+            header img.logo { height: 45px; }
+            header h1.app-title { font-size: 18px; }
+            nav a { font-size: 12px; margin-left: 8px; }
+            button[type="submit"], .btn-filter, .btn-contact-donor, input, select, textarea {
                 font-size: 13px;
+                padding: 9px 10px;
             }
-            button[type="submit"], .btn-filter, .btn-contact-donor, input, select {
-                font-size: 14px;
-                padding: 10px 12px;
-            }
-            .donor-card {
-                padding: 15px;
-            }
-            .donor-card h3 {
-                font-size: 18px;
-            }
-            .modal-content {
-                padding: 20px;
-            }
-            .modal-content h4 {
-                font-size: 18px;
-            }
+            .donor-card, .emergency-card { padding: 12px; }
+            .donor-card h3, .emergency-card h3 { font-size: 16px; }
+            .modal-content { padding: 20px; }
+            .modal-content h4 { font-size: 17px; }
+            .app-mode-header { font-size: 9px; padding: 3px 5px;}
+            .toggle-dark-container { margin-left: 10px;}
         }
     </style>
 </head>
@@ -647,6 +698,8 @@
     <nav>
         <a href="#" id="link-register" class="active-link">Register Donor</a>
         <a href="#" id="link-find">Find Donors</a>
+        <a href="#" id="link-post-request" class="emergency-link">Post Emergency Request</a>
+        <a href="#" id="link-view-requests" class="emergency-link">View Emergency Requests</a>
         <a href="#" id="link-about">About</a>
 	    <a href="#" id="link-admin">Admin Mode</a>
 
@@ -657,7 +710,7 @@
             </label>
         </div>
          <div class="app-mode-header">
-            <span>Mode: Client-Side</span>
+            <span>Mode: Firebase</span>
         </div>
     </nav>
 </header>
@@ -737,6 +790,56 @@
         </div>
     </section>
 
+    <section id="postEmergencyRequestSection">
+        <h2 class="section-title">Post an Emergency Blood Request</h2>
+        <p style="text-align:center; margin-bottom:20px;">If you or someone you know is in urgent need of blood, please fill out the form below. Your request will be visible to potential donors.</p>
+        <form id="emergencyRequestForm">
+            <div>
+                <label for="requesterName">Your Name / Patient's Representative <span style="color:var(--primary-color)">*</span></label>
+                <input type="text" id="requesterName" name="requesterName" required placeholder="e.g., John Appleseed">
+            </div>
+            <div>
+                <label for="requesterContact">Your Contact Phone <span style="color:var(--primary-color)">*</span></label>
+                <input type="tel" id="requesterContact" name="requesterContact" required placeholder="e.g., +919123456789">
+            </div>
+             <div>
+                <label for="requesterEmail">Your Contact Email</label>
+                <input type="email" id="requesterEmail" name="requesterEmail" placeholder="e.g., john@example.com">
+            </div>
+            <div>
+                <label for="requiredBloodGroup">Required Blood Group <span style="color:var(--primary-color)">*</span></label>
+                <select id="requiredBloodGroup" name="requiredBloodGroup" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option> <option value="A-">A-</option>
+                    <option value="B+">B+</option> <option value="B-">B-</option>
+                    <option value="AB+">AB+</option> <option value="AB-">AB-</option>
+                    <option value="O+">O+</option> <option value="O-">O-</option>
+                    <option value="Any">Any (Compatible)</option>
+                </select>
+            </div>
+            <div>
+                <label for="requestCity">City of Need <span style="color:var(--primary-color)">*</span></label>
+                <input type="text" id="requestCity" name="requestCity" required placeholder="e.g., Chennai">
+            </div>
+            <div>
+                <label for="hospitalName">Hospital Name & Address <span style="color:var(--primary-color)">*</span></label>
+                <input type="text" id="hospitalName" name="hospitalName" required placeholder="e.g., Apollo Hospital, Greams Road">
+            </div>
+            <div>
+                <label for="requestMessage">Brief Message / Urgency</label>
+                <textarea id="requestMessage" name="requestMessage" placeholder="e.g., Urgent need for surgery, required by tomorrow morning."></textarea>
+            </div>
+            <button type="submit">Submit Emergency Request</button>
+        </form>
+    </section>
+
+    <section id="viewEmergencyRequestsSection">
+        <h2 class="section-title">Active Emergency Blood Requests</h2>
+        <div id="emergencyRequestsListContainer">
+            <p class="no-requests-message" style="text-align:center; color: var(--text-color-light);">Loading requests or no active emergency requests at the moment.</p>
+        </div>
+    </section>
+
     <section id="aboutSection">
         <h2 class="section-title">About Blood Link</h2>
         <p><strong>Blood Link</strong> is a platform dedicated to connecting voluntary blood donors with individuals in urgent need of blood. Our mission is to make the process of finding and donating blood simpler, faster, and more efficient, ultimately saving lives.</p>
@@ -748,8 +851,8 @@
             <li>Regular blood donation by a sufficient number of healthy people is needed to ensure that blood will always be available whenever and wherever it is needed.</li>
         </ul>
         <h3>Our Vision</h3>
-        <p>We envision a community where no one suffers due to a shortage of blood. By creating a readily accessible and reliable network of donors, Blood Link aims to bridge the gap between donors and recipients, fostering a culture of voluntary blood donation.</p>
-        <p>Join us in this noble cause. Register as a donor today, or help spread the word. Your contribution can make a world of difference.</p>
+        <p>We envision a community where no one suffers due to a shortage of blood. By creating a readily accessible and reliable network of donors and requesters, Blood Link aims to bridge the gap, fostering a culture of voluntary blood donation and mutual help.</p>
+        <p>Join us in this noble cause. Register as a donor today, help spread the word, or view active requests if you are able to assist. Your contribution can make a world of difference.</p>
     </section>
 
     <div id="contactModal" class="modal-overlay">
@@ -767,7 +870,7 @@
 </main>
 
 <footer>
-    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers.
+    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. (Firebase Demo with Emergency Feature)
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -790,8 +893,9 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // --- Global variable to hold all donors fetched from Firebase ---
-    let allDonorsData = []; // This will be populated from Firebase
+    // --- Global variables ---
+    let allDonorsData = []; 
+    let allEmergencyRequestsData = [];
 
     // --- DOM Elements ---
     const donorForm = document.getElementById('donorForm');
@@ -800,6 +904,10 @@
     const filterCity = document.getElementById('filterCity');
     const messageContainer = document.getElementById('messageContainer');
     const loadingIndicator = document.getElementById('loadingIndicator');
+
+    // Emergency Request Elements
+    const emergencyRequestForm = document.getElementById('emergencyRequestForm');
+    const emergencyRequestsListContainer = document.getElementById('emergencyRequestsListContainer');
 
     // Modal elements
     const contactModal = document.getElementById('contactModal');
@@ -811,11 +919,15 @@
     const sections = {
         register: document.getElementById('registerDonorSection'),
         find: document.getElementById('findDonorSection'),
+        postRequest: document.getElementById('postEmergencyRequestSection'),
+        viewRequests: document.getElementById('viewEmergencyRequestsSection'),
         about: document.getElementById('aboutSection')
     };
     const navLinks = {
         register: document.getElementById('link-register'),
         find: document.getElementById('link-find'),
+        postRequest: document.getElementById('link-post-request'),
+        viewRequests: document.getElementById('link-view-requests'),
         about: document.getElementById('link-about')
     };
 
@@ -858,7 +970,7 @@
             applyDarkMode(darkToggle.checked);
         });
     }
-    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); // Keep dark mode preference
+    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); 
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     // --- Helper Functions ---
@@ -909,7 +1021,6 @@
         event.preventDefault();
         const formData = new FormData(donorForm);
         const donorData = {
-            // id will be generated by Firebase push key
             name: formData.get('name').trim(),
             bloodGroup: formData.get('bloodGroup'),
             phone: formData.get('phone').trim(),
@@ -919,7 +1030,7 @@
             availability: formData.get('availability') === 'true',
             searchableName: formData.get('name').trim().toLowerCase(),
             searchableCity: formData.get('city').trim().toLowerCase(),
-            createdAt: firebase.database.ServerValue.TIMESTAMP // Use Firebase server timestamp
+            createdAt: firebase.database.ServerValue.TIMESTAMP 
         };
 
         if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) {
@@ -935,13 +1046,11 @@
             return;
         }
 
-        // Push to Firebase
         const newDonorRef = database.ref('donors').push();
         newDonorRef.set(donorData)
             .then(() => {
                 displayMessage('Donor registered successfully to Firebase!', 'success');
                 if (donorForm) donorForm.reset();
-                // renderFilteredDonors will be called automatically by the 'value' listener if it's active
             })
             .catch(error => {
                 console.error("Error adding donor to Firebase:", error);
@@ -954,46 +1063,44 @@
         const donorsRef = database.ref('donors');
 
         donorsRef.on('value', (snapshot) => {
-            allDonorsData = []; // Clear previous data
+            allDonorsData = []; 
             if (snapshot.exists()) {
                 snapshot.forEach(childSnapshot => {
                     const donor = childSnapshot.val();
-                    donor.id = childSnapshot.key; // Add Firebase key as ID
+                    donor.id = childSnapshot.key; 
                     allDonorsData.push(donor);
                 });
             }
-            // Data is loaded (or confirmed empty), now render
             renderFilteredDonors(); 
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            if (loadingIndicator && (sections.find.classList.contains('active') || sections.register.classList.contains('active'))) {
+                 loadingIndicator.style.display = 'none';
+            }
         }, (error) => {
             console.error("Error loading donors from Firebase:", error);
             displayMessage("Error fetching donor data: " + error.message, "error");
             if (loadingIndicator) loadingIndicator.style.display = 'none';
-            renderFilteredDonors(); // Render even if there's an error (will show no donors message)
+            renderFilteredDonors(); 
         });
     }
     
-
     function renderFilteredDonors() {
         const selectedBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
         const cityQuery = filterCity ? filterCity.value.trim().toLowerCase() : '';
 
         const filteredDonors = allDonorsData.filter(donor => {
             const bloodGroupMatch = selectedBloodGroup ? donor.bloodGroup === selectedBloodGroup : true;
-            // Ensure searchableCity exists, or fallback to city, then to empty string if city is also undefined
             const donorCityForSearch = donor.searchableCity || (donor.city ? donor.city.toLowerCase() : '');
             const cityMatch = cityQuery ? donorCityForSearch.includes(cityQuery) : true;
             return bloodGroupMatch && cityMatch;
         });
 
-        // Sort by 'createdAt' timestamp (descending - newest first)
         filteredDonors.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); 
         renderDonors(filteredDonors);
     }
 
     function renderDonors(donors) {
         if (!donorsListContainer) return;
-        donorsListContainer.innerHTML = ''; // Clear previous list
+        donorsListContainer.innerHTML = ''; 
 
         if (donors.length === 0) {
             const currentFilterBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
@@ -1002,10 +1109,9 @@
             if (currentFilterBloodGroup || currentFilterCity) {
                 messageText = "No donors found matching your criteria.";
             }
-             // Check if the loading indicator is hidden to avoid showing "No donors" while loading
             if (loadingIndicator && loadingIndicator.style.display === 'none') {
                 donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
-            } else if (!loadingIndicator) { // If loading indicator doesn't exist for some reason
+            } else if (!loadingIndicator) { 
                 donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
             }
             return;
@@ -1020,7 +1126,6 @@
             contactButton.textContent = 'View Contact Info';
             contactButton.addEventListener('click', () => showContactModal(donor));
             
-            // Format timestamp
             let registeredDate = 'N/A';
             if (donor.createdAt) {
                 try {
@@ -1029,7 +1134,6 @@
                     console.warn("Could not parse date for donor:", donor.id, donor.createdAt);
                 }
             }
-
 
             donorCard.innerHTML = `
                 <h3>${donor.name || 'N/A'}</h3>
@@ -1045,11 +1149,129 @@
         });
     }
 
+    // --- Emergency Request Operations (Firebase) ---
+    function addEmergencyRequestToFirebase(event) {
+        event.preventDefault();
+        const formData = new FormData(emergencyRequestForm);
+        const requestData = {
+            requesterName: formData.get('requesterName').trim(),
+            requesterContact: formData.get('requesterContact').trim(),
+            requesterEmail: formData.get('requesterEmail').trim().toLowerCase(),
+            requiredBloodGroup: formData.get('requiredBloodGroup'),
+            city: formData.get('requestCity').trim(),
+            hospitalName: formData.get('hospitalName').trim(),
+            message: formData.get('requestMessage').trim(),
+            status: 'active', // 'active', 'fulfilled', 'closed'
+            searchableCity: formData.get('requestCity').trim().toLowerCase(),
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        if (!requestData.requesterName || !requestData.requesterContact || !requestData.requiredBloodGroup || !requestData.city || !requestData.hospitalName) {
+            displayMessage("Required fields for emergency request: Your Name, Contact Phone, Blood Group, City, Hospital.", "error");
+            return;
+        }
+        if (!/^\+?[0-9\s-]{7,15}$/.test(requestData.requesterContact)) {
+            displayMessage("Please enter a valid contact phone number.", "error");
+            return;
+        }
+         if (requestData.requesterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(requestData.requesterEmail)) {
+            displayMessage("Please enter a valid contact email address.", "error");
+            return;
+        }
+
+        const newRequestRef = database.ref('emergencyRequests').push();
+        newRequestRef.set(requestData)
+            .then(() => {
+                displayMessage('Emergency request submitted successfully!', 'success');
+                if (emergencyRequestForm) emergencyRequestForm.reset();
+                showSection('viewRequests'); // Switch to view requests page
+            })
+            .catch(error => {
+                console.error("Error submitting emergency request:", error);
+                displayMessage('Failed to submit emergency request. ' + error.message, 'error');
+            });
+    }
+
+    function loadEmergencyRequestsFromFirebase() {
+        if (loadingIndicator && sections.viewRequests.classList.contains('active')) {
+             loadingIndicator.style.display = 'block';
+        }
+        const requestsRef = database.ref('emergencyRequests').orderByChild('status').equalTo('active'); // Only load active requests
+
+        requestsRef.on('value', (snapshot) => {
+            allEmergencyRequestsData = [];
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const request = childSnapshot.val();
+                    request.id = childSnapshot.key;
+                    allEmergencyRequestsData.push(request);
+                });
+            }
+            renderEmergencyRequests();
+             if (loadingIndicator && sections.viewRequests.classList.contains('active')) {
+                 loadingIndicator.style.display = 'none';
+            }
+        }, (error) => {
+            console.error("Error loading emergency requests:", error);
+            displayMessage("Error fetching emergency requests: " + error.message, "error");
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            renderEmergencyRequests(); // Attempt to render even if error
+        });
+    }
+
+    function renderEmergencyRequests() {
+        if (!emergencyRequestsListContainer) return;
+        emergencyRequestsListContainer.innerHTML = '';
+
+        if (allEmergencyRequestsData.length === 0) {
+            if (loadingIndicator && loadingIndicator.style.display === 'none') {
+                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center; color: var(--text-color-light);">No active emergency requests at the moment.</p>`;
+            } else if (!loadingIndicator) {
+                 emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center; color: var(--text-color-light);">No active emergency requests at the moment.</p>`;
+            }
+            return;
+        }
+
+        // Sort by newest first
+        const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        sortedRequests.forEach(request => {
+            const requestCard = document.createElement('div');
+            requestCard.className = 'emergency-card';
+            
+            let requestedDate = 'N/A';
+            if (request.createdAt) {
+                try {
+                    requestedDate = new Date(request.createdAt).toLocaleString();
+                } catch (e) { console.warn("Could not parse date for request:", request.id, request.createdAt); }
+            }
+
+            requestCard.innerHTML = `
+                <h3>URGENT: ${request.requiredBloodGroup} Blood Needed</h3>
+                <p><strong>Requester:</strong> ${request.requesterName || 'N/A'}</p>
+                <p><strong>Contact Phone:</strong> ${request.requesterContact || 'N/A'}</p>
+                ${request.requesterEmail ? `<p><strong>Contact Email:</strong> ${request.requesterEmail}</p>` : ''}
+                <p><strong>Location:</strong> ${request.city || 'N/A'}</p>
+                <p><strong>Hospital:</strong> ${request.hospitalName || 'N/A'}</p>
+                ${request.message ? `<p><strong>Message:</strong> ${request.message}</p>` : ''}
+                <p><strong>Status:</strong> <span class="status-active">${request.status.toUpperCase()}</span></p>
+                <p class="timestamp">Posted: ${requestedDate}</p>
+            `;
+            // Later, add buttons here to "Mark as Fulfilled" if user auth is implemented
+            emergencyRequestsListContainer.appendChild(requestCard);
+        });
+    }
+
+
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
         if (donorForm) {
             donorForm.addEventListener('submit', addDonorToFirebase);
         }
+        if (emergencyRequestForm) {
+            emergencyRequestForm.addEventListener('submit', addEmergencyRequestToFirebase);
+        }
+
         if (filterBloodGroup) {
             filterBloodGroup.addEventListener('change', renderFilteredDonors);
         }
@@ -1057,8 +1279,9 @@
             filterCity.addEventListener('input', renderFilteredDonors);
         }
 
-        showSection('register'); // Show register section by default
-        loadDonorsFromFirebase(); // Load initial data from Firebase
+        showSection('register'); // Default section
+        loadDonorsFromFirebase(); 
+        loadEmergencyRequestsFromFirebase(); // Load requests, will only render if section is active later or data changes
     });
 
     const adminLink = document.getElementById('link-admin');
@@ -1067,8 +1290,8 @@
             e.preventDefault();
             const password = prompt("Enter admin password:");
             if (password === "admin123") {
-                window.location.href = 'admin.html'; // Make sure admin.html exists or is also updated for Firebase
-            } else if (password !== null) { // Check if password is not null (i.e., user didn't cancel)
+                window.location.href = 'admin.html'; 
+            } else if (password !== null) { 
                 alert("Incorrect password. Access denied.");
             }
         });
