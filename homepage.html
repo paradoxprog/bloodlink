@@ -16,6 +16,9 @@
             --tertiary-hover: #059669;
             --warning-color: #f59e0b; /* Amber for SOS button */
             --warning-hover: #d97706; /* Darker Amber */
+            --sos-border-color: #ff0000; /* Bright red for SOS card border */
+            --sos-bg-color-light: #fff0f0; /* Light red bg for SOS card in light mode */
+            --sos-icon-color-light: #ff0000;
             --bg-light: #f8f9fa;
             --bg-dark: #212529;
             --card-bg-light: #ffffff;
@@ -32,20 +35,23 @@
             --success-text: #065f46;
             --error-bg: #fee2e2;
             --error-text: #991b1b;
-            --warning-bg: #fffbeb; /* Lighter Amber for emergency cards */
+            --warning-bg: #fffbeb; 
             --warning-text: #b45309;
             --warning-border: #f59e0b;
         }
 
         body.dark {
-            --primary-color: #f87171; /* Lighter red for dark mode */
+            --primary-color: #f87171; 
             --primary-hover: #ef4444;
             --secondary-color: #60a5fa; 
             --secondary-hover: #3b82f6;
             --tertiary-color: #34d399;
             --tertiary-hover: #10b981;
-            --warning-color: #fbbf24; /* Lighter Amber for dark mode SOS */
+            --warning-color: #fbbf24; 
             --warning-hover: #f59e0b;
+            --sos-border-color: #ff4d4d; /* Lighter bright red for dark mode SOS border */
+            --sos-bg-color-dark: #4d0000; /* Dark red bg for SOS card in dark mode */
+            --sos-icon-color-dark: #ff4d4d;
             --bg-light: #1a1a1a;
             --bg-dark: #121212;
             --card-bg-light: #2c2c2c;
@@ -67,7 +73,7 @@
             --warning-border: #d97706;
         }
 
-        /* General Styles (from previous version, slightly compacted) */
+        /* General Styles */
         body{font-family:'Poppins',sans-serif;margin:0;padding:0;background-color:var(--bg-light);color:var(--text-color-light);transition:background-color .3s ease,color .3s ease;min-height:100vh;display:flex;flex-direction:column;align-items:center}
         *,*:before,*:after{box-sizing:border-box}
         header{width:100%;background-color:var(--header-bg-light);display:flex;align-items:center;justify-content:space-between;padding:10px 25px;box-shadow:0 2px 8px var(--shadow-light);position:sticky;top:0;z-index:1000;transition:background-color .3s ease}
@@ -95,8 +101,14 @@
         h3{color:var(--text-color-light);margin-top:20px;margin-bottom:10px;font-weight:600;font-size:20px}
         body.dark h3{color:var(--text-color-dark)}
         .donor-card h3,.emergency-card h3{margin-top:0;font-size:18px;color:var(--primary-color)}
-        .emergency-card h3{color:var(--warning-border)}
+        .emergency-card h3{color:var(--warning-border)} /* Default emergency card title color */
         body.dark .emergency-card h3{color:var(--warning-text)}
+
+        /* SOS Card specific title color */
+        .emergency-card-sos h3 { color: var(--sos-icon-color-light); }
+        body.dark .emergency-card-sos h3 { color: var(--sos-icon-color-dark); }
+
+
         p{font-size:14px;line-height:1.6;margin-bottom:12px;color:var(--text-color-light)}
         body.dark p{color:var(--text-color-dark)}
         section#aboutSection ul{list-style:disc;padding-left:20px;margin-bottom:15px}
@@ -105,61 +117,28 @@
         label{font-weight:500;font-size:13px;color:var(--text-color-light);margin-bottom:-8px}
         body.dark label{color:var(--text-color-dark)}
         input[type="text"],input[type="email"],input[type="tel"],select,textarea{background-color:var(--bg-light);border:1px solid var(--border-color-light);border-radius:6px;padding:10px 12px;font-size:14px;color:var(--text-color-light);transition:border-color .3s ease,box-shadow .3s ease,background-color .3s ease;width:100%}
+        input[type="checkbox"] { width: auto; margin-right: 8px; } /* Style for SOS checkbox */
         textarea{min-height:80px;resize:vertical}
         body.dark input[type="text"],body.dark input[type="email"],body.dark input[type="tel"],body.dark select,body.dark textarea{background-color:var(--bg-dark);border-color:var(--border-color-dark);color:var(--text-color-dark)}
         input[type="text"]:focus,input[type="email"]:focus,input[type="tel"]:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 0 2px var(--primary-color_alpha,rgba(229,62,62,.25))}
         
-        /* Button Styles */
-        button, .btn { /* General button class for consistency */
-            color:#fff;
-            border:none;
-            padding:10px 15px;
-            border-radius:6px;
-            font-size:15px;
-            cursor:pointer;
-            font-weight:600;
-            transition:background-color .3s ease,transform .2s ease;
-            text-align:center; 
-            margin-right: 5px; 
-            margin-bottom: 5px;
+        button, .btn { 
+            color:#fff; border:none; padding:10px 15px; border-radius:6px; font-size:15px; cursor:pointer; font-weight:600;
+            transition:background-color .3s ease,transform .2s ease; text-align:center; margin-right: 5px; margin-bottom: 5px;
         }
-        button:hover, .btn:hover {
-            transform:translateY(-1px);
-        }
-
+        button:hover, .btn:hover { transform:translateY(-1px); }
         button[type="submit"] { background-color:var(--primary-color); }
         button[type="submit"]:hover { background-color:var(--primary-hover); }
-
         form#emergencyRequestForm button[type="submit"]{background-color:var(--secondary-color)}
         form#emergencyRequestForm button[type="submit"]:hover{background-color:var(--secondary-hover)}
-        
         .btn-filter{background-color:var(--primary-color); padding:9px 14px;font-size:13px}
         .btn-filter:hover{background-color:var(--primary-hover);}
-
         .btn-contact-donor{background-color:var(--secondary-color); padding:7px 10px;font-size:13px;margin-top:8px;}
         .btn-contact-donor:hover{background-color:var(--secondary-hover)}
-        
         .btn-offer-help { background-color: var(--tertiary-color); }
         .btn-offer-help:hover { background-color: var(--tertiary-hover); }
-        
         .btn-view-offers { background-color: var(--secondary-color); font-size: 13px; padding: 6px 10px;}
         .btn-view-offers:hover { background-color: var(--secondary-hover); }
-
-        /* SOS Button Style */
-        .btn-sos {
-            background-color: var(--warning-color); /* Amber color */
-            color: #fff; /* White text for contrast */
-            font-weight: 700; /* Bolder text */
-        }
-        .btn-sos:hover {
-            background-color: var(--warning-hover); /* Darker amber on hover */
-        }
-        .form-button-group {
-            display: flex;
-            gap: 10px; /* Space between buttons */
-            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-        }
-
 
         .donor-card{background-color:var(--card-bg-light);border:1px solid var(--border-color-light);border-left:5px solid var(--primary-color);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light);transition:transform .2s ease,box-shadow .2s ease,background-color .3s ease,border-color .3s ease}
         body.dark .donor-card{background-color:var(--card-bg-dark);border-color:var(--border-color-dark);border-left-color:var(--primary-color)}
@@ -171,9 +150,57 @@
         .donor-card .availability-no{color:#f59e0b;font-weight:700}
         .donor-card .timestamp{font-size:10px;color:#9ca3af;margin-top:8px}
         body.dark .donor-card .timestamp{color:#6b7280}
-        .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border);border-left:5px solid var(--warning-border);padding:15px;margin-bottom:20px;border-radius:8px;box-shadow:0 4px 10px var(--shadow-light)}
-        body.dark .emergency-card{background-color:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border);border-left-color:var(--warning-border)}
+        
+        .emergency-card{
+            background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border);
+            border-left:5px solid var(--warning-border);padding:15px;margin-bottom:20px;border-radius:8px;
+            box-shadow:0 4px 10px var(--shadow-light); transition: all 0.3s ease; /* Added transition */
+        }
+        body.dark .emergency-card{
+            background-color:var(--warning-bg);color:var(--warning-text);border-color:var(--warning-border);
+            border-left-color:var(--warning-border);
+        }
+        
+        /* SOS Card Styling */
+        .emergency-card-sos {
+            border-left-width: 7px; 
+            border-left-color: var(--sos-border-color) !important; /* Ensure override */
+            background-color: var(--sos-bg-color-light) !important; /* Ensure override */
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); 
+        }
+        body.dark .emergency-card-sos {
+            border-left-color: var(--sos-border-color) !important;
+            background-color: var(--sos-bg-color-dark) !important;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+        }
+        .emergency-card-sos p, .emergency-card-sos .timestamp { /* Ensure text is readable on SOS background */
+            color: var(--text-color-light); 
+        }
+        body.dark .emergency-card-sos p, body.dark .emergency-card-sos .timestamp {
+            color: var(--text-color-dark);
+        }
+        .sos-indicator-icon {
+            display: inline-block;
+            color: var(--sos-icon-color-light);
+            font-weight: bold;
+            margin-right: 8px;
+            animation: pulseSOS 1.5s infinite;
+        }
+        body.dark .sos-indicator-icon {
+            color: var(--sos-icon-color-dark);
+        }
+
+        @keyframes pulseSOS {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .emergency-card p{font-size:13px;margin-bottom:5px;color:var(--warning-text)}
+        /* Ensure default emergency card text is readable */
+        body.dark .emergency-card p { color: var(--warning-text); }
+
+
         .emergency-card p strong{font-weight:600}
         .emergency-card .timestamp{font-size:10px;color:var(--warning-text);opacity:.8;margin-top:8px}
         .emergency-card .status-active{font-weight:700;color:#16a34a}
@@ -201,7 +228,7 @@
         .message{padding:10px 15px;border-radius:6px;font-size:14px;margin-bottom:12px;text-align:center}
         .message.success{background-color:var(--success-bg);color:var(--success-text);border:1px solid var(--success-text)}
         .message.error{background-color:var(--error-bg);color:var(--error-text);border:1px solid var(--error-text)}
-        .message.warning{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border)} /* SOS Message Style */
+        .message.warning{background-color:var(--warning-bg);color:var(--warning-text);border:1px solid var(--warning-border)}
         #loadingIndicator{border:3px solid var(--border-color-light);border-top:3px solid var(--primary-color);border-radius:50%;width:22px;height:22px;animation:spin .8s linear infinite;margin:15px auto;display:none}
         body.dark #loadingIndicator{border-color:var(--border-color-dark);border-top-color:var(--primary-color)}
         @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
@@ -372,15 +399,13 @@
                 <label for="requestMessage">Brief Message / Urgency</label>
                 <textarea id="requestMessage" name="requestMessage" placeholder="e.g., Urgent need for surgery, required by tomorrow morning."></textarea>
             </div>
-            <div class="form-button-group">
-                <button type="submit">Submit Emergency Request</button>
-                <button type="button" id="sosButton" class="btn btn-sos">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 5px;">
-                        <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
-                    </svg>
-                    SOS to Donors
-                </button>
+            <div style="margin-top: 5px; margin-bottom: 10px;">
+                <label for="isSOSCheckbox" style="display: flex; align-items: center; gap: 0px; font-size: 13px; margin-bottom:0;">
+                    <input type="checkbox" id="isSOSCheckbox" name="isSOSCheckbox">
+                    Send as High-Priority SOS (Alerts Donors with Sound & Visual)
+                </label>
             </div>
+            <button type="submit">Submit Emergency Request</button>
         </form>
     </section>
 
@@ -437,8 +462,7 @@
 <script>
     // --- Firebase Configuration ---
     const firebaseConfig = {
-        // Your existing Firebase config
-        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE", // Replace with your actual API key if different
+        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE", 
         authDomain: "bloodlink-8cb77.firebaseapp.com",
         databaseURL: "https://bloodlink-8cb77-default-rtdb.firebaseio.com",
         projectId: "bloodlink-8cb77",
@@ -455,7 +479,7 @@
     // --- Global variables ---
     let allDonorsData = []; 
     let allEmergencyRequestsData = [];
-    let audioContext; // For SOS sound
+    let audioContext; 
 
     // --- DOM Elements ---
     const donorForm = document.getElementById('donorForm');
@@ -467,7 +491,7 @@
 
     const emergencyRequestForm = document.getElementById('emergencyRequestForm');
     const emergencyRequestsListContainer = document.getElementById('emergencyRequestsListContainer');
-    const sosButton = document.getElementById('sosButton'); // SOS Button
+    const isSOSCheckbox = document.getElementById('isSOSCheckbox'); // SOS Checkbox
 
     const contactModal = document.getElementById('contactModal');
     const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -537,82 +561,50 @@
         msgDiv.textContent = message;
         messageContainer.innerHTML = ''; 
         messageContainer.appendChild(msgDiv);
-        // Ensure message is visible by scrolling to it if it's out of view
         msgDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, 7000); // Increased timeout for SOS
+        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, type === 'warning' || type === 'error' ? 7000 : 6000);
     }
 
-    // --- SOS Bell Sound Simulation ---
-    function playSOSBell() {
+    // --- SOS Bell Sound Simulation (for Requester) ---
+    function playSOSBell() { // Only plays sound
         try {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
-            if (!audioContext) { // Still no context (e.g. browser doesn't support)
-                console.warn("Web Audio API not supported. SOS sound cannot be played.");
-                displayMessage('SOS Alert Sent (Sound not playable in this browser)!', 'warning');
-                return;
+            if (!audioContext) { 
+                console.warn("Web Audio API not supported. SOS sound cannot be played for requester.");
+                return; // Silently fail if not supported, message handled by caller
             }
             
-            // Create a simple, attention-grabbing sound
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
-
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
-
-            oscillator.type = 'sine'; // A piercing sine wave
-            oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
-            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); // Start with some volume
-
-            // Make it short and sharp, like a bell
+            oscillator.type = 'sine'; 
+            oscillator.frequency.setValueAtTime(880, audioContext.currentTime); 
+            gainNode.gain.setValueAtTime(0.5, audioContext.currentTime); 
             oscillator.start(audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5); // Decay quickly
-            oscillator.stop(audioContext.currentTime + 0.5); // Stop after 0.5 seconds
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.5); 
+            oscillator.stop(audioContext.currentTime + 0.5); 
 
-            // Second, slightly different tone for effect
             setTimeout(() => {
+                if (!audioContext) return; // Check again in case context was closed
                 const oscillator2 = audioContext.createOscillator();
                 const gainNode2 = audioContext.createGain();
                 oscillator2.connect(gainNode2);
                 gainNode2.connect(audioContext.destination);
                 oscillator2.type = 'triangle';
-                oscillator2.frequency.setValueAtTime(987, audioContext.currentTime); // B5 note
+                oscillator2.frequency.setValueAtTime(987, audioContext.currentTime); 
                 gainNode2.gain.setValueAtTime(0.4, audioContext.currentTime);
                 oscillator2.start(audioContext.currentTime);
                 gainNode2.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.4);
                 oscillator2.stop(audioContext.currentTime + 0.4);
-            }, 150); // Play second tone shortly after the first
-
-            displayMessage('SOS Alert Sent to Donors (Simulated)! Check for responses.', 'warning');
+            }, 150); 
 
         } catch (e) {
-            console.error("Error playing SOS sound:", e);
-            displayMessage('SOS Alert Sent (Sound Error)!', 'warning');
+            console.error("Error playing SOS sound for requester:", e);
         }
     }
-
-    if (sosButton) {
-        sosButton.addEventListener('click', () => {
-            // Check if essential fields for an SOS are filled (optional, but good practice)
-            const requesterName = document.getElementById('requesterName').value.trim();
-            const requiredBloodGroup = document.getElementById('requiredBloodGroup').value;
-            const requestCity = document.getElementById('requestCity').value.trim();
-
-            if (!requesterName || !requiredBloodGroup || !requestCity) {
-                displayMessage('Please fill in Your Name, Required Blood Group, and City before sending an SOS.', 'error');
-                // Highlight missing fields (optional advanced UX)
-                if(!requesterName) document.getElementById('requesterName').focus();
-                else if(!requiredBloodGroup) document.getElementById('requiredBloodGroup').focus();
-                else if(!requestCity) document.getElementById('requestCity').focus();
-                return;
-            }
-            playSOSBell();
-            // Note: This is a client-side simulation.
-            // Real-time SOS would require backend integration (e.g., push notifications).
-        });
-    }
-
 
     // --- Donor Contact Modal Functions ---
     function showContactModal(donor) {
@@ -636,7 +628,7 @@
         const offersRef = database.ref(`emergencyRequests/${request.id}/offers`);
         offersRef.once('value', snapshot => {
             if (snapshot.exists()) {
-                viewOffersModalBody.innerHTML = ''; // Clear previous
+                viewOffersModalBody.innerHTML = ''; 
                 snapshot.forEach(offerSnapshot => {
                     const offer = offerSnapshot.val();
                     const offerDiv = document.createElement('div');
@@ -729,23 +721,56 @@
         event.preventDefault();
         const formData = new FormData(emergencyRequestForm);
         const reqData = { 
-            requesterName: formData.get('requesterName').trim(), requesterContact: formData.get('requesterContact').trim(), requesterEmail: formData.get('requesterEmail').trim().toLowerCase(), requiredBloodGroup: formData.get('requiredBloodGroup'), city: formData.get('requestCity').trim(), hospitalName: formData.get('hospitalName').trim(), message: formData.get('requestMessage').trim(), status: 'active', searchableCity: formData.get('requestCity').trim().toLowerCase(), createdAt: firebase.database.ServerValue.TIMESTAMP 
+            requesterName: formData.get('requesterName').trim(), 
+            requesterContact: formData.get('requesterContact').trim(), 
+            requesterEmail: formData.get('requesterEmail').trim().toLowerCase(), 
+            requiredBloodGroup: formData.get('requiredBloodGroup'), 
+            city: formData.get('requestCity').trim(), 
+            hospitalName: formData.get('hospitalName').trim(), 
+            message: formData.get('requestMessage').trim(), 
+            status: 'active', 
+            searchableCity: formData.get('requestCity').trim().toLowerCase(), 
+            createdAt: firebase.database.ServerValue.TIMESTAMP 
         };
-        if (!reqData.requesterName || !reqData.requesterContact || !reqData.requiredBloodGroup || !reqData.city || !reqData.hospitalName) { displayMessage("Required fields for emergency: Name, Contact Phone, Blood Group, City, Hospital.", "error"); return; }
+
+        // Check for SOS flag
+        const isSOS = isSOSCheckbox ? isSOSCheckbox.checked : false;
+        if (isSOS) {
+            reqData.isSOS = true;
+            reqData.sosCreatedAt = firebase.database.ServerValue.TIMESTAMP; // Optional: for specific SOS sorting/filtering
+        }
+
+        if (!reqData.requesterName || !reqData.requesterContact || !reqData.requiredBloodGroup || !reqData.city || !reqData.hospitalName) { 
+            displayMessage("Required fields for emergency: Name, Contact Phone, Blood Group, City, Hospital.", "error"); 
+            return; 
+        }
         if (!/^\+?[0-9\s-]{7,15}$/.test(reqData.requesterContact)) { displayMessage("Please enter a valid contact phone.", "error"); return; }
         if (reqData.requesterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reqData.requesterEmail)) { displayMessage("Please enter a valid contact email.", "error"); return; }
         
         loadingIndicator.style.display = 'block';
         database.ref('emergencyRequests').push().set(reqData)
-            .then(() => { displayMessage('Emergency request submitted!', 'success'); if (emergencyRequestForm) emergencyRequestForm.reset(); showSection('viewRequests'); loadingIndicator.style.display = 'none'; })
-            .catch(error => { console.error("Error submitting emergency request:", error); displayMessage('Failed to submit request. ' + error.message, 'error'); loadingIndicator.style.display = 'none'; });
+            .then(() => { 
+                let successMessage = 'Emergency request submitted successfully!';
+                if (isSOS) {
+                    playSOSBell(); // Play sound for requester
+                    successMessage = 'High-Priority SOS request sent to donors!';
+                }
+                displayMessage(successMessage, isSOS ? 'warning' : 'success'); // Use warning style for SOS message for more impact
+                if (emergencyRequestForm) emergencyRequestForm.reset(); 
+                if (isSOSCheckbox) isSOSCheckbox.checked = false; // Reset checkbox
+                showSection('viewRequests'); 
+                loadingIndicator.style.display = 'none'; 
+            })
+            .catch(error => { 
+                console.error("Error submitting emergency request:", error); 
+                displayMessage('Failed to submit request. ' + error.message, 'error'); 
+                loadingIndicator.style.display = 'none'; 
+            });
     }
 
     function handleOfferToHelp(requestId, requestCity, requestBloodGroup) {
-        // Using custom modal for input would be better, but prompt is simpler for now.
         const offererName = prompt("Thank you for offering to help!\nPlease enter your Name:");
         if (!offererName || offererName.trim() === "") {
-            // Using displayMessage instead of alert
             displayMessage("Name is required to make an offer.", "error");
             return;
         }
@@ -839,12 +864,30 @@
             }
             return;
         }
+        // Sort by SOS first, then by creation date
+        const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => {
+            if (a.isSOS && !b.isSOS) return -1; // a is SOS, b is not -> a comes first
+            if (!a.isSOS && b.isSOS) return 1;  // b is SOS, a is not -> b comes first
+            return (b.createdAt || 0) - (a.createdAt || 0); // Otherwise, sort by newest
+        });
 
-        const sortedRequests = [...allEmergencyRequestsData].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         sortedRequests.forEach(request => {
             const requestCard = document.createElement('div');
-            requestCard.className = 'emergency-card';
+            requestCard.className = 'emergency-card'; // Base class
+            
+            let cardTitleHTML;
+            if (request.isSOS) {
+                requestCard.classList.add('emergency-card-sos');
+                const sosIconHTML = `<span class="sos-indicator-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16" style="vertical-align: middle; margin-bottom: 2px;">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg> SOS
+                </span>`;
+                cardTitleHTML = `<h3>${sosIconHTML}URGENT: ${request.requiredBloodGroup} Blood Needed</h3>`;
+            } else {
+                cardTitleHTML = `<h3>URGENT: ${request.requiredBloodGroup} Blood Needed</h3>`;
+            }
             
             let requestedDate = request.createdAt ? new Date(request.createdAt).toLocaleString() : 'N/A';
             const offersCount = request.offers ? Object.keys(request.offers).length : 0;
@@ -855,7 +898,7 @@
             }
 
             requestCard.innerHTML = `
-                <h3>URGENT: ${request.requiredBloodGroup} Blood Needed</h3>
+                ${cardTitleHTML}
                 <p><strong>Requester:</strong> ${request.requesterName || 'N/A'}</p>
                 <p><strong>Contact Phone:</strong> ${request.requesterContact || 'N/A'}</p>
                 ${request.requesterEmail ? `<p><strong>Contact Email:</strong> ${request.requesterEmail}</p>` : ''}
@@ -871,7 +914,7 @@
                 <div class="matching-donors-section" id="matching-donors-${request.id}">
                     <h4>Potential Matching Donors:</h4>
                     <div class="loading-donors-spinner" style="display:none; text-align:center;">Loading matching donors...</div>
-                    </div>
+                </div>
             `;
             emergencyRequestsListContainer.appendChild(requestCard);
 
@@ -942,12 +985,8 @@
     if (adminLink) {
         adminLink.addEventListener('click', function(e) {
             e.preventDefault();
-            // Using custom modal for password would be better, but prompt is simpler for now.
             const password = prompt("Enter admin password:");
             if (password === "admin123") { 
-                // In a real app, redirect to a secure admin page.
-                // For this example, we'll just show a message.
-                // window.location.href = 'admin.html'; // If you have an admin.html
                 displayMessage("Admin access granted (simulation).", "success");
             } 
             else if (password !== null && password !== "") { 
