@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blood Link | Donate & Find Blood (Client-Side)</title>
+    <title>Blood Link | Donate & Find Blood (Firebase)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- CSS Variables (Blood Link Themed) --- */
@@ -11,11 +11,11 @@
             --primary-color: #e53e3e; /* Red for Blood Link */
             --primary-hover: #c53030; /* Darker Red */
             --bg-light: #f8f9fa;
-            --bg-dark: #212529; 
+            --bg-dark: #212529;
             --card-bg-light: #ffffff;
-            --card-bg-dark: #2c2c2c; 
+            --card-bg-dark: #2c2c2c;
             --text-color-light: #343a40;
-            --text-color-dark: #f1f1f1; 
+            --text-color-dark: #f1f1f1;
             --border-color-light: #e0e0e0;
             --border-color-dark: #495057;
             --shadow-light: rgba(0, 0, 0, 0.1);
@@ -87,7 +87,7 @@
         }
 
         header img.logo {
-            height: 90px; /* As per user's last provided code */
+            height: 90px;
             margin-right: 12px;
             border-radius: 6px;
         }
@@ -107,7 +107,7 @@
             align-items: center;
         }
 
-        nav a { /* General nav link styling for app.html */
+        nav a {
             margin-left: 25px;
             text-decoration: none;
             color: var(--text-color-light);
@@ -208,11 +208,10 @@
         body.dark h3 {
             color: var(--text-color-dark);
         }
-        /* Specific h3 for donor cards */
         .donor-card h3 {
             margin-top: 0;
             font-size: 20px;
-            color: var(--primary-color); /* Ensure donor card title is primary color */
+            color: var(--primary-color);
         }
 
 
@@ -226,7 +225,6 @@
             color: var(--text-color-dark);
         }
         
-        /* For About section list in app.html */
         section#aboutSection ul {
             list-style: disc;
             padding-left: 20px;
@@ -238,12 +236,12 @@
 
 
         /* --- Forms --- */
-        form#donorForm { /* Specific to donor form */
+        form#donorForm {
             display: flex;
             flex-direction: column;
             gap: 18px;
-            max-width: 600px; /* Constrain form width */
-            margin: 0 auto; /* Center form */
+            max-width: 600px;
+            margin: 0 auto;
         }
         
         label {
@@ -287,7 +285,7 @@
             box-shadow: 0 0 0 2px var(--primary-color_alpha, rgba(229, 62, 62, 0.25));
         }
 
-        button[type="submit"], .btn-filter, .btn-contact-donor { /* Added .btn-contact-donor */
+        button[type="submit"], .btn-filter, .btn-contact-donor {
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -307,7 +305,7 @@
             padding: 8px 12px;
             font-size: 14px;
             margin-top: 10px;
-            background-color: #2563eb; /* Blue for contact button */
+            background-color: #2563eb; 
         }
         .btn-contact-donor:hover {
             background-color: #1d4ed8;
@@ -340,7 +338,6 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px var(--shadow-dark);
         }
-        /* .donor-card h3 defined above */
         .donor-card p {
             font-size: 14px;
             margin-bottom: 6px;
@@ -471,12 +468,11 @@
             100% { transform: rotate(360deg); }
         }
         
-        .content-grid { /* For register form section */
+        .content-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 30px;
         }
-        /* No specific grid for find donor section, list flows naturally */
 
         .filter-area {
             display: grid;
@@ -571,10 +567,10 @@
         .modal-reminder {
             font-size: 13px;
             font-style: italic;
-            color: #6b7280; /* Gray */
+            color: #6b7280;
         }
         body.dark .modal-reminder {
-            color: #a0aec0; /* Lighter gray for dark mode */
+            color: #a0aec0;
         }
 
 
@@ -614,7 +610,7 @@
 
         @media (max-width: 480px) {
             header img.logo {
-                height: 50px; /* Adjusted from 90px for smaller screens */
+                height: 50px;
             }
             header h1.app-title {
                 font-size: 20px;
@@ -652,7 +648,7 @@
         <a href="#" id="link-register" class="active-link">Register Donor</a>
         <a href="#" id="link-find">Find Donors</a>
         <a href="#" id="link-about">About</a>
-	<a href="#" id="link-admin">Admin Mode</a>
+	    <a href="#" id="link-admin">Admin Mode</a>
 
         <div class="toggle-dark-container">
             <label class="toggle-dark" for="darkToggle" aria-label="Toggle dark mode">
@@ -661,14 +657,14 @@
             </label>
         </div>
          <div class="app-mode-header">
-            <span>Mode: Client-Side </span>
+            <span>Mode: Firebase Connected</span>
         </div>
     </nav>
 </header>
 
 <main>
     <div id="messageContainer"></div>
-    <div id="loadingIndicator"></div> 
+    <div id="loadingIndicator" style="display: block;"></div> 
     
     <section id="registerDonorSection" class="active">
         <h2 class="section-title">Become a Lifesaver: Register Your Details</h2>
@@ -737,7 +733,7 @@
             </div>
         </div>
         <div id="donorsListContainer">
-            <p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered yet in this session.</p>
+            <p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">Loading donors or none registered yet...</p>
         </div>
     </section>
 
@@ -771,12 +767,31 @@
 </main>
 
 <footer>
-    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. (Client-Side Demo)
+    &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers. (Firebase Demo)
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
-    // --- In-memory data store, now backed by Local Storage ---
-    let localDonorsData = [];
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE",
+        authDomain: "bloodlink-8cb77.firebaseapp.com",
+        databaseURL: "https://bloodlink-8cb77-default-rtdb.firebaseio.com",
+        projectId: "bloodlink-8cb77",
+        storageBucket: "bloodlink-8cb77.firebasestorage.app",
+        messagingSenderId: "586538652483",
+        appId: "1:586538652483:web:a0c6ae24399167555695f6",
+        measurementId: "G-9Z3F1P4DMR"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // --- Global variable to hold all donors fetched from Firebase ---
+    let allDonorsData = []; // This will be populated from Firebase
 
     // --- DOM Elements ---
     const donorForm = document.getElementById('donorForm');
@@ -784,6 +799,7 @@
     const filterBloodGroup = document.getElementById('filterBloodGroup');
     const filterCity = document.getElementById('filterCity');
     const messageContainer = document.getElementById('messageContainer');
+    const loadingIndicator = document.getElementById('loadingIndicator');
 
     // Modal elements
     const contactModal = document.getElementById('contactModal');
@@ -842,7 +858,7 @@
             applyDarkMode(darkToggle.checked);
         });
     }
-    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled');
+    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); // Keep dark mode preference
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
     // --- Helper Functions ---
@@ -850,7 +866,7 @@
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
-        messageContainer.innerHTML = '';
+        messageContainer.innerHTML = ''; 
         messageContainer.appendChild(msgDiv);
         setTimeout(() => {
             if (messageContainer.contains(msgDiv)) {
@@ -881,7 +897,6 @@
         modalCloseBtn.addEventListener('click', hideContactModal);
     }
     if (contactModal) {
-        // Close modal if overlay is clicked
         contactModal.addEventListener('click', function(event) {
             if (event.target === contactModal) {
                 hideContactModal();
@@ -889,38 +904,12 @@
         });
     }
 
-
-    // --- Donor Operations (Client-Side with Local Storage) ---
-    // Function to load donors from local storage
-    function loadDonors() {
-        const storedDonors = localStorage.getItem('donorsData');
-        if (storedDonors) {
-            try {
-                localDonorsData = JSON.parse(storedDonors);
-                // Ensure `createdAt` is a Date object for proper sorting if loaded from string
-                localDonorsData.forEach(donor => {
-                    if (typeof donor.createdAt === 'string') {
-                        donor.createdAt = new Date(donor.createdAt);
-                    }
-                });
-            } catch (e) {
-                console.error("Error parsing stored donors data from localStorage:", e);
-                localDonorsData = []; // Reset if data is corrupt
-            }
-        }
-    }
-
-    // Function to save donors to local storage
-    function saveDonors() {
-        localStorage.setItem('donorsData', JSON.stringify(localDonorsData));
-    }
-
-
-    function addDonor(event) {
+    // --- Donor Operations (Firebase) ---
+    function addDonorToFirebase(event) {
         event.preventDefault();
         const formData = new FormData(donorForm);
         const donorData = {
-            id: 'donor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            // id will be generated by Firebase push key
             name: formData.get('name').trim(),
             bloodGroup: formData.get('bloodGroup'),
             phone: formData.get('phone').trim(),
@@ -930,7 +919,7 @@
             availability: formData.get('availability') === 'true',
             searchableName: formData.get('name').trim().toLowerCase(),
             searchableCity: formData.get('city').trim().toLowerCase(),
-            createdAt: new Date().toISOString() // Store as ISO string for consistent parsing
+            createdAt: firebase.database.ServerValue.TIMESTAMP // Use Firebase server timestamp
         };
 
         if (!donorData.name || !donorData.bloodGroup || !donorData.phone || !donorData.city || !donorData.state) {
@@ -946,39 +935,79 @@
             return;
         }
 
-        localDonorsData.push(donorData);
-        saveDonors(); // Save to local storage after adding
-        displayMessage('Donor registered successfully!', 'success'); // Changed message
-        if (donorForm) donorForm.reset();
-        renderFilteredDonors();
+        // Push to Firebase
+        const newDonorRef = database.ref('donors').push();
+        newDonorRef.set(donorData)
+            .then(() => {
+                displayMessage('Donor registered successfully to Firebase!', 'success');
+                if (donorForm) donorForm.reset();
+                // renderFilteredDonors will be called automatically by the 'value' listener if it's active
+            })
+            .catch(error => {
+                console.error("Error adding donor to Firebase:", error);
+                displayMessage('Failed to register donor. Please try again. ' + error.message, 'error');
+            });
     }
+
+    function loadDonorsFromFirebase() {
+        if (loadingIndicator) loadingIndicator.style.display = 'block';
+        const donorsRef = database.ref('donors');
+
+        donorsRef.on('value', (snapshot) => {
+            allDonorsData = []; // Clear previous data
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const donor = childSnapshot.val();
+                    donor.id = childSnapshot.key; // Add Firebase key as ID
+                    allDonorsData.push(donor);
+                });
+            }
+            // Data is loaded (or confirmed empty), now render
+            renderFilteredDonors(); 
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        }, (error) => {
+            console.error("Error loading donors from Firebase:", error);
+            displayMessage("Error fetching donor data: " + error.message, "error");
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            renderFilteredDonors(); // Render even if there's an error (will show no donors message)
+        });
+    }
+    
 
     function renderFilteredDonors() {
         const selectedBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
         const cityQuery = filterCity ? filterCity.value.trim().toLowerCase() : '';
 
-        const filteredDonors = localDonorsData.filter(donor => {
+        const filteredDonors = allDonorsData.filter(donor => {
             const bloodGroupMatch = selectedBloodGroup ? donor.bloodGroup === selectedBloodGroup : true;
-            const cityMatch = cityQuery ? (donor.searchableCity || (donor.city || '').toLowerCase()).includes(cityQuery) : true;
+            // Ensure searchableCity exists, or fallback to city, then to empty string if city is also undefined
+            const donorCityForSearch = donor.searchableCity || (donor.city ? donor.city.toLowerCase() : '');
+            const cityMatch = cityQuery ? donorCityForSearch.includes(cityQuery) : true;
             return bloodGroupMatch && cityMatch;
         });
-        // Ensure createdAt is treated as a Date object for comparison, even if loaded as string
-        filteredDonors.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+        // Sort by 'createdAt' timestamp (descending - newest first)
+        filteredDonors.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); 
         renderDonors(filteredDonors);
     }
 
     function renderDonors(donors) {
         if (!donorsListContainer) return;
-        donorsListContainer.innerHTML = '';
+        donorsListContainer.innerHTML = ''; // Clear previous list
 
         if (donors.length === 0) {
             const currentFilterBloodGroup = filterBloodGroup ? filterBloodGroup.value : '';
             const currentFilterCity = filterCity ? filterCity.value.trim() : '';
-            let messageText = "No donors registered yet."; // Changed message
+            let messageText = "No donors registered in the system yet.";
             if (currentFilterBloodGroup || currentFilterCity) {
-                messageText = "No donors found matching your criteria."; // Changed message
+                messageText = "No donors found matching your criteria.";
             }
-            donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
+             // Check if the loading indicator is hidden to avoid showing "No donors" while loading
+            if (loadingIndicator && loadingIndicator.style.display === 'none') {
+                donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
+            } else if (!loadingIndicator) { // If loading indicator doesn't exist for some reason
+                donorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">${messageText}</p>`;
+            }
             return;
         }
 
@@ -990,6 +1019,17 @@
             contactButton.className = 'btn-contact-donor';
             contactButton.textContent = 'View Contact Info';
             contactButton.addEventListener('click', () => showContactModal(donor));
+            
+            // Format timestamp
+            let registeredDate = 'N/A';
+            if (donor.createdAt) {
+                try {
+                    registeredDate = new Date(donor.createdAt).toLocaleDateString();
+                } catch (e) {
+                    console.warn("Could not parse date for donor:", donor.id, donor.createdAt);
+                }
+            }
+
 
             donorCard.innerHTML = `
                 <h3>${donor.name || 'N/A'}</h3>
@@ -998,18 +1038,17 @@
                 <p><strong>Phone:</strong> ${donor.phone || 'N/A'}</p>
                 ${donor.email ? `<p><strong>Email:</strong> ${donor.email}</p>` : ''}
                 <p><strong>Available:</strong> <span class="${donor.availability ? 'availability-yes' : 'availability-no'}">${donor.availability ? 'Yes' : 'No'}</span></p>
-                <p class="timestamp">Registered: ${donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p class="timestamp">Registered: ${registeredDate}</p>
             `;
-            donorCard.appendChild(contactButton); // Add the button to the card
+            donorCard.appendChild(contactButton);
             donorsListContainer.appendChild(donorCard);
         });
     }
 
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
-        loadDonors(); // Load existing donors when the page loads
         if (donorForm) {
-            donorForm.addEventListener('submit', addDonor);
+            donorForm.addEventListener('submit', addDonorToFirebase);
         }
         if (filterBloodGroup) {
             filterBloodGroup.addEventListener('change', renderFilteredDonors);
@@ -1018,19 +1057,18 @@
             filterCity.addEventListener('input', renderFilteredDonors);
         }
 
-        showSection('register');
-        renderFilteredDonors();
+        showSection('register'); // Show register section by default
+        loadDonorsFromFirebase(); // Load initial data from Firebase
     });
 
     const adminLink = document.getElementById('link-admin');
-
     if (adminLink) {
         adminLink.addEventListener('click', function(e) {
             e.preventDefault();
             const password = prompt("Enter admin password:");
-            if (password === "admin123") {  // ✅ Change this to your desired password
-                window.location.href = 'admin.html';
-            } else if (password !== null) {
+            if (password === "admin123") {
+                window.location.href = 'admin.html'; // Make sure admin.html exists or is also updated for Firebase
+            } else if (password !== null) { // Check if password is not null (i.e., user didn't cancel)
                 alert("Incorrect password. Access denied.");
             }
         });
