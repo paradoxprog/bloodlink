@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blood Link | Admin Panel (Client-Side Demo)</title>
+    <title>Blood Link | Admin Panel (Firebase)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- CSS Variables (Blood Link Themed) --- */
@@ -107,6 +107,22 @@
         body.dark header h1.app-title {
             color: var(--text-color-dark);
         }
+        
+        header nav a { /* Simple nav link for admin */
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--text-color-light);
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        body.dark header nav a {
+            color: var(--text-color-dark);
+        }
+        header nav a:hover {
+            color: var(--primary-color);
+        }
+
 
         .app-mode-header {
             font-size: 11px;
@@ -171,15 +187,15 @@
             color: var(--text-color-dark);
         }
 
-        button {
+        button { /* General button styling */
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 18px;
+            padding: 10px 18px; /* Slightly smaller padding for admin buttons */
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px; /* Slightly smaller font */
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500; /* Slightly less bold */
             transition: background-color 0.3s ease, transform 0.2s ease;
             text-align: center;
             margin-bottom: 10px;
@@ -208,9 +224,9 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px var(--shadow-light);
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
-            display: flex; /* Flexbox for alignment */
+            display: flex; 
             flex-direction: column;
-            gap: 8px; /* Space between card elements */
+            gap: 8px; 
         }
         body.dark .admin-donor-card {
             background-color: var(--card-bg-dark);
@@ -226,7 +242,7 @@
         }
         .admin-donor-card p {
             font-size: 14px;
-            margin-bottom: 0px; /* Reduced margin */
+            margin-bottom: 0px; 
             color: var(--text-color-light);
         }
         body.dark .admin-donor-card p {
@@ -250,16 +266,18 @@
             display: flex;
             gap: 10px;
             margin-top: 15px;
-            justify-content: flex-end; /* Align buttons to the right */
+            justify-content: flex-end; 
         }
         .admin-actions button {
             padding: 8px 15px;
             font-size: 14px;
-            margin-bottom: 0; /* Override default button margin */
+            margin-bottom: 0; 
         }
         #clearAllDonorsBtn {
             display: block;
-            margin: 20px auto;
+            margin: 30px auto 20px auto; /* Increased top margin */
+            padding: 12px 25px; /* Larger button */
+            font-size: 16px;
             background-color: var(--danger-button);
         }
         #clearAllDonorsBtn:hover {
@@ -363,7 +381,7 @@
             height: 25px;
             animation: spin 0.8s linear infinite;
             margin: 20px auto;
-            display: none;
+            display: block; /* Show by default, hide via JS */
         }
         body.dark #loadingIndicator {
             border-color: var(--border-color-dark);
@@ -384,6 +402,7 @@
             header .logo-container {
                 margin-bottom: 10px;
             }
+            header nav { margin-top: 10px; }
             .app-mode-header {
                 margin-left: 0; margin-top: 10px;
                 width: 100%; text-align: center;
@@ -407,7 +426,7 @@
             header h1.app-title {
                 font-size: 20px;
             }
-            button, input, select {
+            button, input, select { /* General button for small screens */
                 font-size: 14px;
                 padding: 10px 12px;
             }
@@ -421,6 +440,9 @@
                 font-size: 12px;
                 padding: 6px 10px;
             }
+            #clearAllDonorsBtn {
+                 font-size: 14px; padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -431,59 +453,77 @@
         <img src="logo.jpg" alt="Blood Link Logo" class="logo" />
         <h1 class="app-title">Blood Link | Admin</h1>
     </div>
+    <nav>
+        <a href="homepage.html" id="link-client-mode">View Client Mode</a>
+    </nav>
     <div class="app-mode-header">
-        <span>Mode: Admin-Side </span>
+        <span>Mode: Admin (Firebase)</span>
     </div>
-    <div>
-	<a href="homepage.html" id="link-admin">Client Mode</a>
-    </div>
-
     <div class="toggle-dark-container">
         <label class="toggle-dark" for="darkToggle" aria-label="Toggle dark mode">
             <input type="checkbox" id="darkToggle" />
             <span class="toggle-thumb"></span>
         </label>
     </div>
-    
-
 </header>
 
 <main>
     <div id="messageContainer"></div>
-    <div id="loadingIndicator"></div>
+    <div id="loadingIndicator"></div> 
 
     <section id="adminPanelSection">
         <h2 class="section-title">Admin Panel: Manage Donors</h2>
-
-        <button id="clearAllDonorsBtn" class="btn-danger">Clear All Donors (DANGER ZONE!)</button>
-
+        
         <h3>Current Registered Donors:</h3>
         <div id="adminDonorsListContainer">
-            <p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered yet.</p>
+            <p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">Loading donors or none registered yet...</p>
         </div>
+        
+        <button id="clearAllDonorsBtn" class="btn-danger">Clear All Donors (DANGER ZONE!)</button>
     </section>
 
 </main>
 
 <footer>
-    &copy; <span id="currentYear"></span> Blood Link. Admin Side Demo.
+    &copy; <span id="currentYear"></span> Blood Link. Admin Panel (Firebase).
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
-    let localDonorsData = []; // Will be loaded from localStorage
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE", // Replace with your actual API key if different
+        authDomain: "bloodlink-8cb77.firebaseapp.com",
+        databaseURL: "https://bloodlink-8cb77-default-rtdb.firebaseio.com",
+        projectId: "bloodlink-8cb77",
+        storageBucket: "bloodlink-8cb77.firebasestorage.app", // Corrected field name
+        messagingSenderId: "586538652483",
+        appId: "1:586538652483:web:a0c6ae24399167555695f6",
+        measurementId: "G-9Z3F1P4DMR"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // --- Global variable to hold all donors fetched from Firebase ---
+    let allAdminDonorsData = [];
 
     // --- DOM Elements ---
     const adminDonorsListContainer = document.getElementById('adminDonorsListContainer');
     const messageContainer = document.getElementById('messageContainer');
     const clearAllDonorsBtn = document.getElementById('clearAllDonorsBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
 
-    // --- UI Navigation & Dark Mode (reused from client-side for consistency) ---
+    // --- UI & Dark Mode ---
     const darkToggle = document.getElementById('darkToggle');
     function applyDarkMode(isDark) {
         if (isDark) {
             document.body.classList.add('dark');
             if(darkToggle) darkToggle.checked = true;
-            localStorage.setItem('darkModeBloodLink', 'enabled');
+            localStorage.setItem('darkModeBloodLink', 'enabled'); // Persist dark mode preference
         } else {
             document.body.classList.remove('dark');
             if(darkToggle) darkToggle.checked = false;
@@ -503,7 +543,7 @@
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
-        messageContainer.innerHTML = '';
+        messageContainer.innerHTML = ''; 
         messageContainer.appendChild(msgDiv);
         setTimeout(() => {
             if (messageContainer.contains(msgDiv)) {
@@ -512,100 +552,117 @@
         }, 6000);
     }
 
-    // --- Local Storage Operations ---
-    function loadDonors() {
-        const storedDonors = localStorage.getItem('donorsData');
-        if (storedDonors) {
-            try {
-                localDonorsData = JSON.parse(storedDonors);
-                // Ensure `createdAt` is a Date object for proper sorting if loaded from string
-                localDonorsData.forEach(donor => {
-                    if (typeof donor.createdAt === 'string') {
-                        donor.createdAt = new Date(donor.createdAt);
-                    }
-                });
-            } catch (e) {
-                console.error("Error parsing stored donors data from localStorage:", e);
-                localDonorsData = []; // Reset if data is corrupt
-            }
-        }
-    }
-
-    function saveDonors() {
-        localStorage.setItem('donorsData', JSON.stringify(localDonorsData));
-    }
-
-    // --- Admin Donor Management ---
-    function deleteDonor(donorId) {
+    // --- Firebase Admin Donor Management ---
+    function deleteDonorFromFirebase(donorId) {
         if (confirm('Are you sure you want to delete this donor? This action cannot be undone.')) {
-            const initialLength = localDonorsData.length;
-            localDonorsData = localDonorsData.filter(donor => donor.id !== donorId);
-            if (localDonorsData.length < initialLength) {
-                saveDonors(); // Save the updated list to localStorage
-                displayMessage('Donor deleted successfully!', 'success');
-                renderAdminDonors(); // Re-render the list
-            } else {
-                displayMessage('Donor not found or could not be deleted.', 'error');
-            }
+            database.ref('donors/' + donorId).remove()
+                .then(() => {
+                    displayMessage('Donor deleted successfully from Firebase!', 'success');
+                    // The real-time listener will automatically re-render the list.
+                })
+                .catch(error => {
+                    console.error("Error deleting donor from Firebase:", error);
+                    displayMessage('Failed to delete donor. ' + error.message, 'error');
+                });
         }
     }
 
-    function clearAllDonors() {
-        if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL DONOR DATA? This action is irreversible!')) {
-            localStorage.removeItem('donorsData'); // Remove the key from localStorage
-            localDonorsData = []; // Clear the in-memory array
-            displayMessage('All donor data has been cleared!', 'success');
-            renderAdminDonors(); // Re-render to show empty list
+    function clearAllDonorsFromFirebase() {
+        if (confirm('WARNING: Are you absolutely sure you want to DELETE ALL DONOR DATA from Firebase? This action is irreversible!')) {
+            database.ref('donors').remove()
+                .then(() => {
+                    displayMessage('All donor data has been cleared from Firebase!', 'success');
+                    // The real-time listener will automatically re-render an empty list.
+                })
+                .catch(error => {
+                    console.error("Error clearing all donors from Firebase:", error);
+                    displayMessage('Failed to clear all donor data. ' + error.message, 'error');
+                });
         }
     }
+    
+    function loadAdminDonorsFromFirebase() {
+        if (loadingIndicator) loadingIndicator.style.display = 'block';
+        const donorsRef = database.ref('donors');
+
+        donorsRef.on('value', (snapshot) => {
+            allAdminDonorsData = []; // Clear previous data
+            if (snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const donor = childSnapshot.val();
+                    donor.id = childSnapshot.key; // Add Firebase key as ID
+                    allAdminDonorsData.push(donor);
+                });
+            }
+            renderAdminDonors(); // Render the list with new data
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+        }, (error) => {
+            console.error("Error loading admin donors from Firebase:", error);
+            displayMessage("Error fetching donor data for admin: " + error.message, "error");
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+            renderAdminDonors(); // Still attempt to render (will show "no donors" if data is empty)
+        });
+    }
+
 
     function renderAdminDonors() {
         if (!adminDonorsListContainer) return;
         adminDonorsListContainer.innerHTML = '';
 
-        if (localDonorsData.length === 0) {
-            adminDonorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered yet.</p>`;
+        if (allAdminDonorsData.length === 0) {
+             if (loadingIndicator && loadingIndicator.style.display === 'none') { // Only show if not loading
+                adminDonorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered in the system yet.</p>`;
+             } else if (!loadingIndicator) {
+                adminDonorsListContainer.innerHTML = `<p class="no-donors-message" style="text-align:center; color: var(--text-color-light);">No donors registered in the system yet.</p>`;
+             }
             return;
         }
 
-        // Sort donors by creation date, newest first
-        localDonorsData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        // Sort donors by creation date (timestamp), newest first
+        allAdminDonorsData.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        localDonorsData.forEach(donor => {
+        allAdminDonorsData.forEach(donor => {
             const donorCard = document.createElement('div');
             donorCard.className = 'admin-donor-card';
+            
+            let registeredDate = 'N/A';
+            if (donor.createdAt) {
+                try {
+                    registeredDate = new Date(donor.createdAt).toLocaleString(); // Using toLocaleString for date and time
+                } catch(e) { console.warn("Could not parse date for admin donor:", donor.id, donor.createdAt); }
+            }
 
             donorCard.innerHTML = `
-                <h3>${donor.name || 'N/A'} (ID: ${donor.id})</h3>
+                <h3>${donor.name || 'N/A'}</h3>
+                <p><strong>ID:</strong> ${donor.id}</p>
                 <p><strong>Blood Group:</strong> <span style="color:var(--primary-color); font-weight:bold;">${donor.bloodGroup || 'N/A'}</span></p>
                 <p><strong>Phone:</strong> ${donor.phone || 'N/A'}</p>
                 ${donor.email ? `<p><strong>Email:</strong> ${donor.email}</p>` : ''}
                 <p><strong>Location:</strong> ${donor.city || 'N/A'}, ${donor.state || 'N/A'}</p>
                 <p><strong>Available:</strong> <span class="${donor.availability ? 'availability-yes' : 'availability-no'}">${donor.availability ? 'Yes' : 'No'}</span></p>
-                <p class="timestamp">Registered: ${donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A'}</p>
+                <p class="timestamp">Registered: ${registeredDate}</p>
                 <div class="admin-actions">
-                    <button class="btn-danger" data-donor-id="${donor.id}">Delete</button>
+                    <button class="btn-danger" data-donor-id="${donor.id}">Delete Donor</button>
                 </div>
             `;
             adminDonorsListContainer.appendChild(donorCard);
         });
 
         // Attach event listeners to all new delete buttons
-        adminDonorsListContainer.querySelectorAll('.btn-danger').forEach(button => {
+        adminDonorsListContainer.querySelectorAll('.admin-actions .btn-danger').forEach(button => {
             button.addEventListener('click', (event) => {
                 const donorId = event.target.dataset.donorId;
-                deleteDonor(donorId);
+                deleteDonorFromFirebase(donorId);
             });
         });
     }
 
     // --- Event Listeners ---
     document.addEventListener('DOMContentLoaded', () => {
-        loadDonors(); // Load existing donors when the page loads
-        renderAdminDonors(); // Display them
+        loadAdminDonorsFromFirebase(); // Load existing donors from Firebase when the page loads
 
         if (clearAllDonorsBtn) {
-            clearAllDonorsBtn.addEventListener('click', clearAllDonors);
+            clearAllDonorsBtn.addEventListener('click', clearAllDonorsFromFirebase);
         }
     });
 
