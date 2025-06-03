@@ -151,8 +151,8 @@
             transform: translateY(20px);
             transition: opacity 0.6s ease, transform 0.6s ease;
             padding: 20px;
-            max-width: 700px; 
-            margin: 0 auto; 
+            max-width: 700px;
+            margin: 0 auto;
             display: none; /* Hidden by default */
         }
 
@@ -221,7 +221,7 @@
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px; 
+            gap: 15px;
         }
 
         input[type="text"],
@@ -276,8 +276,8 @@
         .toggle-dark {
             position: relative;
             display: inline-block;
-            width: 55px; 
-            height: 30px; 
+            width: 55px;
+            height: 30px;
             border-radius: 30px;
             background-color: var(--border-color-light);
             cursor: pointer;
@@ -303,8 +303,8 @@
             position: absolute;
             top: 3px;
             left: 3px;
-            width: 24px; 
-            height: 24px; 
+            width: 24px;
+            height: 24px;
             background-color: var(--primary-color);
             border-radius: 50%;
             transition: left 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
@@ -316,13 +316,13 @@
 
 
         .toggle-dark input:checked + .toggle-thumb {
-            left: 28px; 
+            left: 28px;
             /* background-color: #f0f0f0; */ /* Original: light thumb when checked */
             transform: rotate(360deg);
         }
         /* Keep toggle background consistent when checked */
         /* .toggle-dark input:checked {
-             background-color: var(--primary-color); 
+             background-color: var(--primary-color);
         } */
 
 
@@ -334,7 +334,7 @@
             background-color: var(--header-bg-light);
             color: var(--text-color-light);
             font-size: 14px;
-            margin-top: auto; 
+            margin-top: auto;
             box-shadow: 0 -2px 8px var(--shadow-light);
             border-top: 1px solid var(--border-color-light);
         }
@@ -463,7 +463,31 @@
     </section>
 </main>
 
+<footer>
+    &copy; <span id="footerYear"></span> All rights reserved to Blood Link.
+    <script>document.getElementById('footerYear').textContent = new Date().getFullYear();</script>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE",
+        authDomain: "bloodlink-8cb77.firebaseapp.com",
+        databaseURL: "https://bloodlink-8cb77-default-rtdb.firebaseio.com",
+        projectId: "bloodlink-8cb77",
+        storageBucket: "bloodlink-8cb77.firebasestorage.app",
+        messagingSenderId: "586538652483",
+        appId: "1:586538652483:web:a0c6ae24399167555695f6",
+        measurementId: "G-9Z3F1P4DMR"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     // Section navigation
     const aboutSection = document.getElementById('about');
     const loginSection = document.getElementById('login');
@@ -540,8 +564,6 @@
         });
     }
 
-    const USER_STORAGE_PREFIX = 'bloodLinkUser_'; // Prefix for localStorage keys
-
     // Signup form logic
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
@@ -555,7 +577,7 @@
 
             const name = nameInput.value.trim();
             const email = emailInput.value.trim().toLowerCase();
-            const password = passwordInput.value;
+            const password = passwordInput.value; // In a real app, this would be hashed
 
             if (!name || !email || !password) {
                 alert('All fields are required.');
@@ -566,16 +588,34 @@
                 return;
             }
 
-            if (localStorage.getItem(USER_STORAGE_PREFIX + email)) {
-                alert('User with this email already exists.');
-                return;
-            }
-
-            const user = { name, email, password }; // In a real app, password would be hashed
-            localStorage.setItem(USER_STORAGE_PREFIX + email, JSON.stringify(user));
-            alert('Account created successfully! Please log in.');
-            this.reset();
-            showSection(loginSection, navLinkLogin);
+            // Check if user already exists in Firebase
+            database.ref('users').orderByChild('email').equalTo(email).once('value')
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        alert('User with this email already exists.');
+                    } else {
+                        // Save user to Firebase
+                        database.ref('users').push({
+                            name: name,
+                            email: email,
+                            password: password, // IMPORTANT: In a real application, hash passwords!
+                            createdAt: firebase.database.ServerValue.TIMESTAMP
+                        })
+                        .then(() => {
+                            alert('Account created successfully! Please log in.');
+                            this.reset();
+                            showSection(loginSection, navLinkLogin);
+                        })
+                        .catch(error => {
+                            console.error("Error creating user:", error);
+                            alert('Failed to create account: ' + error.message);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error checking existing user:", error);
+                    alert('An error occurred during signup. Please try again.');
+                });
         });
     }
 
@@ -597,32 +637,39 @@
                 return;
             }
 
-            const userDataString = localStorage.getItem(USER_STORAGE_PREFIX + email);
-            if (!userDataString) {
-                alert('Invalid email or password.');
-                return;
-            }
-            
-            const user = JSON.parse(userDataString);
+            // Authenticate user against Firebase
+            database.ref('users').orderByChild('email').equalTo(email).once('value')
+                .then(snapshot => {
+                    if (!snapshot.exists()) {
+                        alert('Invalid email or password.');
+                        return;
+                    }
 
-            if (user && user.password === password) { // Plain text password check (not for production)
-                alert(`Welcome back, ${user.name}! Redirecting to the Blood Link app...`);
-                // Store logged-in user info for the main app to potentially use (optional)
-                sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.name, email: user.email}));
-                window.location.href = 'homepage.html'; // Redirect to the main application
-            } else {
-                alert('Invalid email or password.');
-            }
+                    let userFound = false;
+                    snapshot.forEach(childSnapshot => {
+                        const user = childSnapshot.val();
+                        // IMPORTANT: In a real application, compare hashed passwords
+                        if (user.password === password) {
+                            alert(`Welcome back, ${user.name}! Redirecting to the Blood Link app...`);
+                            sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.name, email: user.email}));
+                            window.location.href = 'homepage.html'; // Redirect to the main application
+                            userFound = true;
+                        }
+                    });
+
+                    if (!userFound) {
+                        alert('Invalid email or password.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error during login:", error);
+                    alert('An error occurred during login. Please try again.');
+                });
         });
     }
 
     // Show about section on load by default
     showSection(aboutSection, navLinkAbout);
 </script>
-<footer>
-    &copy; <span id="footerYear"></span> All rights reserved to Blood Link.
-    <script>document.getElementById('footerYear').textContent = new Date().getFullYear();</script>
-</footer>
-
 </body>
 </html>
