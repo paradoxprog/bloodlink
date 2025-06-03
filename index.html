@@ -22,8 +22,9 @@
             --shadow-dark: rgba(0, 0, 0, 0.5);
             --header-bg-light: #ffffff;
             --header-bg-dark: #2a2a2a;
-            --google-blue: #4285F4;
-            --google-blue-hover: #357ae8;
+            /* Changed Google button colors to dark gray */
+            --google-button-bg: #4a4a4a; /* Dark gray */
+            --google-button-hover: #333333; /* Even darker gray on hover */
         }
 
         body {
@@ -53,6 +54,9 @@
             --shadow-dark: rgba(0, 0, 0, 0.9);
             --header-bg-light: #2c2c2c;
             --header-bg-dark: #1a1a1a;
+            /* Adjusted Google button colors for dark mode */
+            --google-button-bg: #666666; /* Slightly lighter gray for dark mode */
+            --google-button-hover: #555555;
         }
 
         /* Global Styles */
@@ -274,8 +278,8 @@
             transform: translateY(-2px);
         }
 
-        .button-google {
-            background-color: var(--google-blue);
+        .button-google-auth { /* Changed from .button-google to be more generic */
+            background-color: var(--google-button-bg); /* Use new variable */
             color: white;
             border: none;
             padding: 15px;
@@ -292,12 +296,12 @@
             gap: 10px;
         }
 
-        .button-google:hover {
-            background-color: var(--google-blue-hover);
+        .button-google-auth:hover {
+            background-color: var(--google-button-hover); /* Use new variable */
             transform: translateY(-2px);
         }
 
-        .button-google img {
+        .button-google-auth img {
             height: 24px;
             width: 24px;
         }
@@ -340,8 +344,8 @@
             transition: left 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        body.dark .toggle-dark input:checked + .toggle-thumb {
-            background-color: #f0f0f0;
+        body.dark .toggle-thumb {
+            background-color: #f0f0f0; /* Light thumb on dark checked */
         }
 
 
@@ -424,7 +428,7 @@
             p, ul.features-list li, input {
                 font-size: 15px;
             }
-            input[type="submit"].form-submit-button, .button-google {
+            input[type="submit"].form-submit-button, .button-google-auth {
                 padding: 12px;
                 font-size: 16px;
             }
@@ -475,6 +479,11 @@
             <input type="password" id="loginPassword" placeholder="Password" required />
             <input type="submit" value="Log In" class="form-submit-button" />
         </form>
+        <div style="text-align: center; margin: 20px 0; color: var(--text-color-light);">OR</div>
+        <button type="button" class="button-google-auth" id="googleSignInBtnLogin">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
+            Sign in with Google
+        </button>
     </section>
 
     <section id="signup" style="display:none;">
@@ -486,9 +495,9 @@
             <input type="submit" value="Sign Up" class="form-submit-button" />
         </form>
         <div style="text-align: center; margin: 20px 0; color: var(--text-color-light);">OR</div>
-        <button type="button" id="googleSignInBtn" class="button-google">
+        <button type="button" class="button-google-auth" id="googleSignInBtnSignup">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
-            Sign Up with Google
+            Sign up with Google
         </button>
     </section>
 </main>
@@ -500,7 +509,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, push, set, get, child, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, push, set, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     // --- Firebase Configuration ---
@@ -718,16 +727,18 @@
         });
     }
 
-    // Google Sign-In Logic
-    const googleSignInBtn = document.getElementById('googleSignInBtn');
-    if (googleSignInBtn) {
-        googleSignInBtn.addEventListener('click', async () => {
+    // Google Sign-In/Sign-Up Logic
+    // Select all buttons with the class 'button-google-auth'
+    const googleAuthButtons = document.querySelectorAll('.button-google-auth');
+
+    googleAuthButtons.forEach(button => {
+        button.addEventListener('click', async () => {
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 // The signed-in user info.
                 const user = result.user;
 
-                // Save user data to Realtime Database
+                // Save user data to Realtime Database. This function checks if user exists.
                 await saveUserToDatabase(user.uid, user.displayName, user.email);
 
                 alert(`Welcome, ${user.displayName}! Redirecting to the Blood Link app...`);
@@ -752,7 +763,8 @@
                 }
             }
         });
-    }
+    });
+
 
     // Show about section on load by default
     showSection(aboutSection, navLinkAbout);
