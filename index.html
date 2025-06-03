@@ -22,6 +22,8 @@
             --shadow-dark: rgba(0, 0, 0, 0.5);
             --header-bg-light: #ffffff;
             --header-bg-dark: #2a2a2a;
+            --google-blue: #4285F4;
+            --google-blue-hover: #357ae8;
         }
 
         body {
@@ -77,13 +79,13 @@
             align-items: center;
         }
 
-        header img.logo { /* Added .logo class */
-            height: 90px; /* Adjusted logo size */
+        header img.logo {
+            height: 90px;
             margin-right: 15px;
             border-radius: 8px;
         }
 
-        header h1.site-title { /* Added .site-title class */
+        header h1.site-title {
             font-size: 28px;
             color: var(--text-color-light);
             margin: 0;
@@ -123,12 +125,12 @@
             transition: width 0.3s ease;
         }
 
-        nav a:hover::after, nav a.active-nav-link::after { /* Added .active-nav-link */
+        nav a:hover::after, nav a.active-nav-link::after {
             width: 100%;
             left: 0;
             background: var(--primary-color);
         }
-        nav a:hover, nav a.active-nav-link { /* Added .active-nav-link */
+        nav a:hover, nav a.active-nav-link {
             color: var(--primary-color);
         }
 
@@ -162,7 +164,7 @@
             display: block; /* Show active section */
         }
 
-        h2.section-heading { /* Added .section-heading */
+        h2.section-heading {
             text-align: center;
             margin-bottom: 35px;
             font-weight: 700;
@@ -193,7 +195,7 @@
         }
 
 
-        ul.features-list { /* Added .features-list */
+        ul.features-list {
             list-style: none;
             padding-left: 0;
             margin-bottom: 30px;
@@ -227,7 +229,7 @@
         input[type="text"],
         input[type="email"],
         input[type="password"] {
-            background-color: var(--card-bg-light); /* Match main card bg */
+            background-color: var(--card-bg-light);
             border: 1px solid var(--border-color-light);
             border-radius: 8px;
             padding: 14px 18px;
@@ -239,7 +241,7 @@
         body.dark input[type="text"],
         body.dark input[type="email"],
         body.dark input[type="password"] {
-            background-color: var(--bg-dark); /* Darker input bg */
+            background-color: var(--bg-dark);
             color: var(--text-color-dark);
             border-color: var(--border-color-dark);
         }
@@ -250,10 +252,10 @@
         input[type="password"]:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.25); /* Red focus ring */
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.25);
         }
 
-        input[type="submit"].form-submit-button { /* Added .form-submit-button */
+        input[type="submit"].form-submit-button {
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -270,6 +272,34 @@
         input[type="submit"].form-submit-button:hover {
             background-color: var(--primary-hover);
             transform: translateY(-2px);
+        }
+
+        .button-google {
+            background-color: var(--google-blue);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button-google:hover {
+            background-color: var(--google-blue-hover);
+            transform: translateY(-2px);
+        }
+
+        .button-google img {
+            height: 24px;
+            width: 24px;
         }
 
         /* Dark Mode Toggle */
@@ -311,19 +341,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         body.dark .toggle-dark input:checked + .toggle-thumb {
-            background-color: #f0f0f0; /* Light thumb on dark checked */
+            background-color: #f0f0f0;
         }
 
 
         .toggle-dark input:checked + .toggle-thumb {
             left: 28px;
-            /* background-color: #f0f0f0; */ /* Original: light thumb when checked */
             transform: rotate(360deg);
         }
-        /* Keep toggle background consistent when checked */
-        /* .toggle-dark input:checked {
-             background-color: var(--primary-color);
-        } */
 
 
         /* Footer */
@@ -399,7 +424,7 @@
             p, ul.features-list li, input {
                 font-size: 15px;
             }
-            input[type="submit"].form-submit-button {
+            input[type="submit"].form-submit-button, .button-google {
                 padding: 12px;
                 font-size: 16px;
             }
@@ -460,6 +485,11 @@
             <input type="password" id="signupPassword" placeholder="Password (min. 6 characters)" required />
             <input type="submit" value="Sign Up" class="form-submit-button" />
         </form>
+        <div style="text-align: center; margin: 20px 0; color: var(--text-color-light);">OR</div>
+        <button type="button" id="googleSignInBtn" class="button-google">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
+            Sign Up with Google
+        </button>
     </section>
 </main>
 
@@ -468,10 +498,11 @@
     <script>document.getElementById('footerYear').textContent = new Date().getFullYear();</script>
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, push, set, get, child, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-<script>
     // --- Firebase Configuration ---
     const firebaseConfig = {
         apiKey: "AIzaSyDBk9RhQxpGoDHFk9v9mNPoPH5oDgPrHcE",
@@ -485,8 +516,10 @@
     };
 
     // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
     // Section navigation
     const aboutSection = document.getElementById('about');
@@ -564,10 +597,29 @@
         });
     }
 
-    // Signup form logic
+    // Function to handle user data saving to Firebase Realtime Database
+    async function saveUserToDatabase(uid, name, email, password = null) {
+        const userRef = ref(database, 'users/' + uid);
+        const snapshot = await get(userRef);
+
+        if (!snapshot.exists()) {
+            // User does not exist, create new entry
+            await set(userRef, {
+                name: name,
+                email: email,
+                password: password, // Only for email/password signup. For Google, this will be null.
+                createdAt: Date.now() // Use client-side timestamp for simplicity, Firebase ServerValue.TIMESTAMP is better for server-side
+            });
+            console.log("User data saved to Realtime Database.");
+        } else {
+            console.log("User already exists in Realtime Database.");
+        }
+    }
+
+    // Signup form logic (Email/Password)
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nameInput = document.getElementById('signupName');
             const emailInput = document.getElementById('signupEmail');
@@ -577,7 +629,7 @@
 
             const name = nameInput.value.trim();
             const email = emailInput.value.trim().toLowerCase();
-            const password = passwordInput.value; // In a real app, this would be hashed
+            const password = passwordInput.value;
 
             if (!name || !email || !password) {
                 alert('All fields are required.');
@@ -588,41 +640,39 @@
                 return;
             }
 
-            // Check if user already exists in Firebase
-            database.ref('users').orderByChild('email').equalTo(email).once('value')
-                .then(snapshot => {
-                    if (snapshot.exists()) {
-                        alert('User with this email already exists.');
-                    } else {
-                        // Save user to Firebase
-                        database.ref('users').push({
-                            name: name,
-                            email: email,
-                            password: password, // IMPORTANT: In a real application, hash passwords!
-                            createdAt: firebase.database.ServerValue.TIMESTAMP
-                        })
-                        .then(() => {
-                            alert('Account created successfully! Please log in.');
-                            this.reset();
-                            showSection(loginSection, navLinkLogin);
-                        })
-                        .catch(error => {
-                            console.error("Error creating user:", error);
-                            alert('Failed to create account: ' + error.message);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error checking existing user:", error);
-                    alert('An error occurred during signup. Please try again.');
+            try {
+                // Check if user with this email already exists in our 'users' node
+                const snapshot = await get(query(ref(database, 'users'), orderByChild('email'), equalTo(email)));
+                if (snapshot.exists()) {
+                    alert('User with this email already exists. Please log in or use a different email.');
+                    return;
+                }
+
+                // For simplicity, we're directly storing password. In a real app, use Firebase Auth's createUserWithEmailAndPassword
+                // and then store additional profile data in Realtime DB linked by UID.
+                const newRef = push(ref(database, 'users'));
+                await set(newRef, {
+                    name: name,
+                    email: email,
+                    password: password, // WARNING: In a real application, hash passwords!
+                    createdAt: Date.now()
                 });
+
+                alert('Account created successfully! Please log in.');
+                this.reset();
+                showSection(loginSection, navLinkLogin);
+
+            } catch (error) {
+                console.error("Error creating user:", error);
+                alert('Failed to create account: ' + error.message);
+            }
         });
     }
 
-    // Login form logic with redirect
+    // Login form logic with redirect (Email/Password)
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
@@ -637,34 +687,70 @@
                 return;
             }
 
-            // Authenticate user against Firebase
-            database.ref('users').orderByChild('email').equalTo(email).once('value')
-                .then(snapshot => {
-                    if (!snapshot.exists()) {
-                        alert('Invalid email or password.');
-                        return;
-                    }
+            try {
+                // Authenticate user against Firebase Realtime Database
+                const snapshot = await get(query(ref(database, 'users'), orderByChild('email'), equalTo(email)));
 
-                    let userFound = false;
-                    snapshot.forEach(childSnapshot => {
-                        const user = childSnapshot.val();
-                        // IMPORTANT: In a real application, compare hashed passwords
-                        if (user.password === password) {
-                            alert(`Welcome back, ${user.name}! Redirecting to the Blood Link app...`);
-                            sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.name, email: user.email}));
-                            window.location.href = 'homepage.html'; // Redirect to the main application
-                            userFound = true;
-                        }
-                    });
+                if (!snapshot.exists()) {
+                    alert('Invalid email or password.');
+                    return;
+                }
 
-                    if (!userFound) {
-                        alert('Invalid email or password.');
+                let userFound = false;
+                snapshot.forEach(childSnapshot => {
+                    const user = childSnapshot.val();
+                    // IMPORTANT: In a real application, compare hashed passwords
+                    if (user.password === password) {
+                        alert(`Welcome back, ${user.name}! Redirecting to the Blood Link app...`);
+                        sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.name, email: user.email, uid: childSnapshot.key}));
+                        window.location.href = 'homepage.html'; // Redirect to the main application
+                        userFound = true;
                     }
-                })
-                .catch(error => {
-                    console.error("Error during login:", error);
-                    alert('An error occurred during login. Please try again.');
                 });
+
+                if (!userFound) {
+                    alert('Invalid email or password.');
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+                alert('An error occurred during login. Please try again.');
+            }
+        });
+    }
+
+    // Google Sign-In Logic
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
+    if (googleSignInBtn) {
+        googleSignInBtn.addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                // The signed-in user info.
+                const user = result.user;
+
+                // Save user data to Realtime Database
+                await saveUserToDatabase(user.uid, user.displayName, user.email);
+
+                alert(`Welcome, ${user.displayName}! Redirecting to the Blood Link app...`);
+                sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({name: user.displayName, email: user.email, uid: user.uid}));
+                window.location.href = 'homepage.html'; // Redirect to the main application
+
+            } catch (error) {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+
+                console.error("Google Sign-In Error:", errorCode, errorMessage, email, credential);
+                if (errorCode === 'auth/popup-closed-by-user') {
+                    // User closed the popup, do nothing or show a subtle message
+                    console.log("Google Sign-In popup closed by user.");
+                } else {
+                    alert('Google Sign-In failed: ' + errorMessage);
+                }
+            }
         });
     }
 
