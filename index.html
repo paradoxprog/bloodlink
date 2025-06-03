@@ -751,12 +751,32 @@
         const user = result.user;
         const displayName = user.displayName;
         const email = user.email;
+        const uid = user.uid; // Get the Firebase Auth User ID
+        const creationTime = user.metadata.creationTime; // Get creation time from Firebase Auth
+        const lastSignInTime = user.metadata.lastSignInTime; // Get last sign-in time from Firebase Auth
 
-        // Store user info in session storage (or a more persistent method if needed)
+        // Store user info in session storage
         sessionStorage.setItem('bloodLinkLoggedInUser', JSON.stringify({ name: displayName, email: email }));
 
-        alert(`Welcome, ${displayName}! Redirecting to the Blood Link app...`);
-        window.location.href = 'homepage.html'; // Redirect to your main application
+        // Save Google user data to Firebase Realtime Database
+        // Use the user's UID as the key for the database entry
+        database.ref('users/' + uid).set({
+            name: displayName,
+            email: email,
+            providerId: 'google.com', // Indicate this user came from Google
+            createdAt: creationTime,
+            lastSignInTime: lastSignInTime
+        })
+        .then(() => {
+            alert(`Welcome, ${displayName}! Redirecting to the Blood Link app...`);
+            window.location.href = 'homepage.html'; // Redirect to your main application
+        })
+        .catch(error => {
+            console.error("Error saving Google user data to RTDB:", error);
+            alert('Failed to save Google user data: ' + error.message);
+            // Still redirect even if saving to RTDB fails, as user is authenticated with Auth
+            window.location.href = 'homepage.html';
+        });
     }
 
     function handleGoogleSignInError(error) {
