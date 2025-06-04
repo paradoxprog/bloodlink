@@ -413,6 +413,14 @@
     const database = firebase.database();
     const messaging = firebase.messaging(); // Initialize Firebase Messaging
 
+    // ** IMPORTANT: Replace 'YOUR_VAPID_PUBLIC_KEY_HERE' with your actual VAPID public key **
+    // This key is generated in your Firebase Project Settings -> Cloud Messaging tab.
+    // Example: const vapidKey = "BNTluYlq54wVajpN9IQoFae6eotelHP77RmJU_yf_ZQbYXZu67HrjvxM7HiXFe0e3VX6Z9HBUTF5fmN0Y7DJdxk";
+    const vapidKey = "BNTluYlq54wVajpN9IQoFae6eotelHP77RmJU_yf_ZQbYXZu67HrjvxM7HiXFe0e3VX6Z9HBUTF5fmN0Y7DJdxk"; // Use the key provided by the user
+
+    // Set the VAPID public key for FCM
+    messaging.usePublicVapidKey(vapidKey);
+
     // --- Global variables ---
     let allDonorsData = [];
     let allEmergencyRequestsData = [];
@@ -901,8 +909,9 @@
 
         // --- FCM Initialization ---
         if ('serviceWorker' in navigator) {
-            // Changed service worker registration path to be relative
-            navigator.serviceWorker.register('./firebase-messaging-sw.js')
+            // Register the service worker using the __file_url__ global variable
+            // This ensures the correct URL protocol and path within the Canvas environment.
+            navigator.serviceWorker.register(__file_url__('firebase-messaging-sw.js'))
                 .then((registration) => {
                     console.log('Service Worker registered with scope:', registration.scope);
                     // Request permission for notifications
