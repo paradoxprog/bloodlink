@@ -901,7 +901,8 @@
 
         // --- FCM Initialization ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            // Changed service worker registration path to be relative
+            navigator.serviceWorker.register('./firebase-messaging-sw.js')
                 .then((registration) => {
                     console.log('Service Worker registered with scope:', registration.scope);
                     // Request permission for notifications
