@@ -25,6 +25,12 @@ firebase.initializeApp(firebaseConfig);
 // messages.
 const messaging = firebase.messaging();
 
+// Set the VAPID public key for FCM in the service worker
+// This key is generated in your Firebase Project Settings -> Cloud Messaging tab.
+const vapidKey = "BNTluYlq54wVajpN9IQoFae6eotelHP77RmJU_yf_ZQbYXZu67HrjvxM7HiXFe0e3VX6Z9HBUTF5fmN0Y7DJdxk";
+messaging.usePublicVapidKey(vapidKey);
+
+
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
