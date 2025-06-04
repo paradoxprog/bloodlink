@@ -6,19 +6,20 @@
     <title>Blood Link | Donate, Find, Emergency & Offers</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Variables (Blood Link Themed - Adapted for new UI) --- */
+        /* --- CSS Variables --- */
         :root {
-            --primary-color: #2E71E5; /* Main Blue from screenshot */
-            --primary-hover: #1C59C0; /* Darker Blue */
-            --secondary-color: #6c757d; /* Grey for secondary actions */
+            --primary-color: #2E71E5;
+            --primary-color-rgb: 46, 113, 229;
+            --primary-hover: #1C59C0;
+            --secondary-color: #6c757d;
             --secondary-hover: #5a6268;
-            --tertiary-color: #10b981; /* Green for offers/success */
+            --tertiary-color: #10b981;
             --tertiary-hover: #059669;
-            --bg-light: #f4f7fc; /* Lightest background for main content */
-            --bg-dark: #121212; /* Dark mode background */
+            --bg-light: #f4f7fc;
+            --bg-dark-body: #121212; /* Actual body dark bg */
             --sidebar-bg-light: #ffffff;
-            --sidebar-bg-dark: #1e1e1e;
-            --card-bg-light: #ffffff; /* For forms and other content boxes */
+            --sidebar-bg-dark: #1e1e1e; /* Actual sidebar dark bg */
+            --card-bg-light: #ffffff;
             --card-bg-dark: #2c2c2c;
             --text-color-light: #343a40;
             --text-color-dark: #f1f1f1;
@@ -26,8 +27,6 @@
             --border-color-dark: #495057;
             --shadow-light: rgba(0, 0, 0, 0.05);
             --shadow-dark: rgba(0, 0, 0, 0.4);
-            --header-bg-light: #ffffff; /* For section headers within main content */
-            --header-bg-dark: #2a2a2a;
             --success-bg: #d1fae5;
             --success-text: #065f46;
             --error-bg: #fee2e2;
@@ -37,66 +36,58 @@
             --warning-border: #f59e0b;
             --table-header-bg: #f8f9fa;
             --table-row-hover-bg: #e9ecef;
-            --link-color: var(--primary-color);
-            --link-hover-color: var(--primary-hover);
-            --sidebar-link-active-bg: #e9ecef;
+            --sidebar-link-active-bg: #e9ecef; /* Light mode active bg */
             --sidebar-text-color: #333;
-            --sidebar-icon-color: #555;
+            --sidebar-width: 260px; /* Define sidebar width as a variable */
         }
 
         body.dark {
             --primary-color: #5E97F5;
+            --primary-color-rgb: 94, 151, 245;
             --primary-hover: #3B7EE0;
             --secondary-color: #8c959d;
             --secondary-hover: #7a8288;
             --tertiary-color: #34d399;
             --tertiary-hover: #10b981;
-            --bg-light: #1a1a1a;
-            --bg-dark: #121212; /* Actual body dark bg */
-            --sidebar-bg-light: #232323;
-            --sidebar-bg-dark: #1e1e1e; /* Actual sidebar dark bg */
+            --bg-light: #1a1a1a; /* Main content background in dark mode */
+            --sidebar-bg-light: #232323; /* Sidebar background in dark mode */
             --card-bg-light: #2c2c2c;
-            --card-bg-dark: #1f1f1f;
             --text-color-light: #e0e0e0;
-            --text-color-dark: #f5f5f5;
             --border-color-light: #3a3a3a;
-            --border-color-dark: #555555;
             --shadow-light: rgba(0, 0, 0, 0.5);
-            --shadow-dark: rgba(0, 0, 0, 0.7);
-            --header-bg-light: #2c2c2c;
-            --header-bg-dark: #1a1a1a;
             --success-bg: #065f46;
             --success-text: #d1fae5;
             --error-bg: #991b1b;
             --error-text: #fee2e2;
-            --warning-bg: #422006;
-            --warning-text: #fef3c7;
-            --warning-border: #d97706;
+            --warning-bg: #422006; /* Emergency card bg in dark */
+            --warning-text: #fef3c7; /* Emergency card text in dark */
+            --warning-border: #d97706; /* Emergency card border in dark */
             --table-header-bg: #2a2a2a;
             --table-row-hover-bg: #3a3a3a;
-            --sidebar-link-active-bg: #3a3a3a;
+            --sidebar-link-active-bg: #3a3a3a; /* Dark mode active bg */
             --sidebar-text-color: #f1f1f1;
-            --sidebar-icon-color: #bbb;
         }
 
         /* General Styles */
         body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-color: var(--bg-light); color: var(--text-color-light); transition: background-color .3s ease, color .3s ease; min-height: 100vh; display: flex; flex-direction: column; }
+        body.dark { background-color: var(--bg-dark-body); color: var(--text-color-dark); }
         *, *:before, *:after { box-sizing: border-box; }
 
         .app-container { display: flex; min-height: 100vh; }
 
         /* Sidebar Styles */
         .sidebar {
-            width: 260px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg-light);
             padding: 20px 15px;
             display: flex;
             flex-direction: column;
             border-right: 1px solid var(--border-color-light);
-            transition: background-color .3s ease, border-color .3s ease;
+            transition: background-color .3s ease, border-color .3s ease, transform .3s ease-in-out;
             position: fixed;
             height: 100%;
             overflow-y: auto;
+            z-index: 1001; /* Ensure sidebar is above main content if overlapping during transition */
         }
         body.dark .sidebar { background-color: var(--sidebar-bg-dark); border-right-color: var(--border-color-dark); }
 
@@ -108,76 +99,63 @@
 
         .sidebar nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
         .sidebar nav a {
-            padding: 10px 15px;
-            text-decoration: none;
-            color: var(--sidebar-text-color);
-            font-weight: 500;
-            font-size: 14px;
-            border-radius: 6px;
-            transition: background-color .2s ease, color .2s ease;
-            display: block;
+            padding: 10px 15px; text-decoration: none; color: var(--sidebar-text-color);
+            font-weight: 500; font-size: 14px; border-radius: 6px;
+            transition: background-color .2s ease, color .2s ease; display: block;
         }
         .sidebar nav a:hover { background-color: var(--sidebar-link-active-bg); color: var(--primary-color); }
         .sidebar nav a.active-link { background-color: var(--primary-color); color: #fff; }
-        .sidebar nav a.emergency-link.active-link { background-color: var(--warning-border); color: #fff;}
+        .sidebar nav a.active-link:hover { background-color: var(--primary-hover); color: #fff; }
         .sidebar nav a.emergency-link { color: var(--warning-text); font-weight: 500; }
         body.dark .sidebar nav a.emergency-link { color: var(--warning-text); }
         .sidebar nav a.emergency-link:hover { background-color: var(--sidebar-link-active-bg); color: var(--warning-border); }
-        
+        .sidebar nav a.emergency-link.active-link { background-color: var(--warning-border); color: #fff; }
+        .sidebar nav a.emergency-link.active-link:hover { background-color: var(--warning-text); color: var(--warning-bg) }
+
 
         .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-color-light); }
         body.dark .sidebar-footer { border-top-color: var(--border-color-dark); }
-        .toggle-dark-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .toggle-dark-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .toggle-dark-label { font-size: 13px; color: var(--text-color-light); }
         body.dark .toggle-dark-label { color: var(--text-color-dark); }
         .toggle-dark { position: relative; display: inline-block; width: 42px; height: 22px; border-radius: 22px; background-color: var(--border-color-light); cursor: pointer; transition: background-color .3s ease; vertical-align: middle; border: 1px solid var(--border-color-light); }
         body.dark .toggle-dark { background-color: var(--border-color-dark); border-color: var(--border-color-dark); }
         .toggle-dark input { opacity: 0; width: 0; height: 0; }
         .toggle-thumb { position: absolute; top: 1px; left: 1px; width: 18px; height: 18px; background-color: #fff; border-radius: 50%; transition: transform .3s ease-in-out, background-color .3s ease; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
-        body.dark .toggle-thumb { background-color: var(--text-color-light); } /* Thumb color in dark mode */
+        body.dark .toggle-thumb { background-color: var(--text-color-light); }
         .toggle-dark input:checked + .toggle-thumb { transform: translateX(20px); background-color: var(--primary-color); }
         body.dark .toggle-dark input:checked + .toggle-thumb { background-color: var(--primary-color); }
-
 
         .app-mode-sidebar { font-size: 11px; color: var(--text-color-light); opacity: 0.7; text-align: center; padding: 8px 0; }
         body.dark .app-mode-sidebar { color: var(--text-color-dark); }
 
         /* Main Content Styles */
-        .main-content-wrapper { flex-grow: 1; margin-left: 260px; padding: 0; display: flex; flex-direction: column; }
+        .main-content-wrapper { flex-grow: 1; margin-left: var(--sidebar-width); padding: 0; display: flex; flex-direction: column; transition: margin-left .3s ease-in-out; }
         main.main-area {
-            width: 100%;
-            max-width: 1200px; /* Max width for content */
-            margin: 0 auto; /* Center content */
-            padding: 25px 30px; /* Padding around content */
-            background-color: transparent; /* Main area itself is transparent, sections will have backgrounds */
-            flex-grow: 1;
+            width: 100%; max-width: 1200px; margin: 0 auto;
+            padding: 25px 30px; background-color: transparent; flex-grow: 1;
         }
         
         section { display: none; opacity: 0; transform: translateY(10px); transition: opacity .4s ease, transform .4s ease; }
         section.active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Section specific header (like "All Donors" title bar) */
         .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color-light); }
         body.dark .content-header { border-bottom-color: var(--border-color-dark); }
         .content-header h2.section-title-main { font-size: 24px; font-weight: 600; color: var(--text-color-light); margin:0; }
         body.dark .content-header h2.section-title-main { color: var(--text-color-dark); }
         .content-header .header-actions button { margin-left: 10px; }
 
-        /* General form & content card styling */
         .content-card {
-            background-color: var(--card-bg-light);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px var(--shadow-light);
-            padding: 25px;
-            margin-bottom: 25px;
+            background-color: var(--card-bg-light); border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-light); padding: 25px; margin-bottom: 25px;
         }
         body.dark .content-card { background-color: var(--card-bg-dark); box-shadow: 0 2px 10px var(--shadow-dark); }
         
-        h2.section-title { /* For sections like About, Register Form Title */
+        h2.section-title {
             text-align: left; margin-bottom:25px; font-weight:600; color:var(--primary-color); font-size:22px; 
             padding-bottom:10px; border-bottom: 2px solid var(--border-color-light);
         }
-        body.dark h2.section-title{border-bottom-color:var(--border-color-dark)}
+        body.dark h2.section-title{border-bottom-color:var(--border-color-dark); color: var(--primary-color);}
 
 
         h3{color:var(--text-color-light);margin-top:20px;margin-bottom:10px;font-weight:600;font-size:20px}
@@ -185,23 +163,21 @@
         p{font-size:14px;line-height:1.6;margin-bottom:12px;color:var(--text-color-light)}
         body.dark p{color:var(--text-color-dark)}
 
-        /* Forms */
         form { display: flex; flex-direction: column; gap: 18px; max-width: 650px; margin: 0 auto; }
         label { font-weight: 500; font-size: 13px; color: var(--text-color-light); margin-bottom: -10px; display: block; }
         body.dark label { color: var(--text-color-dark); }
         input[type="text"], input[type="email"], input[type="tel"], select, textarea {
-            background-color: var(--bg-light); border: 1px solid var(--border-color-light); border-radius: 6px; padding: 10px 12px;
+            background-color: var(--card-bg-light); border: 1px solid var(--border-color-light); border-radius: 6px; padding: 10px 12px;
             font-size: 14px; color: var(--text-color-light); transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease; width: 100%;
         }
         body.dark input[type="text"], body.dark input[type="email"], body.dark input[type="tel"], body.dark select, body.dark textarea {
-            background-color: var(--bg-dark); border-color: var(--border-color-dark); color: var(--text-color-dark);
+            background-color: var(--card-bg-dark); border-color: var(--border-color-dark); color: var(--text-color-dark);
         }
         input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, select:focus, textarea:focus {
-            outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 46, 113, 229), .25); /* Use RGB for alpha */
+            outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), .25);
         }
         textarea { min-height: 90px; resize: vertical; }
 
-        /* Buttons */
         button, .btn {
             background-color: var(--primary-color); color: #fff; border: none; padding: 10px 18px; border-radius: 6px;
             font-size: 14px; cursor: pointer; font-weight: 500; transition: background-color .3s ease, transform .2s ease;
@@ -210,57 +186,46 @@
         button:hover, .btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
         button.btn-secondary, .btn-secondary { background-color: var(--secondary-color); }
         button.btn-secondary:hover, .btn-secondary:hover { background-color: var(--secondary-hover); }
-        button.btn-outline, .btn-outline { background-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); }
-        button.btn-outline:hover, .btn-outline:hover { background-color: var(--primary-color); color: #fff; }
         
-        form#emergencyRequestForm button[type="submit"] { background-color: var(--warning-border); }
-        form#emergencyRequestForm button[type="submit"]:hover { background-color: var(--warning-text); color: #333; }
+        form#emergencyRequestForm button[type="submit"] { background-color: var(--warning-border); color: #fff; }
+        form#emergencyRequestForm button[type="submit"]:hover { background-color: var(--warning-text); color: var(--bg-dark-body); } /* Darker text on lighter hover */
+        body.dark form#emergencyRequestForm button[type="submit"]:hover { background-color: var(--warning-text); color: var(--warning-bg); }
 
-        /* Donor Table specific styles ("Find Donors" / "All Donors" section) */
-        .search-filter-bar { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
-        .search-filter-bar input[type="text"] { flex-grow: 1; max-width: 400px; padding: 9px 12px; font-size: 14px;}
-        
-        .content-tabs { margin-bottom: 20px; border-bottom: 1px solid var(--border-color-light); padding-bottom: -1px;} /* Neg padding to align with border */
-        body.dark .content-tabs { border-bottom-color: var(--border-color-dark); }
-        .content-tabs .tab-link {
-            background: none; border: none; border-bottom: 3px solid transparent; color: var(--text-color-light);
-            padding: 10px 15px; font-size: 14px; font-weight: 500; margin-right: 5px; border-radius:0; margin-bottom:-1px; /* For border alignment */
-        }
-        body.dark .content-tabs .tab-link { color: var(--text-color-dark); }
-        .content-tabs .tab-link.active, .content-tabs .tab-link:hover {
-            border-bottom-color: var(--primary-color); color: var(--primary-color); background: none; transform: none;
-        }
-        body.dark .content-tabs .tab-link.active, body.dark .content-tabs .tab-link:hover {color: var(--primary-color);}
+
+        .search-filter-bar { display: flex; margin-bottom: 25px; }
+        .search-filter-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; font-size: 14px; border-radius: 6px; border: 1px solid var(--border-color-light); background-color: var(--card-bg-light); color: var(--text-color-light);}
+        body.dark .search-filter-bar input[type="text"] { border-color: var(--border-color-dark); background-color: var(--card-bg-dark); color: var(--text-color-dark);}
+        .search-filter-bar input[type="text"]:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), .25); }
 
 
         .table-container { overflow-x: auto; background-color: var(--card-bg-light); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow-light); padding: 10px;}
-        body.dark .table-container { background-color: var(--card-bg-dark); }
+        body.dark .table-container { background-color: var(--card-bg-dark); box-shadow: 0 1px 3px var(--shadow-dark);}
         #donorsTable { width: 100%; border-collapse: collapse; }
-        #donorsTable th, #donorsTable td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color-light); font-size: 13px; }
+        #donorsTable th, #donorsTable td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color-light); font-size: 13px; vertical-align: middle; }
         body.dark #donorsTable th, body.dark #donorsTable td { border-bottom-color: var(--border-color-dark); }
         #donorsTable th { background-color: var(--table-header-bg); font-weight: 600; color: var(--text-color-light); text-transform: uppercase; font-size: 11px; }
         body.dark #donorsTable th { background-color: var(--table-header-bg); color: var(--text-color-dark); }
         #donorsTable tbody tr:hover { background-color: var(--table-row-hover-bg); }
         body.dark #donorsTable tbody tr:hover { background-color: var(--table-row-hover-bg); }
-        #donorsTable .donor-name-id span { display: block; font-size: 11px; color: #777; }
-        body.dark #donorsTable .donor-name-id span { color: #aaa; }
+        #donorsTable .donor-name-id span.donor-id { display: block; font-size: 11px; color: #777; margin-top: 2px; }
+        body.dark #donorsTable .donor-name-id span.donor-id { color: #aaa; }
         #donorsTable .status-eligible { color: var(--tertiary-color); font-weight: 500; }
         #donorsTable .status-not-eligible { color: var(--warning-text); font-weight: 500; }
         #donorsTable .action-button { padding: 6px 10px; font-size: 12px; }
 
-        .no-donors-message, .no-requests-message { text-align:center; padding: 20px; color: var(--text-color-light); font-size: 15px; }
-        body.dark .no-donors-message, body.dark .no-requests-message { color: var(--text-color-dark); }
+        .no-donors-message, .no-requests-message { text-align:center; padding: 30px 20px; color: var(--text-color-light); font-size: 15px; background-color: var(--card-bg-light); border-radius: 8px; box-shadow: 0 1px 3px var(--shadow-light); }
+        body.dark .no-donors-message, body.dark .no-requests-message { color: var(--text-color-dark); background-color: var(--card-bg-dark); box-shadow: 0 1px 3px var(--shadow-dark);}
 
-        /* Emergency Request Cards (retain most of original styling within new layout) */
+        /* Emergency Request Cards */
         .emergency-card { background-color:var(--warning-bg); color:var(--warning-text); border:1px solid var(--warning-border); border-left:5px solid var(--warning-border); padding:15px; margin-bottom:20px; border-radius:8px; box-shadow:0 4px 10px var(--shadow-light); }
-        body.dark .emergency-card { background-color:var(--warning-bg); color:var(--warning-text); border-color:var(--warning-border); border-left-color:var(--warning-border); } /* Ensure dark mode variables are used */
-        .emergency-card h3 { margin-top:0; font-size:18px; color:var(--warning-border); } /* Adjusted to use var */
-        body.dark .emergency-card h3 { color:var(--warning-text); } /* Ensure dark mode is distinct */
+        body.dark .emergency-card { background-color:var(--warning-bg); color:var(--warning-text); border-color:var(--warning-border); border-left-color:var(--warning-border); }
+        .emergency-card h3 { margin-top:0; font-size:18px; color:var(--warning-border); }
+        body.dark .emergency-card h3 { color:var(--warning-text); }
         .emergency-card p { font-size:13px; margin-bottom:5px; color:var(--warning-text); }
         .emergency-card p strong { font-weight:600; }
         .emergency-card .timestamp { font-size:10px; color:var(--warning-text); opacity:.8; margin-top:8px; }
-        .emergency-card .status-active { font-weight:700; color:#16a34a; }
-        body.dark .emergency-card .status-active { color:#4ade80; }
+        .emergency-card .status-active { font-weight:700; color:#16a34a; } /* Green for active status */
+        body.dark .emergency-card .status-active { color:#4ade80; } /* Lighter green for dark mode */
         .emergency-card-actions { margin-top: 15px; }
         .btn-offer-help { background-color: var(--tertiary-color); } .btn-offer-help:hover { background-color: var(--tertiary-hover); }
         .btn-view-offers { background-color: var(--secondary-color); font-size: 13px; padding: 6px 10px; } .btn-view-offers:hover { background-color: var(--secondary-hover); }
@@ -274,29 +239,28 @@
         body.dark .matching-donor-item { background-color: var(--card-bg-dark); border-color: var(--border-color-dark); }
         .matching-donor-item p { font-size: 12px; margin-bottom: 3px; }
         .emergency-card.new-urgent { animation: pulse-border 1.5s infinite alternate; border-left: 8px solid var(--primary-color); }
-        @keyframes pulse-border { 0% { border-color: var(--warning-border); } 100% { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(229, 62, 62, 0.6); } }
+        @keyframes pulse-border { 0% { border-color: var(--warning-border); } 100% { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(var(--primary-color-rgb), 0.6); } }
 
 
-        /* Footer */
         footer {
-            width: calc(100% - 260px); /* Adjust width considering sidebar */
-            margin-left: 260px; /* Align with main content */
-            padding: 18px 30px; text-align: center; background-color: var(--header-bg-light);
+            width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width);
+            padding: 18px 30px; text-align: center; background-color: var(--sidebar-bg-light); /* Match sidebar bg */
             color: var(--text-color-light); font-size: 13px;
             box-shadow: 0 -2px 5px var(--shadow-light); border-top: 1px solid var(--border-color-light);
             transition: background-color .3s ease, color .3s ease, border-color .3s ease, width .3s ease, margin-left .3s ease;
         }
-        body.dark footer { background-color: var(--header-bg-dark); color: var(--text-color-dark); border-top-color: var(--border-color-dark); }
+        body.dark footer { background-color: var(--sidebar-bg-dark); color: var(--text-color-dark); border-top-color: var(--border-color-dark); }
 
-        /* Messages & Loading */
-        #messageContainerGlobal { position: fixed; top: 20px; right: 20px; z-index: 2000; width: 300px; }
+        #messageContainerGlobal { position: fixed; top: 20px; right: 20px; z-index: 2000; width: 320px; }
         .message { padding: 12px 18px; border-radius: 6px; font-size: 14px; margin-bottom: 12px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-        .message.success { background-color: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-text); }
-        .message.error { background-color: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-text); }
-        .message.warning { background-color: var(--warning-bg); color: var(--warning-text); border: 1px solid var(--warning-border); }
+        .message.success { background-color: var(--success-bg); color: var(--success-text); border-left: 4px solid var(--success-text); }
+        .message.error { background-color: var(--error-bg); color: var(--error-text); border-left: 4px solid var(--error-text); }
+        .message.warning { background-color: var(--warning-bg); color: var(--warning-text); border-left: 4px solid var(--warning-border); }
 
         #loadingIndicatorGlobal {
-            position: fixed; top: 50%; left: calc(130px + 50%); /* Centered in main content area */
+            position: fixed;
+            top: 50%;
+            left: calc(var(--sidebar-width) + (100vw - var(--sidebar-width)) / 2);
             transform: translate(-50%, -50%);
             border: 4px solid var(--border-color-light); border-top: 4px solid var(--primary-color);
             border-radius: 50%; width: 35px; height: 35px; animation: spin .8s linear infinite;
@@ -305,7 +269,9 @@
         body.dark #loadingIndicatorGlobal { border-color: var(--border-color-dark); border-top-color: var(--primary-color); }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
         
-        /* Modals */
+        .modal-overlay{ /* Modal styles remain largely same */ }
+        .modal-content{ /* Modal styles remain largely same */ }
+        /* ... other modal styles from previous version ... */
         .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.6);display:flex;justify-content:center;align-items:center;z-index:2000;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
         .modal-overlay.active{opacity:1;visibility:visible}
         .modal-content{background-color:var(--card-bg-light);padding:25px;border-radius:10px;box-shadow:0 5px 20px rgba(0,0,0,.2);width:90%;max-width:480px;text-align:left;position:relative;transform:scale(.95);transition:transform .3s ease;max-height: 80vh; overflow-y: auto;}
@@ -324,53 +290,50 @@
         .offer-item:last-child { border-bottom: none; margin-bottom: 0; }
 
         /* Responsive adjustments */
-        @media (max-width: 992px) { /* Tablet and smaller */
-            .sidebar { width: 220px; }
-            .main-content-wrapper { margin-left: 220px; }
-            footer { width: calc(100% - 220px); margin-left: 220px; }
-            main.main-area { padding: 20px; }
-        }
-
-        @media (max-width: 768px) { /* Mobile */
-            .sidebar {
-                position: fixed; transform: translateX(-100%); width: 250px;
-                z-index: 1100; transition: transform 0.3s ease-in-out;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            }
+        #mobileNavToggle { display: none; } 
+        @media (max-width: 768px) {
+            :root { --sidebar-width: 250px; /* Consistent sidebar width for mobile toggle */ }
+            .sidebar { transform: translateX(calc(-1 * var(--sidebar-width))); }
             .sidebar.open { transform: translateX(0); }
             .main-content-wrapper { margin-left: 0; }
-            main.main-area { padding: 15px; }
             footer { width: 100%; margin-left: 0; }
-            .content-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .content-header .header-actions { width: 100%; display: flex; justify-content: flex-start; gap:10px; }
-            .content-header .header-actions button { flex-grow: 1; }
-            .search-filter-bar { flex-direction: column; gap: 10px; }
-            .search-filter-bar input[type="text"] { max-width: 100%; }
-            .search-filter-bar button { width: 100%; }
+            main.main-area { padding: 15px; }
+            .content-header { flex-direction: column; align-items: stretch; gap: 15px; }
+            .content-header h2.section-title-main { text-align: center; }
+            .content-header .header-actions { display: flex; justify-content: center; }
+            .content-header .header-actions button { flex-grow: 0; width: auto; min-width: 120px; }
             
-            /* Mobile Nav Toggle Button */
             #mobileNavToggle {
-                display: block; position: fixed; top: 15px; left: 15px; z-index: 1101;
+                display: block; position: fixed; top: 12px; left: 12px; z-index: 1101;
                 background-color: var(--primary-color); color: white; border: none;
                 padding: 8px 12px; border-radius: 6px; font-size: 18px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             }
             body.dark #mobileNavToggle { background-color: var(--primary-hover); }
-        }
-        #mobileNavToggle { display: none; } /* Hidden by default, shown in @media */
+            #loadingIndicatorGlobal {
+                left: 50vw; /* Center in viewport on mobile when sidebar is hidden */
+                /* transform: translate(-50%, -50%); /* Already applied */
+            }
+            .sidebar.open ~ .main-content-wrapper #loadingIndicatorGlobal {
+                 left: calc(var(--sidebar-width) + (100vw - var(--sidebar-width)) / 2); /* Re-center if sidebar is open */
+            }
+             #messageContainerGlobal { width: calc(100% - 30px); right: 15px; top: 15px; }
 
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <button id="mobileNavToggle">&#9776;</button> <aside class="sidebar" id="appSidebar">
+    <button id="mobileNavToggle">&#9776;</button>
+    <aside class="sidebar" id="appSidebar">
         <div class="logo-container">
             <img src="logo.jpg" alt="Blood Link Logo" class="logo" />
             <h1 class="app-title">Blood Link</h1>
         </div>
         <nav>
-            <a href="#" id="link-find" class="active-link">All Donors</a> <a href="#" id="link-register">Register Donor</a>
+            <a href="#" id="link-find" class="active-link">All Donors</a>
+            <a href="#" id="link-register">Register Donor</a>
             <a href="#" id="link-post-request" class="emergency-link">Post Emergency</a>
             <a href="#" id="link-view-requests" class="emergency-link">View Emergencies</a>
             <a href="#" id="link-about">About</a>
@@ -392,19 +355,20 @@
 
     <div class="main-content-wrapper">
         <main class="main-area">
-            <div id="messageContainerGlobal"></div> <div id="loadingIndicatorGlobal"></div> <section id="findDonorSection" class="active"> <div class="content-header">
+            <div id="messageContainerGlobal"></div>
+            <div id="loadingIndicatorGlobal"></div>
+
+            <section id="findDonorSection" class="active">
+                <div class="content-header">
                     <h2 class="section-title-main">All Donors</h2>
                     <div class="header-actions">
-                        <button class="btn btn-secondary" id="tutorialsButton" disabled>Tutorials</button> <button class="btn btn-primary" id="showRegisterDonorView">Add Donor</button>
+                        <button class="btn btn-primary" id="showRegisterDonorView">Add Donor</button>
                     </div>
                 </div>
                 <div class="search-filter-bar">
-                    <input type="text" id="mainSearchInput" placeholder="Search by Name, Blood Group, City, Phone...">
-                    <button class="btn btn-outline" id="advanceFiltersButton" disabled>Advance Filters</button> </div>
-                <div class="content-tabs">
-                    <button class="tab-link active" disabled>All Applications</button> <button class="tab-link" disabled>In Screening Queue</button> <button class="tab-link" disabled>Ready For Collection</button> </div>
-                <div class="table-container">
-                    <table id="donorsTable">
+                    <input type="text" id="mainSearchInput" placeholder="Search by Name, Blood Group, City, Phone, ID...">
+                </div>
+                <div class="table-container" style="display:none;"> <table id="donorsTable">
                         <thead>
                             <tr>
                                 <th>Name / ID</th>
@@ -415,11 +379,11 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="donorsTableBody">
-                            </tbody>
+                        <tbody id="donorsTableBody"></tbody>
                     </table>
                 </div>
-                <div id="donorsListContainerFallback"> <p class="no-donors-message" style="text-align:center;">Loading donors or none registered yet...</p>
+                <div id="donorsListContainerFallback">
+                     <p class="no-donors-message">Loading donors or none registered yet...</p>
                 </div>
             </section>
 
@@ -427,43 +391,13 @@
                  <div class="content-card">
                     <h2 class="section-title">Become a Lifesaver: Register Your Details</h2>
                     <form id="donorForm">
-                        <div>
-                            <label for="name">Full Name <span style="color:var(--primary-color)">*</span></label>
-                            <input type="text" id="name" name="name" required placeholder="e.g., Jane Doe">
-                        </div>
-                        <div>
-                            <label for="bloodGroup">Blood Group <span style="color:var(--primary-color)">*</span></label>
-                            <select id="bloodGroup" name="bloodGroup" required>
-                                <option value="">Select Blood Group</option>
-                                <option value="A+">A+</option> <option value="A-">A-</option>
-                                <option value="B+">B+</option> <option value="B-">B-</option>
-                                <option value="AB+">AB+</option> <option value="AB-">AB-</option>
-                                <option value="O+">O+</option> <option value="O-">O-</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="phone">Phone Number <span style="color:var(--primary-color)">*</span></label>
-                            <input type="tel" id="phone" name="phone" required placeholder="e.g., +919876543210">
-                        </div>
-                        <div>
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="e.g., jane.doe@example.com">
-                        </div>
-                        <div>
-                            <label for="city">City <span style="color:var(--primary-color)">*</span></label>
-                            <input type="text" id="city" name="city" required placeholder="e.g., Chennai">
-                        </div>
-                        <div>
-                            <label for="state">State/Province <span style="color:var(--primary-color)">*</span></label>
-                            <input type="text" id="state" name="state" required placeholder="e.g., Tamil Nadu">
-                        </div>
-                        <div>
-                            <label for="availability">Available to Donate?</label>
-                            <select id="availability" name="availability">
-                                <option value="true">Yes, I am currently available</option>
-                                <option value="false">No, not at the moment</option>
-                            </select>
-                        </div>
+                        <div> <label for="name">Full Name <span style="color:var(--primary-color)">*</span></label> <input type="text" id="name" name="name" required placeholder="e.g., Jane Doe"> </div>
+                        <div> <label for="bloodGroup">Blood Group <span style="color:var(--primary-color)">*</span></label> <select id="bloodGroup" name="bloodGroup" required> <option value="">Select Blood Group</option> <option value="A+">A+</option> <option value="A-">A-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div>
+                        <div> <label for="phone">Phone Number <span style="color:var(--primary-color)">*</span></label> <input type="tel" id="phone" name="phone" required placeholder="e.g., +919876543210"> </div>
+                        <div> <label for="email">Email Address</label> <input type="email" id="email" name="email" placeholder="e.g., jane.doe@example.com"> </div>
+                        <div> <label for="city">City <span style="color:var(--primary-color)">*</span></label> <input type="text" id="city" name="city" required placeholder="e.g., Chennai"> </div>
+                        <div> <label for="state">State/Province <span style="color:var(--primary-color)">*</span></label> <input type="text" id="state" name="state" required placeholder="e.g., Tamil Nadu"> </div>
+                        <div> <label for="availability">Available to Donate?</label> <select id="availability" name="availability"> <option value="true">Yes, I am currently available</option> <option value="false">No, not at the moment</option> </select> </div>
                         <button type="submit">Register as Donor</button>
                     </form>
                 </div>
@@ -491,7 +425,7 @@
                     <h2 class="section-title-main">Active Emergency Blood Requests</h2>
                  </div>
                 <div id="emergencyRequestsListContainer">
-                    <p class="no-requests-message" style="text-align:center;">Loading requests or no active emergency requests at the moment.</p>
+                    <p class="no-requests-message">Loading requests or no active emergency requests at the moment.</p>
                 </div>
             </section>
 
@@ -507,26 +441,24 @@
                 </div>
             </section>
 
-            <div id="contactModal" class="modal-overlay">
-                <div class="modal-content"> <button id="modalCloseBtn" class="modal-close-btn">&times;</button> <h4 id="modalDonorName">Contact Donor</h4> <div id="modalContactDetails" class="modal-contact-info"></div> <p class="modal-reminder"> Please contact the donor directly using the information above. Blood Link is a directory and does not facilitate direct communication or transactions. </p> </div>
-            </div>
-
-            <div id="viewOffersModal" class="modal-overlay">
-                <div class="modal-content"> <button id="viewOffersModalCloseBtn" class="modal-close-btn">&times;</button> <h4 id="viewOffersModalTitle">Offers Received for Request</h4> <div id="viewOffersModalBody"> <p>No offers yet, or unable to load offers.</p> </div> </div>
-            </div>
+            <div id="contactModal" class="modal-overlay"> <div class="modal-content"> <button id="modalCloseBtn" class="modal-close-btn">&times;</button> <h4 id="modalDonorName">Contact Donor</h4> <div id="modalContactDetails" class="modal-contact-info"></div> <p class="modal-reminder"> Please contact the donor directly using the information above. Blood Link is a directory and does not facilitate direct communication or transactions. </p> </div> </div>
+            <div id="viewOffersModal" class="modal-overlay"> <div class="modal-content"> <button id="viewOffersModalCloseBtn" class="modal-close-btn">&times;</button> <h4 id="viewOffersModalTitle">Offers Received for Request</h4> <div id="viewOffersModalBody"> <p>No offers yet, or unable to load offers.</p> </div> </div> </div>
         </main>
 
         <footer>
             &copy; <span id="currentYear"></span> Blood Link. Connecting Lifesavers.
         </footer>
-    </div> </div> <audio id="sosAudio" src="https://www.soundjay.com/buttons/beep-01a.mp3" preload="auto"></audio>
+    </div> 
+</div> 
+
+<audio id="sosAudio" src="https://www.soundjay.com/buttons/beep-01a.mp3" preload="auto"></audio>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
     // --- Firebase Configuration ---
     const firebaseConfig = { // KEEP YOUR ACTUAL CONFIG HERE
-        apiKey: "AIzaSyCWjeZwrqCwe5NWN-Pdm5GPkp1_qJrCuSU",
+        apiKey: "AIzaSyCWjeZwrqCwe5NWN-Pdm5GPkp1_qJrCuSU", // Example, replace with your actual key if different
         authDomain: "bloodlink-278a4.firebaseapp.com",
         databaseURL: "https://bloodlink-278a4-default-rtdb.firebaseio.com",
         projectId: "bloodlink-278a4",
@@ -544,10 +476,11 @@
     let lastRequestCount = 0;
 
     const donorForm = document.getElementById('donorForm');
-    // const donorsListContainer = document.getElementById('donorsListContainer'); // Old container
     const donorsTableBody = document.getElementById('donorsTableBody');
-    const donorsListContainerFallback = document.getElementById('donorsListContainerFallback'); // For "no donors" message
+    const donorsListContainerFallback = document.getElementById('donorsListContainerFallback');
     const mainSearchInput = document.getElementById('mainSearchInput');
+    const tableContainer = document.querySelector('#findDonorSection .table-container');
+
 
     const messageContainer = document.getElementById('messageContainerGlobal');
     const loadingIndicator = document.getElementById('loadingIndicatorGlobal');
@@ -581,7 +514,6 @@
         postRequest: document.getElementById('link-post-request'),
         viewRequests: document.getElementById('link-view-requests'),
         about: document.getElementById('link-about')
-        // Admin link handled separately
     };
 
     function showSection(sectionId) {
@@ -592,23 +524,18 @@
         if (navLinks[sectionId]) navLinks[sectionId].classList.add('active-link');
         
         window.scrollTo(0,0);
-        // Close mobile sidebar if open
         const sidebar = document.getElementById('appSidebar');
-        if (sidebar) sidebar.classList.remove('open');
+        if (sidebar && sidebar.classList.contains('open')) sidebar.classList.remove('open');
     }
 
     Object.keys(navLinks).forEach(key => {
         if (navLinks[key]) {
-            navLinks[key].addEventListener('click', (e) => {
-                e.preventDefault();
-                showSection(key);
-            });
+            navLinks[key].addEventListener('click', (e) => { e.preventDefault(); showSection(key); });
         }
     });
     if (showRegisterDonorViewButton) {
         showRegisterDonorViewButton.addEventListener('click', () => showSection('register'));
     }
-
 
     const darkToggle = document.getElementById('darkToggle');
     function applyDarkMode(isDark) {
@@ -617,48 +544,37 @@
             document.body.classList.add('dark');
             if(darkToggle) darkToggle.checked = true;
             localStorage.setItem('darkModeBloodLink', 'enabled');
-            // Update primary color RGB for focused shadow (example for blue #2E71E5)
-             root.style.setProperty('--primary-color-rgb', '46, 113, 229');
+            root.style.setProperty('--primary-color-rgb', '94, 151, 245'); // Dark mode blue #5E97F5
         } else {
             document.body.classList.remove('dark');
             if(darkToggle) darkToggle.checked = false;
             localStorage.removeItem('darkModeBloodLink');
-            // Update primary color RGB for focused shadow
-            root.style.setProperty('--primary-color-rgb', '46, 113, 229'); 
+            root.style.setProperty('--primary-color-rgb', '46, 113, 229'); // Light mode blue #2E71E5
         }
     }
     if(darkToggle) {
         darkToggle.addEventListener('change', () => { applyDarkMode(darkToggle.checked); });
     }
-    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled');
+    applyDarkMode(localStorage.getItem('darkModeBloodLink') === 'enabled'); // Apply on load
     document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-    // Mobile Nav Toggle
     const mobileNavToggle = document.getElementById('mobileNavToggle');
     const appSidebar = document.getElementById('appSidebar');
     if (mobileNavToggle && appSidebar) {
-        mobileNavToggle.addEventListener('click', () => {
-            appSidebar.classList.toggle('open');
-        });
+        mobileNavToggle.addEventListener('click', () => { appSidebar.classList.toggle('open'); });
     }
 
-
-    function displayMessage(message, type = 'success', isGlobal = true) {
+    function displayMessage(message, type = 'success') {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${type}`;
         msgDiv.textContent = message;
         
-        const container = isGlobal ? messageContainer : document.getElementById('messageContainer'); // Check if old container exists for compatibility
-        if(container) {
-            container.innerHTML = ''; // Clear previous messages in that container
-            container.appendChild(msgDiv);
-            setTimeout(() => { if (container.contains(msgDiv)) { container.removeChild(msgDiv); }}, 6000);
-        } else { // Fallback to alert if no container
-            alert(`${type.toUpperCase()}: ${message}`);
-        }
+        messageContainer.innerHTML = ''; 
+        messageContainer.appendChild(msgDiv);
+        setTimeout(() => { if (messageContainer.contains(msgDiv)) { messageContainer.removeChild(msgDiv); }}, 6000);
     }
 
-    function showContactModal(donor) {
+    function showContactModal(donor) { /* Function remains the same */ 
         if (!contactModal || !modalDonorName || !modalContactDetails) return;
         modalDonorName.textContent = `Contact: ${donor.name}`;
         let detailsHtml = `<p><strong>Phone:</strong> ${donor.phone}</p>`;
@@ -673,13 +589,39 @@
     if (modalCloseBtn) modalCloseBtn.addEventListener('click', hideContactModal);
     if (contactModal) contactModal.addEventListener('click', (e) => { if (e.target === contactModal) hideContactModal(); });
 
-    function showViewOffersModal(request) { /* ... (same as before, ensure it still works) ... */ }
-    function hideViewOffersModal() { /* ... (same as before) ... */ }
+    function showViewOffersModal(request) { /* Function remains the same, but ensure modal CSS is fine */
+        if (!viewOffersModal || !viewOffersModalTitle || !viewOffersModalBody) return;
+        viewOffersModalTitle.textContent = `Offers for: ${request.requiredBloodGroup} in ${request.city}`;
+        const offersRef = database.ref(`emergencyRequests/${request.id}/offers`);
+        offersRef.once('value', snapshot => {
+            if (snapshot.exists()) {
+                viewOffersModalBody.innerHTML = ''; 
+                snapshot.forEach(offerSnapshot => {
+                    const offer = offerSnapshot.val();
+                    const offerDiv = document.createElement('div');
+                    offerDiv.className = 'offer-item';
+                    offerDiv.innerHTML = `
+                        <p><strong>Offerer:</strong> ${offer.offererName || 'Anonymous'}</p>
+                        <p><strong>Contact:</strong> ${offer.offererContact || 'N/A'}</p>
+                        <p style="font-size:10px; opacity:0.7;">Offered on: ${new Date(offer.createdAt).toLocaleDateString()}</p>
+                    `;
+                    viewOffersModalBody.appendChild(offerDiv);
+                });
+            } else {
+                viewOffersModalBody.innerHTML = '<p>No offers have been made for this request yet.</p>';
+            }
+        }).catch(error => {
+            console.error("Error fetching offers:", error);
+            viewOffersModalBody.innerHTML = '<p>Could not load offers due to an error.</p>';
+        });
+        viewOffersModal.classList.add('active');
+     }
+    function hideViewOffersModal() { if (viewOffersModal) viewOffersModal.classList.remove('active'); }
     if (viewOffersModalCloseBtn) viewOffersModalCloseBtn.addEventListener('click', hideViewOffersModal);
     if (viewOffersModal) viewOffersModal.addEventListener('click', (e) => { if (e.target === viewOffersModal) hideViewOffersModal(); });
 
 
-    function addDonorToFirebase(event) {
+    function addDonorToFirebase(event) { /* Function remains the same */ 
         event.preventDefault();
         loadingIndicator.style.display = 'block';
         const formData = new FormData(donorForm);
@@ -697,17 +639,19 @@
 
     function loadDonorsFromFirebase() {
         if (loadingIndicator && sections.find.classList.contains('active')) loadingIndicator.style.display = 'block';
+        donorsListContainerFallback.innerHTML = `<p class="no-donors-message">Loading donors...</p>`;
+        tableContainer.style.display = 'none';
         
         database.ref('donors').on('value', (snapshot) => {
             allDonorsData = [];
             if (snapshot.exists()) {
                 snapshot.forEach(child => { const d = child.val(); d.id = child.key; allDonorsData.push(d); });
             }
-            renderFilteredDonors(); // This will call renderDonorsTable
+            renderFilteredDonors(); 
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         }, (error) => {
             console.error("Error loading donors:", error); displayMessage("Error fetching donor data: " + error.message, "error");
-            if (loadingIndicator) loadingIndicator.style.display = 'none'; renderFilteredDonors();
+            if (loadingIndicator) loadingIndicator.style.display = 'none'; renderFilteredDonors(); // Attempt to render even on error (might show empty)
         });
     }
 
@@ -718,45 +662,39 @@
         if (searchTerm) {
             filtered = allDonorsData.filter(d => 
                 (d.searchableName && d.searchableName.includes(searchTerm)) ||
-                (d.bloodGroup && d.bloodGroup.toLowerCase().includes(searchTerm)) ||
+                (d.bloodGroup && d.bloodGroup.toLowerCase().startsWith(searchTerm)) || // startsWith for blood group can be useful
                 (d.searchableCity && d.searchableCity.includes(searchTerm)) ||
                 (d.phone && d.phone.includes(searchTerm)) ||
                 (d.id && d.id.toLowerCase().includes(searchTerm)) 
             );
         }
         
-        filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0)); // Sort by newest first
+        filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
         renderDonorsTable(filtered);
     }
 
     function renderDonorsTable(donors) {
-        if (!donorsTableBody || !donorsListContainerFallback) return;
-        donorsTableBody.innerHTML = ''; // Clear existing rows
+        if (!donorsTableBody || !donorsListContainerFallback || !tableContainer) return;
+        donorsTableBody.innerHTML = '';
 
         if (donors.length === 0) {
-            donorsListContainerFallback.innerHTML = `<p class="no-donors-message" style="text-align:center;">${mainSearchInput.value ? 'No donors found matching your search.' : 'No donors registered yet.'}</p>`;
+            donorsListContainerFallback.innerHTML = `<p class="no-donors-message">${mainSearchInput.value ? 'No donors found matching your search.' : 'No donors registered yet. Be the first!'}</p>`;
             donorsListContainerFallback.style.display = 'block';
-            document.querySelector('#findDonorSection .table-container').style.display = 'none';
+            tableContainer.style.display = 'none';
             return;
         }
         
         donorsListContainerFallback.style.display = 'none';
-        document.querySelector('#findDonorSection .table-container').style.display = 'block';
+        tableContainer.style.display = 'block';
 
         donors.forEach(donor => {
             const row = donorsTableBody.insertRow();
-            
             const nameCell = row.insertCell();
             nameCell.classList.add('donor-name-id');
-            nameCell.innerHTML = `${donor.name || 'N/A'} <span class="donor-id">ID: ${donor.id.substring(0,8)}...</span>`;
+            nameCell.innerHTML = `${donor.name || 'N/A'} <span class="donor-id">ID: ${donor.id ? donor.id.substring(donor.id.length - 6) : 'N/A'}</span>`; // Shorter ID display
 
             const statusCell = row.insertCell();
-            if (donor.availability) {
-                statusCell.innerHTML = `<span class="status-eligible">Available</span>`;
-            } else {
-                statusCell.innerHTML = `<span class="status-not-eligible">Not Available</span>`;
-            }
-
+            statusCell.innerHTML = donor.availability ? `<span class="status-eligible">Available</span>` : `<span class="status-not-eligible">Not Available</span>`;
             row.insertCell().textContent = donor.bloodGroup || 'N/A';
             row.insertCell().textContent = `${donor.city || 'N/A'}, ${donor.state || 'N/A'}`;
             row.insertCell().textContent = donor.createdAt ? new Date(donor.createdAt).toLocaleDateString() : 'N/A';
@@ -770,9 +708,7 @@
         });
     }
     
-    // --- Emergency Request Operations (Firebase) ---
-    // (addEmergencyRequestToFirebase, handleOfferToHelp, loadEmergencyRequestsFromFirebase, findMatchingDonors, renderEmergencyRequests functions remain largely the same but ensure they use global displayMessage and loadingIndicator)
-     function addEmergencyRequestToFirebase(event) {
+    function addEmergencyRequestToFirebase(event) { /* Function remains the same */ 
         event.preventDefault();
         loadingIndicator.style.display = 'block';
         const formData = new FormData(emergencyRequestForm);
@@ -787,8 +723,7 @@
             .then(() => { displayMessage('Emergency request submitted!', 'success'); if (emergencyRequestForm) emergencyRequestForm.reset(); showSection('viewRequests'); loadingIndicator.style.display = 'none'; })
             .catch(error => { console.error("Error submitting emergency request:", error); displayMessage('Failed to submit request. ' + error.message, 'error'); loadingIndicator.style.display = 'none';});
     }
-
-    function handleOfferToHelp(requestId, requestCity, requestBloodGroup) {
+    function handleOfferToHelp(requestId, requestCity, requestBloodGroup) { /* Function remains the same */ 
         const offererName = prompt("Thank you for offering to help!\nPlease enter your Name:");
         if (!offererName || offererName.trim() === "") { alert("Name is required to make an offer."); return; }
         const offererContact = prompt("Please enter your Contact Phone Number:");
@@ -800,30 +735,28 @@
             .then(() => { displayMessage("Your offer to help has been submitted successfully!", "success"); loadingIndicator.style.display = 'none';})
             .catch(error => { console.error("Error submitting offer:", error); displayMessage("Failed to submit your offer. " + error.message, "error"); loadingIndicator.style.display = 'none';});
     }
-
-
-    function loadEmergencyRequestsFromFirebase() {
+    function loadEmergencyRequestsFromFirebase() { /* Function remains the same */
         if (loadingIndicator && sections.viewRequests.classList.contains('active')) loadingIndicator.style.display = 'block';
+        emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message">Loading requests...</p>`;
         const requestsRef = database.ref('emergencyRequests').orderByChild('status').equalTo('active');
 
         requestsRef.on('value', (snapshot) => {
             const currentRequests = [];
             if (snapshot.exists()) { snapshot.forEach(childSnapshot => { const request = childSnapshot.val(); request.id = childSnapshot.key; currentRequests.push(request); }); }
 
-            if (sections.viewRequests.classList.contains('active') && currentRequests.length > lastRequestCount && lastRequestCount !== 0) { // Play only if already loaded and new one comes
-                if (sosAudio && sosAudio.readyState >= 2) { sosAudio.play().catch(e => console.warn("Audio play prevented:", e.message)); displayMessage("New emergency request posted! Check the list.", "warning"); }
+            if (sections.viewRequests.classList.contains('active') && currentRequests.length > lastRequestCount && lastRequestCount !== 0) { 
+                if (sosAudio && sosAudio.readyState >= 2 && !sosAudio.muted) { sosAudio.play().catch(e => console.warn("Audio play prevented:", e.message)); displayMessage("New emergency request posted! Check the list.", "warning"); }
             }
-            lastRequestCount = currentRequests.length; // Update after check
+            lastRequestCount = currentRequests.length; 
             allEmergencyRequestsData = currentRequests;
             renderEmergencyRequests();
             if (loadingIndicator && sections.viewRequests.classList.contains('active')) loadingIndicator.style.display = 'none';
         }, (error) => {
             console.error("Error loading emergency requests:", error); displayMessage("Error fetching emergency requests: " + error.message, "error");
-            if (loadingIndicator) loadingIndicator.style.display = 'none'; renderEmergencyRequests();
+            if (loadingIndicator) loadingIndicator.style.display = 'none'; renderEmergencyRequests(); 
         });
-    }
-
-    function findMatchingDonors(requestBloodGroup, requestCity) {
+     }
+    function findMatchingDonors(requestBloodGroup, requestCity) { /* Function remains the same */ 
         if (!allDonorsData || allDonorsData.length === 0) return [];
         const normalizedRequestCity = requestCity.trim().toLowerCase();
         return allDonorsData.filter(donor => {
@@ -836,13 +769,12 @@
             return compatibility[requestBloodGroup] && compatibility[requestBloodGroup].includes(donor.bloodGroup);
         });
     }
-
-    function renderEmergencyRequests() {
+    function renderEmergencyRequests() { /* Function remains the same */ 
         if (!emergencyRequestsListContainer) return;
         emergencyRequestsListContainer.innerHTML = '';
 
         if (allEmergencyRequestsData.length === 0) {
-            emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message" style="text-align:center;">No active emergency requests at the moment.</p>`;
+            emergencyRequestsListContainer.innerHTML = `<p class="no-requests-message">No active emergency requests at the moment.</p>`;
             return;
         }
 
@@ -864,11 +796,11 @@
             const matchingDonorsContainer = requestCard.querySelector(`#matching-donors-${request.id}`);
             const spinner = matchingDonorsContainer.querySelector('.loading-donors-spinner');
             if(spinner) spinner.style.display = 'block';
-            setTimeout(() => {
+            setTimeout(() => { // Keep this async for performance
                 const matchingDonors = findMatchingDonors(request.requiredBloodGroup, request.city);
                 if(spinner) spinner.style.display = 'none';
                 if (matchingDonors.length > 0) {
-                    matchingDonors.slice(0, 3).forEach(donor => { // Show top 3
+                    matchingDonors.slice(0, 3).forEach(donor => { 
                         const donorDiv = document.createElement('div');
                         donorDiv.className = 'matching-donor-item';
                         donorDiv.innerHTML = `<p><strong>Name:</strong> ${donor.name}</p><p><strong>Blood Group:</strong> ${donor.bloodGroup} | <strong>City:</strong> ${donor.city}</p>`;
@@ -884,29 +816,32 @@
         emergencyRequestsListContainer.querySelectorAll('.btn-view-offers').forEach(button => { button.addEventListener('click', (event) => { const requestData = allEmergencyRequestsData.find(r => r.id === event.target.dataset.requestId); if (requestData) showViewOffersModal(requestData); }); });
     }
 
-
-    // Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
         if (donorForm) donorForm.addEventListener('submit', addDonorToFirebase);
         if (emergencyRequestForm) emergencyRequestForm.addEventListener('submit', addEmergencyRequestToFirebase);
         if (mainSearchInput) mainSearchInput.addEventListener('input', renderFilteredDonors);
 
-        showSection('find'); // Default to "All Donors" view
+        showSection('find'); 
         loadDonorsFromFirebase();
         loadEmergencyRequestsFromFirebase();
         
         document.body.addEventListener('click', function enableAudio() {
-            if (sosAudio && sosAudio.muted !== false) { // Check if not already unmuted
+            if (sosAudio && sosAudio.muted !== false) { 
                 sosAudio.muted = true; 
-                sosAudio.play().then(() => {
-                    sosAudio.pause(); sosAudio.currentTime = 0; sosAudio.muted = false;
-                    // console.log("Audio enabled by user interaction.");
-                    document.body.removeEventListener('click', enableAudio); 
-                }).catch(e => console.warn("Silent audio play failed:", e.message)); // Can fail if strict browser policies
+                const playPromise = sosAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        sosAudio.pause(); sosAudio.currentTime = 0; sosAudio.muted = false;
+                        document.body.removeEventListener('click', enableAudio); 
+                    }).catch(e => console.warn("Silent audio play failed:", e.message));
+                } else { // Fallback for browsers not returning a promise
+                     sosAudio.pause(); sosAudio.currentTime = 0; sosAudio.muted = false;
+                     document.body.removeEventListener('click', enableAudio);
+                }
             } else if (sosAudio && sosAudio.muted === false) {
-                 document.body.removeEventListener('click', enableAudio); // Already unmuted
+                 document.body.removeEventListener('click', enableAudio);
             }
-        }, { once: true }); // Use {once: true} for the click listener for enabling audio
+        }, { once: true });
     });
 
     const adminLink = document.getElementById('link-admin');
