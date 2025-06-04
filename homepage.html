@@ -393,6 +393,7 @@
 <audio id="sosAudio" src="https://www.soundjay.com/buttons/beep-01a.mp3" preload="auto"></audio>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script> <!-- FCM SDK -->
 
 <script>
     // --- Firebase Configuration ---
@@ -410,6 +411,7 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const messaging = firebase.messaging(); // Initialize Firebase Messaging
 
     // --- Global variables ---
     let allDonorsData = [];
@@ -625,33 +627,73 @@
     }
 
     function handleOfferToHelp(requestId, requestCity, requestBloodGroup) {
-        const offererName = prompt("Thank you for offering to help!\nPlease enter your Name:");
-        if (!offererName || offererName.trim() === "") {
-            alert("Name is required to make an offer.");
-            return;
-        }
-        const offererContact = prompt("Please enter your Contact Phone Number:");
-        if (!offererContact || !/^\+?[0-9\s-]{7,15}$/.test(offererContact.trim())) {
-            alert("A valid phone number is required.");
-            return;
-        }
+        // Custom modal for prompt-like behavior
+        const createPromptModal = (title, message, inputType, callback) => {
+            const modalHtml = `
+                <div id="customPromptModal" class="modal-overlay active">
+                    <div class="modal-content">
+                        <h4>${title}</h4>
+                        <p>${message}</p>
+                        <input type="${inputType}" id="promptInput" class="w-full p-2 border rounded mb-4" />
+                        <div class="flex justify-end space-x-2">
+                            <button id="promptCancel" class="btn-filter bg-gray-500 hover:bg-gray-700">Cancel</button>
+                            <button id="promptConfirm" class="btn-filter bg-primary-color hover:bg-primary-hover">OK</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-        const offerData = {
-            offererName: offererName.trim(),
-            offererContact: offererContact.trim(),
-            createdAt: firebase.database.ServerValue.TIMESTAMP
+            const promptModal = document.getElementById('customPromptModal');
+            const promptInput = document.getElementById('promptInput');
+            const promptConfirm = document.getElementById('promptConfirm');
+            const promptCancel = document.getElementById('promptCancel');
+
+            promptConfirm.onclick = () => {
+                const value = promptInput.value;
+                promptModal.remove();
+                callback(value);
+            };
+            promptCancel.onclick = () => {
+                promptModal.remove();
+                callback(null);
+            };
+            promptModal.onclick = (e) => {
+                if (e.target === promptModal) {
+                    promptModal.remove();
+                    callback(null);
+                }
+            };
+            promptInput.focus();
         };
 
-        database.ref(`emergencyRequests/${requestId}/offers`).push(offerData)
-            .then(() => {
-                displayMessage("Your offer to help has been submitted successfully!", "success");
-                // Optionally, update the request to indicate an offer has been made or increment a counter
-                // For simplicity, the real-time listener will re-render the card with new offer count.
-            })
-            .catch(error => {
-                console.error("Error submitting offer:", error);
-                displayMessage("Failed to submit your offer. " + error.message, "error");
+        createPromptModal("Offer Help", "Please enter your Name:", "text", (offererName) => {
+            if (!offererName || offererName.trim() === "") {
+                displayMessage("Name is required to make an offer.", "error");
+                return;
+            }
+            createPromptModal("Offer Help", "Please enter your Contact Phone Number:", "tel", (offererContact) => {
+                if (!offererContact || !/^\+?[0-9\s-]{7,15}$/.test(offererContact.trim())) {
+                    displayMessage("A valid phone number is required.", "error");
+                    return;
+                }
+
+                const offerData = {
+                    offererName: offererName.trim(),
+                    offererContact: offererContact.trim(),
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                database.ref(`emergencyRequests/${requestId}/offers`).push(offerData)
+                    .then(() => {
+                        displayMessage("Your offer to help has been submitted successfully!", "success");
+                    })
+                    .catch(error => {
+                        console.error("Error submitting offer:", error);
+                        displayMessage("Failed to submit your offer. " + error.message, "error");
+                    });
             });
+        });
     }
 
 
@@ -856,15 +898,118 @@
                 }).catch(e => console.warn("Failed to autoplay audio, user interaction required:", e));
             }
         });
+
+        // --- FCM Initialization ---
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                    // Request permission for notifications
+                    Notification.requestPermission().then((permission) => {
+                        if (permission === 'granted') {
+                            console.log('Notification permission granted.');
+                            // Get FCM device token
+                            messaging.getToken().then((currentToken) => {
+                                if (currentToken) {
+                                    console.log('FCM Device Token:', currentToken);
+                                    // In a real app, you would send this token to your server
+                                    // to store it and use it to send messages to this device.
+                                    // Example: sendTokenToServer(currentToken);
+                                    displayMessage('Notifications enabled! You will receive alerts for new emergency requests.', 'success');
+                                } else {
+                                    console.warn('No FCM registration token available. Request permission to generate one.');
+                                    displayMessage('Failed to get notification token. Please enable notifications in your browser settings.', 'error');
+                                }
+                            }).catch((err) => {
+                                console.error('An error occurred while retrieving token. ', err);
+                                displayMessage('Error getting notification token: ' + err.message, 'error');
+                            });
+                        } else {
+                            console.warn('Notification permission denied.');
+                            displayMessage('Notification permission denied. You will not receive emergency alerts.', 'warning');
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.error('Service Worker registration failed:', err);
+                    displayMessage('Failed to register service worker for notifications. ' + err.message, 'error');
+                });
+        } else {
+            displayMessage('This browser does not support Service Workers, so notifications will not work.', 'warning');
+            console.warn('Service Workers are not supported in this browser.');
+        }
+
+        // Handle incoming messages when the app is in the foreground
+        messaging.onMessage((payload) => {
+            console.log('Message received. ', payload);
+            displayMessage(`New Emergency: ${payload.notification.title} - ${payload.notification.body}`, 'warning');
+            // You can also trigger a re-render of emergency requests here if needed
+            loadEmergencyRequestsFromFirebase();
+        });
+
+        // Handle token refresh
+        messaging.onTokenRefresh(() => {
+            messaging.getToken().then((refreshedToken) => {
+                console.log('Token refreshed.');
+                // Send the new token to your server
+                // sendTokenToServer(refreshedToken);
+            }).catch((err) => {
+                console.error('Unable to retrieve refreshed token ', err);
+            });
+        });
     });
 
     const adminLink = document.getElementById('link-admin');
     if (adminLink) {
         adminLink.addEventListener('click', function(e) {
             e.preventDefault();
-            const password = prompt("Enter admin password:");
-            if (password === "admin123") { window.location.href = 'admin.html'; }
-            else if (password !== null) { alert("Incorrect password. Access denied."); }
+            // Custom modal for prompt-like behavior
+            const createPromptModal = (title, message, inputType, callback) => {
+                const modalHtml = `
+                    <div id="customPromptModal" class="modal-overlay active">
+                        <div class="modal-content">
+                            <h4>${title}</h4>
+                            <p>${message}</p>
+                            <input type="${inputType}" id="promptInput" class="w-full p-2 border rounded mb-4" />
+                            <div class="flex justify-end space-x-2">
+                                <button id="promptCancel" class="btn-filter bg-gray-500 hover:bg-gray-700">Cancel</button>
+                                <button id="promptConfirm" class="btn-filter bg-primary-color hover:bg-primary-hover">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                const promptModal = document.getElementById('customPromptModal');
+                const promptInput = document.getElementById('promptInput');
+                const promptConfirm = document.getElementById('promptConfirm');
+                const promptCancel = document.getElementById('promptCancel');
+
+                promptConfirm.onclick = () => {
+                    const value = promptInput.value;
+                    promptModal.remove();
+                    callback(value);
+                };
+                promptCancel.onclick = () => {
+                    promptModal.remove();
+                    callback(null);
+                };
+                promptModal.onclick = (e) => {
+                    if (e.target === promptModal) {
+                        promptModal.remove();
+                        callback(null);
+                    }
+                };
+                promptInput.focus();
+            };
+
+            createPromptModal("Admin Access", "Enter admin password:", "password", (password) => {
+                if (password === "admin123") {
+                    window.location.href = 'admin.html';
+                } else if (password !== null) {
+                    displayMessage("Incorrect password. Access denied.", "error");
+                }
+            });
         });
     }
 </script>
